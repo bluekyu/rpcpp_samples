@@ -25,7 +25,7 @@
 #include <pandaFramework.h>
 #include <pandaSystem.h>
 
-#include <render_pipeline/panda3d/direct/showbase/showbase.h>
+#include <render_pipeline/rppanda/showbase/showbase.h>
 #include <render_pipeline/rpcore/render_pipeline.h>
 #include <render_pipeline/rpcore/mount_manager.h>
 #include <render_pipeline/rpcore/globals.h>

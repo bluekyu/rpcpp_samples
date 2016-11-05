@@ -28,7 +28,7 @@
 cmake_minimum_required(VERSION 3.2)
 
 find_path(RenderPipeline_INCLUDE_DIR
-    NAMES "render_pipeline/rpcore/rpobject.h"
+    NAMES "render_pipeline/rpcore/config.h"
     HINTS ${RenderPipeline_INCLUDEDIR} "${RenderPipeline_ROOT}/include"
 )
 find_library(RenderPipeline_LIBRARY

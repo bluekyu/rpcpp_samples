@@ -27,7 +27,7 @@
 #include <texturePool.h>
 #include <load_prc_file.h>
 
-#include <render_pipeline/panda3d/direct/showbase/showbase.h>
+#include <render_pipeline/rppanda/showbase/showbase.h>
 #include <render_pipeline/rpcore/render_pipeline.h>
 #include <render_pipeline/rpcore/mount_manager.h>
 #include <render_pipeline/rpcore/pluginbase/day_manager.h>

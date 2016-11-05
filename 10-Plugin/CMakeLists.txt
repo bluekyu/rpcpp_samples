@@ -6,7 +6,6 @@ project(10-Plugin)
 
 # === configure ====================================================================================
 #list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
 set(RP_PLUGIN_INSTALL_PREFIX "etc/render_pipeline/rpplugins")
 
