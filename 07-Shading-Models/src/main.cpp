@@ -38,7 +38,6 @@ int main(int argc, char* argv[])
 {
 	// Setup window size, title and so on
 	load_prc_file_data("",
-		"win-size 1600 900\n"
 		"window-title Render Pipeline - Shading Models Demo");
 
 	PandaFramework framework;

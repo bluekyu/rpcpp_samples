@@ -38,54 +38,34 @@ int main(int argc, char* argv[])
 {
 	// Setup window size, title and so on
 	load_prc_file_data("",
-		"window-title Render Pipeline - Lights demo");
+		"window-title Render Pipeline - San Miguel Demo");
 
 	PandaFramework framework;
 	framework.open_framework(argc, argv);
 	WindowFramework* window = framework.open_window();
 
-    // ------ Begin of render pipeline code ------
-
 	// configure panda3d in program.
 	rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline;
 	render_pipeline->get_mount_mgr()->set_base_path("../etc/render_pipeline");
 	render_pipeline->get_mount_mgr()->set_config_dir("../etc/render_pipeline/config");
-
 	render_pipeline->create(&framework, window);
 
-    // ------ End of render pipeline code, thats it! ------
-
 	// Set time of day
-	render_pipeline->get_daytime_mgr()->set_time("4:50");
-
-    float half_energy = 5000;
-    float lamp_fov = 70;
-    float lamp_radius = 10;
+	render_pipeline->get_daytime_mgr()->set_time(0.550f);
 
 	// Load the scene
-	NodePath model = window->load_model(window->get_render(), "../share/render_pipeline/models/03-Lights/Scene.bam");
+	NodePath model = window->load_model(window->get_render(), "../share/render_pipeline/models/12-San-Miguel/san-miguel.bam");
+	render_pipeline->prepare_scene(model);
 
-	// Animate balls, this is for testing the motion blur
-	const std::string blend_type = "noBlend";
-
-    // Generate temperature lamps
-    // This shows how to procedurally create lamps.In this case, we
-    // base the lights positions on empties created in blender.
-
-
-	render_pipeline->prepare_scene(rpcore::Globals::render);
-
-    rpcore::MovementController* controller =  new rpcore::MovementController(rpcore::Globals::base);
+	// Init movement controller
+	std::shared_ptr<rpcore::MovementController> controller = std::make_shared<rpcore::MovementController>(rpcore::Globals::base);
 	controller->set_initial_position_hpr(
-		LVecBase3f(-17.2912578583, -13.290019989, 6.88211250305),
-		LVecBase3f(-39.7285499573, -14.6770210266, 0.0));
+		LVecBase3f(-4.7f, -6.3f, 1.0f),
+		LVecBase3f(49.1f, -6.97f, 0.0f));
 	controller->setup();
 
 	framework.main_loop();
 	framework.close_framework();
-
-	delete controller;
-	delete render_pipeline;
 
 	return 0;
 }
