@@ -38,7 +38,8 @@ int main(int argc, char* argv[])
 {
 	// Setup window size, title and so on
 	load_prc_file_data("",
-		"win-size 1512 1680\n"
+		"win-size 1512 1680\n"		// Vive
+		//"win-size 1332 1586\n"		// Oculus
 		"sync-video false\n"
 		"window-title Render Pipeline - Shading Models VR Demo");
 
@@ -56,6 +57,7 @@ int main(int argc, char* argv[])
 	{
 		render_pipeline.error("Not stereoscopic mode!");
 		render_pipeline.error("Enable stereo_mdoe in pipeline.yaml");
+		framework.close_framework();
 		return 0;
 	}
 
@@ -68,9 +70,10 @@ int main(int argc, char* argv[])
 
 	// Init movement controller
 	std::shared_ptr<rpcore::MovementController> controller = std::make_shared<rpcore::MovementController>(rpcore::Globals::base);
-
-	// we should disable mouse to track HMD pose.
-	rpcore::Globals::base->disable_mouse();
+	controller->set_initial_position_hpr(
+		LVecBase3f(6.6f, -18.8f, 4.5f),
+		LVecBase3f(0.0f, 0.0f, 0.0f));
+	controller->setup();
 
 	framework.main_loop();
 	framework.close_framework();
