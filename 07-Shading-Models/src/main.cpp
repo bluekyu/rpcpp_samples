@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 
 	// Init movement controller
 	std::shared_ptr<rpcore::MovementController> controller = std::make_shared<rpcore::MovementController>(rpcore::Globals::base);
-	controller->set_initial_position_hpr(
+	controller->set_initial_position(
 		LVecBase3f(6.6f, -18.8f, 4.5f),
 		LVecBase3f(4.7f, -16.7f, 3.4f));
 	controller->setup();
