@@ -10,10 +10,13 @@ set(BOOST_ROOT "" CACHE PATH "Hint for finding boost root directory")
 set(BOOST_INCLUDEDIR "" CACHE PATH "Hint for finding boost include directory")
 set(BOOST_LIBRARYDIR "" CACHE PATH "Hint for finding boost library directory")
 
-find_package(Boost 1.59.0 REQUIRED COMPONENTS filesystem system)
+find_package(Boost 1.62.0 REQUIRED COMPONENTS filesystem system regex)
 if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS})
     message(STATUS "Boost include path: ${Boost_INCLUDE_DIRS}")
+    if(NOT Boost_USE_STATIC_LIBS)
+        set(Boost_LIBRARIES Boost::dynamic_linking ${Boost_LIBRARIES})
+    endif()
 endif()
 
 # find panda3d

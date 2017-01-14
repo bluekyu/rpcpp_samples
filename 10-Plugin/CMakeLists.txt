@@ -54,7 +54,7 @@ set(plugin_sources
 # create library
 add_library(${PROJECT_NAME} ${LIB_TYPE} ${plugin_sources})
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC Boost::dynamic_linking ${Boost_LIBRARIES} ${Panda3d_LIBRARIES}
+    PUBLIC ${Boost_LIBRARIES} ${Panda3d_LIBRARIES}
     PRIVATE ${RenderPipeline_LIBRARIES}
 )
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${LIB_NAME})

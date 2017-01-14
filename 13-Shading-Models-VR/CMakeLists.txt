@@ -54,7 +54,7 @@ set(sources_files
 # create exe
 add_executable(${PROJECT_NAME} ${sources_files})
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC Boost::dynamic_linking ${Panda3d_LIBRARIES} ${YamlCpp_LIBRARIES}
+    PUBLIC ${Panda3d_LIBRARIES} ${YamlCpp_LIBRARIES}
     PRIVATE ${RenderPipeline_LIBRARIES})
 
 # library
