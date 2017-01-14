@@ -22,14 +22,27 @@
  * SOFTWARE.
  */
 
-#include <boost/version.hpp>
-#if BOOST_VERSION >= 106100
 #include <boost/dll/alias.hpp>
-#endif
 
 #include <render_pipeline/rpcore/pluginbase/base_plugin.h>
 
 #include "sample_stage.h"
+
+extern "C" {
+
+/** Plugin information for native DLL loader (ex. Python ctypes). */
+struct PluginInfo
+{
+	const char* id = PLUGIN_ID_STRING;
+	const char* name = "SamplePlugin";
+	const char* author = "Name <email@email.com>";
+	const char* description =
+		"A plugin to use sample.";
+	const char* version = "0.1";
+};
+BOOST_SYMBOL_EXPORT const PluginInfo plugin_info;
+
+}
 
 namespace rpplugins {
 
@@ -41,7 +54,7 @@ public:
         return std::shared_ptr<rpplugins::Plugin>(new rpplugins::Plugin(pipeline));
     }
 
-    Plugin(rpcore::RenderPipeline* pipeline): rpcore::BasePlugin(pipeline, PLUGIN_ID_STRING) {}
+	Plugin(rpcore::RenderPipeline* pipeline): rpcore::BasePlugin(pipeline, plugin_info.id) {}
 
     virtual std::string get_name(void) const override;
     virtual std::string get_author(void) const override;
@@ -62,22 +75,22 @@ Plugin::RequrieType Plugin::require_plugins;
 
 std::string Plugin::get_name(void) const
 {
-	return "SamplePlugin";
+	return plugin_info.name;
 }
 
 std::string Plugin::get_author(void) const
 {
-	return "Name <email@email.com>";
+	return plugin_info.author;
 }
 
 std::string Plugin::get_description(void) const
 {
-	return	"A plugin to use sample.";
+	return plugin_info.description;
 }
 
 std::string Plugin::get_version(void) const
 {
-	return "0.1";
+	return plugin_info.version;
 }
 
 void Plugin::on_stage_setup(void)
@@ -87,30 +100,6 @@ void Plugin::on_stage_setup(void)
 }
 
 // ************************************************************************************************
-#if BOOST_VERSION < 106100
-
-#define BOOST_DLL_SELECTANY
-
-#define BOOST_DLL_SECTION(SectionName, Permissions)                                             \
-    BOOST_STATIC_ASSERT_MSG(                                                                    \
-        sizeof(#SectionName) < 10,                                                              \
-        "Some platforms require section names to be at most 8 bytest"                           \
-    );                                                                                          \
-    __pragma(section(#SectionName, Permissions)) __declspec(allocate(#SectionName))             \
-
-#define BOOST_DLL_ALIAS(FunctionOrVar, AliasName)                       \
-    BOOST_DLL_ALIAS_SECTIONED(FunctionOrVar, AliasName, boostdll)       \
-
-#define BOOST_DLL_ALIAS_SECTIONED(FunctionOrVar, AliasName, SectionName)                        \
-    namespace _autoaliases {                                                                    \
-        extern "C" BOOST_SYMBOL_EXPORT const void *AliasName;                                   \
-        BOOST_DLL_SECTION(SectionName, read) BOOST_DLL_SELECTANY                                \
-        const void * AliasName = reinterpret_cast<const void*>(reinterpret_cast<intptr_t>(      \
-            &FunctionOrVar                                                                      \
-        ));                                                                                     \
-    }
-
-#endif
 
 BOOST_DLL_ALIAS(
     rpplugins::Plugin::create_plugin,
