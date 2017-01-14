@@ -22,10 +22,19 @@
  * SOFTWARE.
  */
 
+#include <queue>
+#include <random>
+
 #include <pandaFramework.h>
 #include <pandaSystem.h>
 #include <texturePool.h>
 #include <load_prc_file.h>
+#include <nodePathCollection.h>
+#include <spotlight.h>
+#include <material.h>
+#include <genericAsyncTask.h>
+
+#include <boost/algorithm/string/regex.hpp>
 
 #include <render_pipeline/rppanda/showbase/showbase.h>
 #include <render_pipeline/rppanda/interval/lerp_interval.h>
@@ -36,6 +45,27 @@
 #include <render_pipeline/rpcore/pluginbase/day_manager.h>
 #include <render_pipeline/rpcore/globals.h>
 #include <render_pipeline/rpcore/util/movement_controller.h>
+#include <render_pipeline/rpcore/native/rp_spot_light.h>
+
+float half_energy = 5000;
+float lamp_fov = 70;
+float lamp_radius = 10;
+std::vector<PT(rpcore::RPSpotLight)> lights;
+
+/** Update method. */
+AsyncTask::DoneStatus update(GenericAsyncTask *task, void *user_data)
+{
+	double frame_time = rpcore::Globals::clock->get_frame_time();
+
+	// Make the lights glow
+	for (size_t i=0, i_end=lights.size(); i < i_end; ++i)
+	{
+		float brightness = std::sin(0.4 * i + frame_time);
+		lights[i]->set_energy(max(0, half_energy / 2.0 + brightness * half_energy));
+	}
+
+	return AsyncTask::DS_cont;
+}
 
 int main(int argc, char* argv[])
 {
@@ -60,10 +90,6 @@ int main(int argc, char* argv[])
 
 	// Set time of day
 	render_pipeline->get_daytime_mgr()->set_time("5:20");
-
-    float half_energy = 5000;
-    float lamp_fov = 70;
-    float lamp_radius = 10;
 
 	// Load the scene
 	NodePath model = window->load_model(window->get_render(), "../share/render_pipeline/models/03-Lights/Scene.bam");
@@ -146,7 +172,63 @@ int main(int argc, char* argv[])
     // Generate temperature lamps
     // This shows how to procedurally create lamps.In this case, we
     // base the lights positions on empties created in blender.
+	auto light_compare = [](NodePath lhs, NodePath rhs) {
+		std::vector<std::string> result;
+		boost::algorithm::split_regex(result, lhs.get_name(), boost::regex("LampLum"));
+		std::string lhs_key = result.back();
 
+		boost::algorithm::split_regex(result, rhs.get_name(), boost::regex("LampLum"));
+		std::string rhs_key = result.back();
+
+		return lhs_key < rhs_key;
+	};
+
+	std::vector<NodePath> lumlamps;
+	auto npc = model.find_all_matches("**/LampLum*");
+	for (int k=0, k_end=npc.get_num_paths(); k < k_end; ++k)
+		lumlamps.push_back(npc.get_path(k));
+
+	std::sort(lumlamps.begin(), lumlamps.end(), light_compare);
+
+	std::random_device rd;
+	std::mt19937 reg(rd());
+	for (size_t k=0, k_end=lumlamps.size(); k < k_end; ++k)
+	{
+		NodePath lumlamp = lumlamps[k];
+
+		static const size_t l = std::string("LampLum").length();
+		float lum = std::stof(lumlamp.get_name().substr(l));
+
+		PT(rpcore::RPSpotLight) light = new rpcore::RPSpotLight;
+		light->set_direction(0, -1.5f, -1.0f);
+		light->set_fov(lamp_fov);
+		light->set_color_from_temperature(lum * 1000.0f);
+		light->set_energy(half_energy);
+		light->set_pos(lumlamp.get_pos(rpcore::Globals::render));
+		light->set_radius(lamp_radius);
+		light->set_casts_shadows(false);
+		light->set_shadow_map_resolution(256);
+		render_pipeline->add_light(light);
+
+		// Put Pandas on the edges
+		if (k < 2 || k >= lumlamps.size() - 2)
+		{
+			NodePath panda = window->load_model(window->get_render(), "../share/render_pipeline/models/03-Lights/panda");
+			panda.reparent_to(rpcore::Globals::render);
+			PT(Material) panda_mat = new Material("default");
+			panda_mat->set_emission(0);
+			panda.set_material(panda_mat);
+			panda.set_pos(light->get_pos());
+			panda.set_z(0.65);
+
+			std::uniform_int_distribution<int> uni(-60, 60);
+			panda.set_h(180 + uni(reg));
+			panda.set_scale(0.2);
+			panda.set_y(panda.get_y() - 3.0);
+		}
+
+		lights.push_back(light);
+	}
 
 	render_pipeline->prepare_scene(rpcore::Globals::render);
 
@@ -155,6 +237,8 @@ int main(int argc, char* argv[])
 		LVecBase3f(23.9, 42.5, 13.4),
 		LVecBase3f(23.8, 33.4, 10.8));
 	controller->setup();
+
+	rpcore::Globals::base->add_task(update, nullptr, "update");
 
 	framework.main_loop();
 	framework.close_framework();
