@@ -34,6 +34,20 @@
 #include <render_pipeline/rpcore/globals.h>
 #include <render_pipeline/rpcore/util/movement_controller.h>
 
+void tour(const Event* ev, void* user_data)
+{
+	rpcore::MovementController* mc = reinterpret_cast<rpcore::MovementController*>(user_data);
+	rpcore::MovementController::MotionPathType mopath = {
+		{LVecBase3(-10.8645000458, 9.76458263397, 2.13306283951), LVecBase3(-133.556228638, -4.23447799683, 0.0)},
+		{LVecBase3(-10.6538448334, -5.98406457901, 1.68028640747), LVecBase3(-59.3999938965, -3.32706642151, 0.0)},
+		{LVecBase3(9.58458328247, -5.63625621796, 2.63269257545), LVecBase3(58.7906494141, -9.40668964386, 0.0)},
+		{LVecBase3(6.8135137558, 11.0153560638, 2.25509500504), LVecBase3(148.762527466, -6.41223621368, 0.0)},
+		{LVecBase3(-9.07093334198, 3.65908527374, 1.42396306992), LVecBase3(245.362503052, -3.59927511215, 0.0)},
+		{LVecBase3(-8.75390911102, -3.82727789879, 0.990055501461), LVecBase3(296.090484619, -0.604830980301, 0.0)},
+	};
+	mc->play_motion_path(mopath, 3.0);
+}
+
 int main(int argc, char* argv[])
 {
 	// Setup window size, title and so on
@@ -62,6 +76,8 @@ int main(int argc, char* argv[])
 		LVecBase3f(-7.5f, -5.3f, 1.8f),
 		LVecBase3f(-5.9f, -4.0f, 1.6f));
 	controller->setup();
+
+	render_pipeline->get_showbase()->accept("l", tour, controller.get());
 
 	framework.main_loop();
 	framework.close_framework();
