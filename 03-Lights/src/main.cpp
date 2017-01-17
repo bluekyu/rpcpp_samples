@@ -180,7 +180,7 @@ int main(int argc, char* argv[])
 		boost::algorithm::split_regex(result, rhs.get_name(), boost::regex("LampLum"));
 		std::string rhs_key = result.back();
 
-		return lhs_key < rhs_key;
+		return std::stoi(lhs_key) < std::stoi(rhs_key);
 	};
 
 	std::vector<NodePath> lumlamps;
