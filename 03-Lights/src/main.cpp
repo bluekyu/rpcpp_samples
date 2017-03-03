@@ -211,7 +211,7 @@ int main(int argc, char* argv[])
 		render_pipeline->add_light(light);
 
 		// Put Pandas on the edges
-		if (k < 2 || k >= lumlamps.size() - 2)
+		if (k < 2 || k >= k_end - 2)
 		{
 			NodePath panda = window->load_model(window->get_render(), "../share/render_pipeline/models/03-Lights/panda");
 			panda.reparent_to(rpcore::Globals::render);

@@ -31,16 +31,15 @@
 extern "C" {
 
 /** Plugin information for native DLL loader (ex. Python ctypes). */
-struct PluginInfo
-{
-	const char* id = PLUGIN_ID_STRING;
-	const char* name = "SamplePlugin";
-	const char* author = "Name <email@email.com>";
-	const char* description =
-		"A plugin to use sample.";
-	const char* version = "0.1";
+BOOST_SYMBOL_EXPORT const rpcore::BasePlugin::PluginInfo plugin_info = {
+    "others",
+    PLUGIN_ID_STRING,
+    "SamplePlugin",
+    "Name <email@email.com>",
+    "0.1",
+
+    "A plugin to use sample."
 };
-BOOST_SYMBOL_EXPORT const PluginInfo plugin_info;
 
 }
 
@@ -54,12 +53,7 @@ public:
         return std::shared_ptr<rpplugins::Plugin>(new rpplugins::Plugin(pipeline));
     }
 
-	Plugin(rpcore::RenderPipeline* pipeline): rpcore::BasePlugin(pipeline, plugin_info.id) {}
-
-    virtual std::string get_name(void) const override;
-    virtual std::string get_author(void) const override;
-    virtual std::string get_description(void) const override;
-    virtual std::string get_version(void) const override;
+	Plugin(rpcore::RenderPipeline* pipeline): rpcore::BasePlugin(pipeline, plugin_info) {}
 
     virtual RequrieType& get_required_plugins(void) const override { return require_plugins; }
 
@@ -72,26 +66,6 @@ private:
 };
 
 Plugin::RequrieType Plugin::require_plugins;
-
-std::string Plugin::get_name(void) const
-{
-	return plugin_info.name;
-}
-
-std::string Plugin::get_author(void) const
-{
-	return plugin_info.author;
-}
-
-std::string Plugin::get_description(void) const
-{
-	return plugin_info.description;
-}
-
-std::string Plugin::get_version(void) const
-{
-	return plugin_info.version;
-}
 
 void Plugin::on_stage_setup(void)
 {
