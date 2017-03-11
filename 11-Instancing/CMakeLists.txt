@@ -2,17 +2,15 @@
 # Date  : 2016-08-02
 
 cmake_minimum_required(VERSION 3.5)
-project(10-Plugin)
+project(11-Instancing)
 
 # === configure ====================================================================================
 #list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
-set(RP_PLUGIN_INSTALL_PREFIX "etc/render_pipeline/rpplugins")
-
-# configure plugin
-set(LIB_NAME "plugin")
-set(LIB_TYPE MODULE)
-add_definitions(-DPLUGIN_ID_STRING="${PROJECT_NAME}")
+# debug
+#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D")
+set(CMAKE_DEBUG_POSTFIX "d")
 
 # platform specific configure
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
@@ -39,29 +37,29 @@ endif()
 # include header directories
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}")      # /
 include_directories("${PROJECT_BINARY_DIR}")            # /build
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")  # ./src
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")        # /src
 # ==================================================================================================
 
 # === sources ======================================================================================
 # set input files
-set(plugin_sources
-    "${PROJECT_SOURCE_DIR}/src/sample_stage.cpp"
-    "${PROJECT_SOURCE_DIR}/src/sample_stage.h"
-    "${PROJECT_SOURCE_DIR}/src/plugin.cpp"
-    "${PROJECT_SOURCE_DIR}/src/plugin.hpp"
+set(sources_files
+    "${PROJECT_SOURCE_DIR}/src/main.cpp"
 )
+
+# grouping
+#source_group("src" FILES ${source_})
 # ==================================================================================================
 
 # === build & install===============================================================================
-# create library
-add_library(${PROJECT_NAME} ${LIB_TYPE} ${plugin_sources})
+# create exe
+add_executable(${PROJECT_NAME} ${sources_files})
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC ${Boost_LIBRARIES} ${Panda3d_LIBRARIES}
-    PRIVATE ${RenderPipeline_LIBRARIES}
-)
-set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${LIB_NAME})
+    PUBLIC ${Panda3d_LIBRARIES} ${Flex_LIBRARIES}
+    PRIVATE ${RenderPipeline_LIBRARIES})
 
 # library
-install(TARGETS ${PROJECT_NAME} DESTINATION "${RP_PLUGIN_INSTALL_PREFIX}/${PROJECT_NAME}/")
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/config/" DESTINATION "${RP_PLUGIN_INSTALL_PREFIX}/${PROJECT_NAME}")
+install(TARGETS ${PROJECT_NAME}
+    RUNTIME DESTINATION "bin"
+    LIBRARY DESTINATION "lib"
+    ARCHIVE DESTINATION "lib")
 # ==================================================================================================

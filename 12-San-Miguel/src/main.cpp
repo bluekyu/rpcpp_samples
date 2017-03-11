@@ -36,36 +36,36 @@
 
 int main(int argc, char* argv[])
 {
-	// Setup window size, title and so on
-	load_prc_file_data("",
-		"window-title Render Pipeline - San Miguel Demo");
+    // Setup window size, title and so on
+    load_prc_file_data("",
+        "window-title Render Pipeline - San Miguel Demo");
 
-	PandaFramework framework;
-	framework.open_framework(argc, argv);
-	WindowFramework* window = framework.open_window();
+    PandaFramework framework;
+    framework.open_framework(argc, argv);
+    WindowFramework* window = framework.open_window();
 
-	// configure panda3d in program.
-	rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline;
-	render_pipeline->get_mount_mgr()->set_base_path("../etc/render_pipeline");
-	render_pipeline->get_mount_mgr()->set_config_dir("../etc/render_pipeline/config");
-	render_pipeline->create(&framework, window);
+    // configure panda3d in program.
+    rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline;
+    render_pipeline->get_mount_mgr()->set_base_path("../etc/render_pipeline");
+    render_pipeline->get_mount_mgr()->set_config_dir("../etc/render_pipeline/config");
+    render_pipeline->create(&framework, window);
 
-	// Set time of day
-	render_pipeline->get_daytime_mgr()->set_time(0.550f);
+    // Set time of day
+    render_pipeline->get_daytime_mgr()->set_time(0.550f);
 
-	// Load the scene
-	NodePath model = window->load_model(window->get_render(), "../share/render_pipeline/models/12-San-Miguel/san-miguel.bam");
-	render_pipeline->prepare_scene(model);
+    // Load the scene
+    NodePath model = window->load_model(window->get_render(), "../share/render_pipeline/models/12-San-Miguel/san-miguel.bam");
+    render_pipeline->prepare_scene(model);
 
-	// Init movement controller
-	std::shared_ptr<rpcore::MovementController> controller = std::make_shared<rpcore::MovementController>(rpcore::Globals::base);
-	controller->set_initial_position_hpr(
-		LVecBase3f(-4.7f, -6.3f, 1.0f),
-		LVecBase3f(49.1f, -6.97f, 0.0f));
-	controller->setup();
+    // Init movement controller
+    std::shared_ptr<rpcore::MovementController> controller = std::make_shared<rpcore::MovementController>(rpcore::Globals::base);
+    controller->set_initial_position_hpr(
+        LVecBase3f(-4.7f, -6.3f, 1.0f),
+        LVecBase3f(49.1f, -6.97f, 0.0f));
+    controller->setup();
 
-	framework.main_loop();
-	framework.close_framework();
+    framework.main_loop();
+    framework.close_framework();
 
-	return 0;
+    return 0;
 }

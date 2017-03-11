@@ -26,23 +26,19 @@
 
 #include <render_pipeline/rpcore/render_stage.h>
 
-namespace rpplugins {
-
 class SampleStage: public rpcore::RenderStage
 {
 public:
     SampleStage(rpcore::RenderPipeline* pipeline): RenderStage(pipeline, "SampleStage") {}
 
-	virtual RequireType& get_required_inputs(void) const { return required_inputs; }
-	virtual RequireType& get_required_pipes(void) const { return required_pipes; }
+    virtual RequireType& get_required_inputs(void) const { return required_inputs; }
+    virtual RequireType& get_required_pipes(void) const { return required_pipes; }
 
-	virtual void create(void) override;
+    virtual void create(void) override;
 
 private:
-	virtual std::string get_plugin_id(void) const;
+    virtual std::string get_plugin_id(void) const;
 
-	static RequireType required_inputs;
-	static RequireType required_pipes;
+    static RequireType required_inputs;
+    static RequireType required_pipes;
 };
-
-}	// namespace rpplugins

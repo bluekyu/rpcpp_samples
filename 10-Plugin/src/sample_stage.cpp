@@ -24,8 +24,6 @@
 
 #include "sample_stage.h"
 
-namespace rpplugins {
-
 SampleStage::RequireType SampleStage::required_inputs;
 SampleStage::RequireType SampleStage::required_pipes;
 
@@ -35,7 +33,5 @@ void SampleStage::create(void)
 
 std::string SampleStage::get_plugin_id(void) const
 {
-	return PLUGIN_ID_STRING;
+    return PLUGIN_ID_STRING;
 }
-
-}	// namespace rpplugins

@@ -22,46 +22,23 @@
  * SOFTWARE.
  */
 
-#include "plugin.hpp"
+#pragma once
 
-#include <boost/dll/alias.hpp>
+#include <render_pipeline/rpcore/pluginbase/base_plugin.h>
 
-extern "C" {
+#include "sample_stage.h"
 
-/** Plugin information for native DLL loader (ex. Python ctypes). */
-BOOST_SYMBOL_EXPORT const rpcore::BasePlugin::PluginInfo plugin_info = {
-    "others",
-    PLUGIN_ID_STRING,
-    "SamplePlugin",
-    "Name <email@email.com>",
-    "0.1",
+class Plugin: public rpcore::BasePlugin
+{
+public:
+    Plugin(rpcore::RenderPipeline* pipeline);
 
-    "A plugin to use sample."
+    RequrieType& get_required_plugins(void) const override;
+
+    void on_stage_setup(void) override;
+
+private:
+    static RequrieType require_plugins;
+
+    std::shared_ptr<SampleStage> _stage;
 };
-
-}
-
-static std::shared_ptr<rpcore::BasePlugin> create_plugin(rpcore::RenderPipeline* pipeline)
-{
-    return std::make_shared<Plugin>(pipeline);
-}
-BOOST_DLL_ALIAS(::create_plugin, create_plugin)
-
-// ************************************************************************************************
-
-Plugin::RequrieType Plugin::require_plugins;
-
-Plugin::Plugin(rpcore::RenderPipeline* pipeline): rpcore::BasePlugin(pipeline, plugin_info)
-{
-}
-
-Plugin::RequrieType& Plugin::get_required_plugins(void) const
-{
-    return require_plugins;
-}
-
-void Plugin::on_stage_setup(void)
-{
-    _stage = std::make_shared<SampleStage>(_pipeline);
-    add_stage(_stage);
-}

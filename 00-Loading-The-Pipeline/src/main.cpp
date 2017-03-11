@@ -32,20 +32,20 @@
 
 int main(int argc, char* argv[])
 {
-	PandaFramework framework;
-	framework.open_framework(argc, argv);
-	WindowFramework* window = framework.open_window();
+    PandaFramework framework;
+    framework.open_framework(argc, argv);
+    WindowFramework* window = framework.open_window();
 
-	// configure panda3d in program.
-	rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline;
-	render_pipeline->get_mount_mgr()->set_base_path("../etc/render_pipeline");
-	render_pipeline->get_mount_mgr()->set_config_dir("../etc/render_pipeline/config");
-	render_pipeline->create(&framework, window);
+    // configure panda3d in program.
+    rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline;
+    render_pipeline->get_mount_mgr()->set_base_path("../etc/render_pipeline");
+    render_pipeline->get_mount_mgr()->set_config_dir("../etc/render_pipeline/config");
+    render_pipeline->create(&framework, window);
 
-	framework.main_loop();
-	framework.close_framework();
+    framework.main_loop();
+    framework.close_framework();
 
-	delete render_pipeline;
+    delete render_pipeline;
 
-	return 0;
+    return 0;
 }
