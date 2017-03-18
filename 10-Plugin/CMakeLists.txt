@@ -7,7 +7,11 @@ project(10-Plugin)
 # === configure ====================================================================================
 #list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 
-set(RP_PLUGIN_INSTALL_PREFIX "etc/render_pipeline/rpplugins")
+set(RPPLUGINS_INSTALL_DIR "etc/render_pipeline/rpplugins")
+set(RPPLUGINS_FOLDER_NAME "rpplugins")
+
+# === plugin specific packages ===
+# ================================
 
 # configure plugin
 set(LIB_NAME "plugin")
@@ -62,6 +66,9 @@ target_link_libraries(${PROJECT_NAME}
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${LIB_NAME})
 
 # library
-install(TARGETS ${PROJECT_NAME} DESTINATION "${RP_PLUGIN_INSTALL_PREFIX}/${PROJECT_NAME}/")
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/config/" DESTINATION "${RP_PLUGIN_INSTALL_PREFIX}/${PROJECT_NAME}")
+install(TARGETS ${PROJECT_NAME} DESTINATION "${RPPLUGINS_INSTALL_DIR}/${PROJECT_NAME}/")
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/config/" DESTINATION "${RPPLUGINS_INSTALL_DIR}/${PROJECT_NAME}")
+if(EXISTS "${PROJECT_SOURCE_DIR}/include")
+    install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/" DESTINATION "include/render_pipeline/${RPPLUGINS_FOLDER_NAME}/${PROJECT_NAME}")
+endif()
 # ==================================================================================================

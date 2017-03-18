@@ -29,7 +29,7 @@
 class SampleStage: public rpcore::RenderStage
 {
 public:
-    SampleStage(rpcore::RenderPipeline* pipeline): RenderStage(pipeline, "SampleStage") {}
+    SampleStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "SampleStage") {}
 
     virtual RequireType& get_required_inputs(void) const { return required_inputs; }
     virtual RequireType& get_required_pipes(void) const { return required_pipes; }

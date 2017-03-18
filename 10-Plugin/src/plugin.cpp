@@ -26,22 +26,24 @@
 
 #include <boost/dll/alias.hpp>
 
+#include "sample_stage.h"
+
 extern "C" {
 
 /** Plugin information for native DLL loader (ex. Python ctypes). */
 BOOST_SYMBOL_EXPORT const rpcore::BasePlugin::PluginInfo plugin_info = {
-    "others",
-    PLUGIN_ID_STRING,
-    "SamplePlugin",
-    "Name <email@email.com>",
-    "0.1",
+    "others",                       // category
+    PLUGIN_ID_STRING,               // ID
+    "SamplePlugin",                 // name
+    "Name <email@email.com>",       // author
+    "0.1",                          // version
 
-    "A plugin to use sample."
+    "A plugin to use sample."       // description
 };
 
 }
 
-static std::shared_ptr<rpcore::BasePlugin> create_plugin(rpcore::RenderPipeline* pipeline)
+static std::shared_ptr<rpcore::BasePlugin> create_plugin(rpcore::RenderPipeline& pipeline)
 {
     return std::make_shared<Plugin>(pipeline);
 }
@@ -49,19 +51,28 @@ BOOST_DLL_ALIAS(::create_plugin, create_plugin)
 
 // ************************************************************************************************
 
-Plugin::RequrieType Plugin::require_plugins;
+struct Plugin::Impl
+{
+    static RequrieType require_plugins_;
 
-Plugin::Plugin(rpcore::RenderPipeline* pipeline): rpcore::BasePlugin(pipeline, plugin_info)
+    std::shared_ptr<SampleStage> stage_;
+};
+
+Plugin::RequrieType Plugin::Impl::require_plugins_;
+
+// ************************************************************************************************
+
+Plugin::Plugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, plugin_info), impl_(new Impl)
 {
 }
 
 Plugin::RequrieType& Plugin::get_required_plugins(void) const
 {
-    return require_plugins;
+    return impl_->require_plugins_;
 }
 
 void Plugin::on_stage_setup(void)
 {
-    _stage = std::make_shared<SampleStage>(_pipeline);
-    add_stage(_stage);
+    impl_->stage_ = std::make_shared<SampleStage>(pipeline_);
+    add_stage(impl_->stage_);
 }
