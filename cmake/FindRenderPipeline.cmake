@@ -31,6 +31,10 @@ find_path(RenderPipeline_INCLUDE_DIR
     NAMES "render_pipeline/rpcore/config.h"
     HINTS ${RenderPipeline_INCLUDEDIR} "${RenderPipeline_ROOT}/include"
 )
+find_path(RenderPipeline_INCLUDE_PLUGIN_DIR
+    NAMES "render_pipeline/rpplugins"
+    HINTS ${RenderPipeline_INCLUDEDIR} "${RenderPipeline_ROOT}/share"
+)
 find_library(RenderPipeline_LIBRARY
     NAMES render_pipeline
     HINTS ${RenderPipeline_LIBRARYDIR} "${RenderPipeline_ROOT}/lib"
@@ -61,7 +65,7 @@ if(RenderPipeline_FOUND)
     elseif(RenderPipeline_LIBRARY_DEBUG)
         set(RenderPipeline_LIBRARIES    ${RenderPipeline_LIBRARY_DEBUG})
     endif()
-    set(RenderPipeline_INCLUDE_DIRS ${RenderPipeline_INCLUDE_DIR})
+    set(RenderPipeline_INCLUDE_DIRS ${RenderPipeline_INCLUDE_DIR} ${RenderPipeline_INCLUDE_PLUGIN_DIR})
 endif()
 
 mark_as_advanced(

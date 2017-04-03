@@ -24,7 +24,6 @@
 
 #include <pandaFramework.h>
 #include <pandaSystem.h>
-#include <texturePool.h>
 #include <load_prc_file.h>
 #include <nodePathCollection.h>
 
@@ -48,8 +47,8 @@ int main(int argc, char* argv[])
 
     // configure panda3d in program.
     rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline;
-    render_pipeline->get_mount_mgr()->set_base_path("../etc/render_pipeline");
-    render_pipeline->get_mount_mgr()->set_config_dir("../etc/render_pipeline/config");
+    render_pipeline->get_mount_mgr()->set_base_path("../share/render_pipeline");
+    render_pipeline->get_mount_mgr()->set_config_dir("../etc/render_pipeline");
     render_pipeline->create(&framework, window);
 
     // Set time of day
@@ -62,20 +61,24 @@ int main(int argc, char* argv[])
     // multiple times
     NodePath prefab = model.find("**/InstancedObjectPrefab");
 
+    // get matrix of parent node to get local transform.
+    LMatrix4f parent_mat = prefab.get_mat(rpcore::Globals::render);
+    parent_mat.invert_in_place();
+
     // Collect all instances
     std::vector<LMatrix4f> matrices;
     auto models = model.find_all_matches("**/PREFAB*");
     for (int k = 0, k_end = models.get_num_paths(); k < k_end; ++k)
     {
-        matrices.push_back(models.get_path(k).get_mat(rpcore::Globals::render));
+        matrices.push_back(models.get_path(k).get_mat(rpcore::Globals::render) * parent_mat);
         models.get_path(k).remove_node();
     }
 
     std::cout << "Loaded " << matrices.size() << " instances!" << std::endl;
 
-    std::shared_ptr<rpcore::InstancingNode> instancing_node = std::make_shared<rpcore::InstancingNode>(prefab);
-    instancing_node->set_transforms(matrices);
-    instancing_node->upload_transforms();
+    rpcore::InstancingNode instancing(prefab);
+    instancing.set_transforms(matrices);
+    instancing.upload_transforms();
 
     // Initialize movement controller, this is a convenience class
     // to provide an improved camera control compared to Panda3Ds default

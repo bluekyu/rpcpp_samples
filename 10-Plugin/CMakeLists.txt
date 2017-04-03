@@ -7,8 +7,8 @@ project(10-Plugin)
 # === configure ====================================================================================
 #list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 
-set(RPPLUGINS_INSTALL_DIR "etc/render_pipeline/rpplugins")
 set(RPPLUGINS_FOLDER_NAME "rpplugins")
+set(RPPLUGINS_INSTALL_DIR "share/render_pipeline/${RPPLUGINS_FOLDER_NAME}/${PROJECT_NAME}")
 
 # === plugin specific packages ===
 # ================================
@@ -21,7 +21,6 @@ add_definitions(-DPLUGIN_ID_STRING="${PROJECT_NAME}")
 # platform specific configure
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -flto")
 
     # build type
     if(NOT CMAKE_BUILD_TYPE)
@@ -33,8 +32,6 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     if(MSVC)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-        set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /LTCG")
-        set(CMAKE_EXE_LINKER_FLAGS_RELEASE "${CMAKE_EXE_LINKER_FLAGS_RELEASE} /LTCG")
     endif()
 else()
     message(WARNING "Unsupported system: ${CMAKE_SYSTEM_NAME}")
@@ -66,9 +63,9 @@ target_link_libraries(${PROJECT_NAME}
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${LIB_NAME})
 
 # library
-install(TARGETS ${PROJECT_NAME} DESTINATION "${RPPLUGINS_INSTALL_DIR}/${PROJECT_NAME}/")
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/config/" DESTINATION "${RPPLUGINS_INSTALL_DIR}/${PROJECT_NAME}")
+install(TARGETS ${PROJECT_NAME} DESTINATION "${RPPLUGINS_INSTALL_DIR}/")
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/" DESTINATION ${RPPLUGINS_INSTALL_DIR})
 if(EXISTS "${PROJECT_SOURCE_DIR}/include")
-    install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/" DESTINATION "include/render_pipeline/${RPPLUGINS_FOLDER_NAME}/${PROJECT_NAME}")
+    install(DIRECTORY "${PROJECT_SOURCE_DIR}/include" DESTINATION ${RPPLUGINS_INSTALL_DIR})
 endif()
 # ==================================================================================================
