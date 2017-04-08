@@ -2,7 +2,7 @@
 # Date  : 2016-08-02
 
 cmake_minimum_required(VERSION 3.5)
-project(rp-cpp-samples)
+project(rpcpp_samples)
 
 # === configure ====================================================================================
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
