@@ -10,8 +10,11 @@ project(10-Plugin)
 set(RPPLUGINS_FOLDER_NAME "rpplugins")
 set(RPPLUGINS_INSTALL_DIR "share/render_pipeline/${RPPLUGINS_FOLDER_NAME}/${PROJECT_NAME}")
 
-# === plugin specific packages ===
-# ================================
+# === project specific packages ===
+include_directories(${Panda3d_INCLUDE_DIRS})
+include_directories(${RenderPipeline_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIRS})
+# =================================
 
 # configure plugin
 set(LIB_NAME "plugin")
@@ -57,8 +60,7 @@ set(plugin_sources
 # create library
 add_library(${PROJECT_NAME} ${LIB_TYPE} ${plugin_sources})
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC ${Boost_LIBRARIES} ${Panda3d_LIBRARIES}
-    PRIVATE ${RenderPipeline_LIBRARIES}
+    PRIVATE ${Boost_LIBRARIES} ${Panda3d_LIBRARIES} ${RenderPipeline_LIBRARIES}
 )
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${LIB_NAME})
 

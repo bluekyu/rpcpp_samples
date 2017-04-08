@@ -7,6 +7,12 @@ project(00-Loading-The-Pipeline)
 # === configure ====================================================================================
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
+# === project specific packages ===
+include_directories(${Panda3d_INCLUDE_DIRS})
+include_directories(${RenderPipeline_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIRS})
+# =================================
+
 # platform specific configure
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
@@ -46,8 +52,7 @@ set(sources_files
 # create exe
 add_executable(${PROJECT_NAME} ${sources_files})
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC ${Panda3d_LIBRARIES} ${YamlCpp_LIBRARIES}
-    PRIVATE ${RenderPipeline_LIBRARIES})
+    PRIVATE ${Panda3d_LIBRARIES} ${RenderPipeline_LIBRARIES})
 
 # library
 install(TARGETS ${PROJECT_NAME}

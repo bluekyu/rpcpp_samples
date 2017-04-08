@@ -22,6 +22,7 @@
  * SOFTWARE.
  */
 
+#include <regex>
 #include <queue>
 #include <random>
 
@@ -33,8 +34,6 @@
 #include <spotlight.h>
 #include <material.h>
 #include <genericAsyncTask.h>
-
-#include <boost/algorithm/string/regex.hpp>
 
 #include <render_pipeline/rppanda/showbase/showbase.h>
 #include <render_pipeline/rppanda/interval/lerp_interval.h>
@@ -173,12 +172,12 @@ int main(int argc, char* argv[])
     // This shows how to procedurally create lamps.In this case, we
     // base the lights positions on empties created in blender.
     auto light_compare = [](NodePath lhs, NodePath rhs) {
-        std::vector<std::string> result;
-        boost::algorithm::split_regex(result, lhs.get_name(), boost::regex("LampLum"));
-        std::string lhs_key = result.back();
+        const std::regex token("LampLum");
 
-        boost::algorithm::split_regex(result, rhs.get_name(), boost::regex("LampLum"));
-        std::string rhs_key = result.back();
+        const std::string lhs_name = lhs.get_name();
+        const std::string rhs_name = rhs.get_name();
+        const std::string lhs_key = std::vector<std::string>(std::sregex_token_iterator(lhs_name.begin(), lhs_name.end(), token, -1), std::sregex_token_iterator()).back();
+        const std::string rhs_key = std::vector<std::string>(std::sregex_token_iterator(rhs_name.begin(), rhs_name.end(), token, -1), std::sregex_token_iterator()).back();
 
         return std::stoi(lhs_key) < std::stoi(rhs_key);
     };

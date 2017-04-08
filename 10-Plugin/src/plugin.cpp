@@ -62,7 +62,7 @@ Plugin::RequrieType Plugin::Impl::require_plugins_;
 
 // ************************************************************************************************
 
-Plugin::Plugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, plugin_info), impl_(new Impl)
+Plugin::Plugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, plugin_info), impl_(std::make_unique<Impl>())
 {
 }
 

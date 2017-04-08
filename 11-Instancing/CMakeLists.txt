@@ -5,8 +5,13 @@ cmake_minimum_required(VERSION 3.5)
 project(11-Instancing)
 
 # === configure ====================================================================================
-#list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
+
+# === project specific packages ===
+include_directories(${Panda3d_INCLUDE_DIRS})
+include_directories(${RenderPipeline_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIRS})
+# =================================
 
 # debug
 #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D")

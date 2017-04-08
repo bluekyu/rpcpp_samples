@@ -5,8 +5,13 @@ cmake_minimum_required(VERSION 3.5)
 project(01-Material-Demo)
 
 # === configure ====================================================================================
-#list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
+
+# === project specific packages ===
+include_directories(${Panda3d_INCLUDE_DIRS})
+include_directories(${RenderPipeline_INCLUDE_DIRS})
+include_directories(${Boost_INCLUDE_DIRS})
+# =================================
 
 # debug
 #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D")
@@ -51,8 +56,7 @@ set(sources_files
 # create exe
 add_executable(${PROJECT_NAME} ${sources_files})
 target_link_libraries(${PROJECT_NAME}
-    PUBLIC ${Panda3d_LIBRARIES} ${YamlCpp_LIBRARIES}
-    PRIVATE ${RenderPipeline_LIBRARIES})
+    PRIVATE ${Panda3d_LIBRARIES} ${RenderPipeline_LIBRARIES})
 
 # library
 install(TARGETS ${PROJECT_NAME}
