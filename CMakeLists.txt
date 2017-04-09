@@ -23,4 +23,5 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/11-Instancing")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/11-Crytek-Sponza")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/12-San-Miguel")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/13-Shading-Models-VR")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/20-Instancing-Flex")
 # ==================================================================================================
