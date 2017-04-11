@@ -28,28 +28,7 @@
 
 #include "sample_stage.h"
 
-extern "C" {
-
-/** Plugin information for native DLL loader (ex. Python ctypes). */
-BOOST_SYMBOL_EXPORT const rpcore::BasePlugin::PluginInfo plugin_info = {
-    "others",                       // category
-    PLUGIN_ID_STRING,               // ID
-    "SamplePlugin",                 // name
-    "Name <email@email.com>",       // author
-    "0.1",                          // version
-
-    "A plugin to use sample."       // description
-};
-
-}
-
-static std::shared_ptr<rpcore::BasePlugin> create_plugin(rpcore::RenderPipeline& pipeline)
-{
-    return std::make_shared<Plugin>(pipeline);
-}
-BOOST_DLL_ALIAS(::create_plugin, create_plugin)
-
-// ************************************************************************************************
+RPCPP_PLUGIN_CREATOR(Plugin)
 
 struct Plugin::Impl
 {
@@ -62,7 +41,7 @@ Plugin::RequrieType Plugin::Impl::require_plugins_;
 
 // ************************************************************************************************
 
-Plugin::Plugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, plugin_info), impl_(std::make_unique<Impl>())
+Plugin::Plugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
 {
 }
 

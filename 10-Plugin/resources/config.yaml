@@ -1,2 +1,9 @@
+information:
+    category: others
+    name: Sample Plugin
+    author: Name <email@email.com>
+    version: 0.1
+    description: >
+        A plugin to use sample.
 
 settings: !!omap
