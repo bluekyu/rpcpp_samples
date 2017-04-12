@@ -41,40 +41,41 @@
 
 #include <render_pipeline/rpplugins/flex/include/flex_plugin.hpp>
 #include <render_pipeline/rpplugins/flex/include/flex_instance_interface.hpp>
+#include <render_pipeline/rpplugins/flex/include/flex_buffer.hpp>
 
 class ParticlesInstance: public FlexInstanceInterface
 {
 public:
     ParticlesInstance(const std::shared_ptr<rpcore::InstancingNode>& instanced_node): instanced_node_(instanced_node) {}
 
-    void initialize(void) final;
-    void sync_flex(void) final;
+    void initialize(FlexBuffer& buffer) final;
+    void sync_flex(FlexBuffer& buffer) final;
 
     std::shared_ptr<rpcore::InstancingNode> instanced_node_;
 };
 
-void ParticlesInstance::initialize(void)
+void ParticlesInstance::initialize(FlexBuffer& buffer)
 {
     const auto& transforms = instanced_node_->get_transforms();
 
     auto phase = NvFlexMakePhase(0, eNvFlexPhaseSelfCollide);
     for (size_t k = 0, k_end = transforms.size(); k < k_end; ++k)
     {
-        buffer_.positions.push_back(LVecBase4(transforms[k].get_row3(3), 1));
-        buffer_.phases.push_back(phase);
+        buffer.positions_.push_back(LVecBase4(transforms[k].get_row3(3), 1));
+        buffer.phases_.push_back(phase);
     }
 }
 
-void ParticlesInstance::sync_flex(void)
+void ParticlesInstance::sync_flex(FlexBuffer& buffer)
 {
     // read back
     auto& transforms = instanced_node_->modify_transforms();
 
     auto& t = transforms.begin();
 
-    for (const auto& pos: buffer_.positions)
+    for (int k = 0, k_end = transforms.size(); k < k_end; ++k)
     {
-        *t = (LMatrix4f::translate_mat(pos.get_xyz()));
+        *t = (LMatrix4f::translate_mat(buffer.positions_[k].get_xyz()));
         ++t;
     }
 
@@ -100,6 +101,12 @@ int main(int argc, char* argv[])
     // Set time of day
     render_pipeline->get_daytime_mgr()->set_time("19:17");
 
+    if (!render_pipeline->get_plugin_mgr()->is_plugin_enabled("flex"))
+    {
+        rpcore::RPObject::global_error("Main", "Flex plugin is NOT enabled.");
+        return 1;
+    }
+
     auto& flex_plugin = std::dynamic_pointer_cast<FlexPlugin>(render_pipeline->get_plugin_mgr()->get_instance("flex"));
 
     NodePath particle = rpcore::create_sphere("particle", 6, 6);
@@ -115,7 +122,7 @@ int main(int argc, char* argv[])
         for (int y = 0; y < 30; ++y)
             for (int x = 0; x < 30; ++x)
             {
-                matrices.push_back(LMatrix4f::translate_mat(x+(rand()%10)*0.1, y+(rand()%10)*0.1, z+(rand()%10)*0.1));
+                matrices.push_back(LMatrix4f::translate_mat((x+(rand()%10)*0.1)/3.0f, (y+(rand()%10)*0.1)/3.0f, 50+z+(rand()%10)*0.1));
             }
 
     std::cout << "Loaded " << matrices.size() << " instances!" << std::endl;
