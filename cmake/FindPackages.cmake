@@ -15,7 +15,7 @@ find_package(Boost 1.62.0 REQUIRED)
 # find panda3d
 set(PANDA3D_ROOT "" CACHE PATH "Hint for finding panda3d root directory")
 
-find_package(Panda3d REQUIRED COMPONENTS libp3framework libpanda libpandaexpress libp3dtool libp3dtoolconfig libp3direct libp3interrogatedb)
+find_package(Panda3d REQUIRED)
 
 # find render_pipeline
 find_package(render_pipeline REQUIRED)

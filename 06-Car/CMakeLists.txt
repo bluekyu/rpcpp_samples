@@ -1,7 +1,7 @@
 # Author: Younguk Kim (bluekyu)
 # Date  : 2016-08-02
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.6)
 project(06-Car)
 
 # === configure ====================================================================================
@@ -12,8 +12,6 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
 # platform specific configure
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall")
-
     # build type
     if(NOT CMAKE_BUILD_TYPE)
         set(CMAKE_BUILD_TYPE "Release" CACHE STRING
@@ -21,10 +19,6 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
             FORCE)
     endif()
     message("${PROJECT_NAME} Build Type: ${CMAKE_BUILD_TYPE}")
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-    if(MSVC)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MP")
-    endif()
 endif()
 # ==================================================================================================
 
@@ -38,23 +32,27 @@ set(sources_files
 #source_group("src" FILES ${source_})
 # ==================================================================================================
 
-# === build & install===============================================================================
-# create exe
+# === target =======================================================================================
 add_executable(${PROJECT_NAME} ${sources_files})
+
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_auto_type)
+if(MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251)
+else()
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
+endif()
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE "${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}"
     "${CMAKE_CURRENT_SOURCE_DIR}/src"
-    ${Panda3d_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE $<$<NOT:$<BOOL:Boost_USE_STATIC_LIBS>>:Boost::dynamic_linking>
-    Boost::boost
-    ${Panda3d_LIBRARIES} render_pipeline
+    PRIVATE render_pipeline
 )
+# ==================================================================================================
 
-# library
+# === install ======================================================================================
 install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION "bin"
     LIBRARY DESTINATION "lib"

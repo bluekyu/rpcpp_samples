@@ -1,7 +1,7 @@
 # Author: Younguk Kim (bluekyu)
 # Date  : 2016-08-02
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.6)
 project(rpcpp_samples)
 
 # === configure ====================================================================================
