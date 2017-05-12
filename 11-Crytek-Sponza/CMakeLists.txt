@@ -1,5 +1,5 @@
 # Author: Younguk Kim (bluekyu)
-# Date  : 2016-08-02
+# Date  : 2017-05-12
 
 cmake_minimum_required(VERSION 3.6)
 project(11-Crytek-Sponza)
@@ -8,18 +8,6 @@ project(11-Crytek-Sponza)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
 # === project specific packages ===
-# =================================
-
-# platform specific configure
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    # build type
-    if(NOT CMAKE_BUILD_TYPE)
-        set(CMAKE_BUILD_TYPE "Release" CACHE STRING
-            "Choose the type of build, options are: None Debug RelWithDebInfo Release."
-            FORCE)
-    endif()
-    message("${PROJECT_NAME} Build Type: ${CMAKE_BUILD_TYPE}")
-endif()
 # ==================================================================================================
 
 # === sources ======================================================================================
@@ -43,13 +31,14 @@ else()
 endif()
 
 target_include_directories(${PROJECT_NAME}
-    PRIVATE "${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    PRIVATE "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/src"
 )
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE render_pipeline
 )
+
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "render_pipeline/samples")
 # ==================================================================================================
 
 # === install ======================================================================================

@@ -1,5 +1,5 @@
 # Author: Younguk Kim (bluekyu)
-# Date  : 2016-08-02
+# Date  : 2017-05-12
 
 cmake_minimum_required(VERSION 3.6)
 project(20-Instancing-Flex)
@@ -13,17 +13,9 @@ set(FLEX_ROOT "" CACHE PATH "Hint for finding NVIDIA flex root directory")
 set(FLEX_INCLUDEDIR "" CACHE PATH "Hint for finding NVIDIA flex include directory")
 set(FLEX_LIBRARYDIR "" CACHE PATH "Hint for finding NVIDIA flex library directory")
 find_package(Flex REQUIRED)
-# =================================
 
-# platform specific configure
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-    # build type
-    if(NOT CMAKE_BUILD_TYPE)
-        set(CMAKE_BUILD_TYPE "Release" CACHE STRING
-            "Choose the type of build, options are: None Debug RelWithDebInfo Release."
-            FORCE)
-    endif()
-    message("${PROJECT_NAME} Build Type: ${CMAKE_BUILD_TYPE}")
+if(NOT TARGET rpplugin::flex)
+    find_package(rpplugin_flex REQUIRED)
 endif()
 # ==================================================================================================
 
@@ -48,15 +40,19 @@ else()
 endif()
 
 target_include_directories(${PROJECT_NAME}
-    PRIVATE "${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    PRIVATE "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/src"
+
     ${Flex_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE render_pipeline
+
+    rpplugin::flex
     ${Flex_LIBRARIES}
 )
+
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "render_pipeline/samples")
 # ==================================================================================================
 
 # === install ======================================================================================

@@ -39,9 +39,9 @@
 #include <render_pipeline/rpcore/util/primitives.hpp>
 #include <render_pipeline/rpcore/pluginbase/manager.h>
 
-#include <render_pipeline/rpplugins/flex/include/flex_plugin.hpp>
-#include <render_pipeline/rpplugins/flex/include/flex_instance_interface.hpp>
-#include <render_pipeline/rpplugins/flex/include/flex_buffer.hpp>
+#include <flex_plugin.hpp>
+#include <flex_instance_interface.hpp>
+#include <flex_buffer.hpp>
 
 class ParticlesInstance: public FlexInstanceInterface
 {
