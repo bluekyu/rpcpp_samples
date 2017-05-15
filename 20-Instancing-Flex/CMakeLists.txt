@@ -14,9 +14,7 @@ set(FLEX_INCLUDEDIR "" CACHE PATH "Hint for finding NVIDIA flex include director
 set(FLEX_LIBRARYDIR "" CACHE PATH "Hint for finding NVIDIA flex library directory")
 find_package(Flex REQUIRED)
 
-if(NOT TARGET rpplugin::flex)
-    find_package(rpplugin_flex REQUIRED)
-endif()
+render_pipeline_FIND_PLUGINS("flex")
 # ==================================================================================================
 
 # === sources ======================================================================================

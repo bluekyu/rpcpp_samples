@@ -28,7 +28,7 @@
 
 #include "sample_stage.h"
 
-RPCPP_PLUGIN_CREATOR(Plugin)
+RENDER_PIPELINE_PLUGIN_CREATOR(Plugin)
 
 struct Plugin::Impl
 {
@@ -41,7 +41,7 @@ Plugin::RequrieType Plugin::Impl::require_plugins_;
 
 // ************************************************************************************************
 
-Plugin::Plugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPCPP_PLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
+Plugin::Plugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPPLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
 {
 }
 
