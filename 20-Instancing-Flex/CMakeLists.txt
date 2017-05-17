@@ -50,7 +50,7 @@ target_link_libraries(${PROJECT_NAME}
     ${Flex_LIBRARIES}
 )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "render_pipeline/samples")
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "rpcpp_samples")
 # ==================================================================================================
 
 # === install ======================================================================================

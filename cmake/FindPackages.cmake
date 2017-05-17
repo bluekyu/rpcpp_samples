@@ -1,21 +1,42 @@
 # Author: Younguk Kim (bluekyu)
 # Date  : 2017-05-12
 
-# find boost
-option(Boost_USE_STATIC_LIBS    "Boost uses static libraries" OFF)
-option(Boost_USE_MULTITHREADED  "Boost uses multithreaded"  ON)
-option(Boost_USE_STATIC_RUNTIME "Boost uses static runtime" OFF)
+function(_find_boost required_component)
+    if(NOT TARGET Boost::boost)
+        option(Boost_USE_STATIC_LIBS    "Boost uses static libraries" OFF)
+        option(Boost_USE_MULTITHREADED  "Boost uses multithreaded"  ON)
+        option(Boost_USE_STATIC_RUNTIME "Boost uses static runtime" OFF)
 
-set(BOOST_ROOT "" CACHE PATH "Hint for finding boost root directory")
-set(BOOST_INCLUDEDIR "" CACHE PATH "Hint for finding boost include directory")
-set(BOOST_LIBRARYDIR "" CACHE PATH "Hint for finding boost library directory")
+        set(BOOST_ROOT "" CACHE PATH "Hint for finding boost root directory")
+        set(BOOST_INCLUDEDIR "" CACHE PATH "Hint for finding boost include directory")
+        set(BOOST_LIBRARYDIR "" CACHE PATH "Hint for finding boost library directory")
+    endif()
 
-find_package(Boost 1.62.0 REQUIRED)
+    set(missed_component "")
+    foreach(component ${required_component})
+        if(NOT TARGET Boost::${component})
+            list(APPEND missed_component ${component})
+        endif()
+    endforeach()
 
-# find panda3d
-set(PANDA3D_ROOT "" CACHE PATH "Hint for finding panda3d root directory")
+    if(missed_component)
+        find_package(Boost 1.62.0 REQUIRED ${missed_component})
+    endif()
 
-find_package(Panda3d REQUIRED)
+    if(NOT TARGET Boost::boost)
+        find_package(Boost 1.62.0 REQUIRED)
+    endif()
+endfunction()
 
-# find render_pipeline
-find_package(render_pipeline REQUIRED)
+_find_boost("")
+
+if(NOT TARGET panda3d::panda3d)
+    # find panda3d
+    set(PANDA3D_ROOT "" CACHE PATH "Hint for finding panda3d root directory")
+    find_package(panda3d REQUIRED)
+endif()
+
+if(NOT TARGET render_pipeline)
+    # find render_pipeline
+    find_package(render_pipeline REQUIRED)
+endif()

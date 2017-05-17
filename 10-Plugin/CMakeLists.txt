@@ -7,7 +7,20 @@ get_filename_component(RPPLUGIN_ID ${CMAKE_CURRENT_LIST_DIR} NAME)
 project(rpplugin_${RPPLUGIN_ID})
 
 # === configure ====================================================================================
-file(RELATIVE_PATH RPPLUGIN_INSTALL_DIR ${CMAKE_INSTALL_PREFIX} "${render_pipeline_PLUGIN_DIR}/${RPPLUGIN_ID}")
+# check installing directory
+if(render_pipeline_INSTALL_DIR)
+    get_filename_component(_render_pipeline_INSTALL_DIR ${render_pipeline_INSTALL_DIR} ABSOLUTE)
+    get_filename_component(_CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} ABSOLUTE)
+    if(NOT "${_render_pipeline_INSTALL_DIR}" STREQUAL "${_CMAKE_INSTALL_PREFIX}")
+        message(WARNING "CMake install prefix is NOT same as installed directory of Render Pipeline:
+            CMAKE_INSTALL_PREFIX: ${_CMAKE_INSTALL_PREFIX}
+        render_pipeline_INSTALL_DIR: ${_render_pipeline_INSTALL_DIR}")
+    endif()
+    unset(_render_pipeline_INSTALL_DIR)
+    unset(_CMAKE_INSTALL_PREFIX)
+endif()
+
+set(RPPLUGIN_INSTALL_DIR "${render_pipeline_PLUGIN_DIR}/${RPPLUGIN_ID}")
 set(RPPLUGIN_CONFIG_IN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/rpplugin-config.cmake.in")
 
 set(PROJECT_VERSION_MAJOR "0")
@@ -47,8 +60,7 @@ target_link_libraries(${PROJECT_NAME}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
-    FOLDER "render_pipeline/rpplugins"
-    OUTPUT_NAME "plugin"
+    FOLDER "rpcpp_samples"
 )
 
 # create plugin interface target
@@ -93,10 +105,12 @@ export(PACKAGE ${PACKAGE_NAME})
 install(TARGETS ${PROJECT_NAME} DESTINATION ${RPPLUGIN_INSTALL_DIR})
 install(TARGETS ${RPPLUGIN_ID} EXPORT ${TARGET_EXPORT_NAME})
 
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/" DESTINATION ${RPPLUGIN_INSTALL_DIR})
-if(EXISTS "${PROJECT_SOURCE_DIR}/include")
-    install(DIRECTORY "${PROJECT_SOURCE_DIR}/include" DESTINATION ${RPPLUGIN_INSTALL_DIR})
-endif()
+install(FILES "${PROJECT_SOURCE_DIR}/config.yaml" DESTINATION ${RPPLUGIN_INSTALL_DIR})
+foreach(directory_name "include" "resources" "shader")
+    if(EXISTS "${PROJECT_SOURCE_DIR}/${directory_name}")
+        install(DIRECTORY "${PROJECT_SOURCE_DIR}/${directory_name}" DESTINATION ${RPPLUGIN_INSTALL_DIR})
+    endif()
+endforeach()
 
 install(FILES ${PACKAGE_CONFIG_FILE} ${PACKAGE_VERSION_CONFIG_FILE} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
 install(EXPORT ${TARGET_EXPORT_NAME} NAMESPACE ${TARGET_NAMESPACE} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
