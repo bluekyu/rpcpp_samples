@@ -2,7 +2,7 @@
 # Date  : 2017-05-12
 
 cmake_minimum_required(VERSION 3.6)
-project(01-Instancing-Flex)
+project(01-Initial-Overlap)
 
 # === configure ====================================================================================
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
@@ -14,6 +14,9 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 # set input files
 set(sources_files
     "${PROJECT_SOURCE_DIR}/src/main.cpp"
+    "${PROJECT_SOURCE_DIR}/src/scene.hpp"
+    "${PROJECT_SOURCE_DIR}/src/helpers.hpp"
+    "${PROJECT_SOURCE_DIR}/src/mesh.hpp"
 )
 
 # grouping
