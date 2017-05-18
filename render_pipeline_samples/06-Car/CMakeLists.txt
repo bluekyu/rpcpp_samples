@@ -38,7 +38,7 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE render_pipeline
 )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "rpcpp_samples")
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "rpcpp_samples/render_pipeline_samples")
 # ==================================================================================================
 
 # === install ======================================================================================

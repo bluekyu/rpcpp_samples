@@ -2,12 +2,19 @@
 # Date  : 2017-05-12
 
 cmake_minimum_required(VERSION 3.6)
-project(11-Instancing)
+project(01-Instancing-Flex)
 
 # === configure ====================================================================================
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
 # === project specific packages ===
+# find flex
+set(FLEX_ROOT "" CACHE PATH "Hint for finding NVIDIA flex root directory")
+set(FLEX_INCLUDEDIR "" CACHE PATH "Hint for finding NVIDIA flex include directory")
+set(FLEX_LIBRARYDIR "" CACHE PATH "Hint for finding NVIDIA flex library directory")
+find_package(Flex REQUIRED)
+
+render_pipeline_FIND_PLUGINS("flex")
 # ==================================================================================================
 
 # === sources ======================================================================================
@@ -32,13 +39,18 @@ endif()
 
 target_include_directories(${PROJECT_NAME}
     PRIVATE "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/src"
+
+    ${Flex_INCLUDE_DIRS}
 )
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE render_pipeline
+
+    rpplugin::flex
+    ${Flex_LIBRARIES}
 )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "rpcpp_samples")
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "rpcpp_samples/nvidia_flex")
 # ==================================================================================================
 
 # === install ======================================================================================

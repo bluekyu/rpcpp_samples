@@ -2,7 +2,7 @@
 # Date  : 2017-05-12
 
 cmake_minimum_required(VERSION 3.6)
-project(07-Shading-Models)
+project(11-Instancing)
 
 # === configure ====================================================================================
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
@@ -38,7 +38,7 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE render_pipeline
 )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "rpcpp_samples")
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "rpcpp_samples/render_pipeline_samples")
 # ==================================================================================================
 
 # === install ======================================================================================
