@@ -5,11 +5,10 @@ cmake_minimum_required(VERSION 3.6)
 project(nvidia_flex)
 
 # === configure ====================================================================================
-# find flex
-set(FLEX_ROOT "" CACHE PATH "Hint for finding NVIDIA flex root directory")
-set(FLEX_INCLUDEDIR "" CACHE PATH "Hint for finding NVIDIA flex include directory")
-set(FLEX_LIBRARYDIR "" CACHE PATH "Hint for finding NVIDIA flex library directory")
-find_package(Flex REQUIRED)
+if(NOT TARGET NvFlex::CUDA)
+    set(NvFlex_ROOT "" CACHE PATH "Hint for finding NVIDIA flex root directory")
+    find_package(NvFlex REQUIRED)
+endif()
 
 render_pipeline_FIND_PLUGINS("flex")
 
