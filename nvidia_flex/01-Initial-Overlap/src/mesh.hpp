@@ -34,7 +34,7 @@ std::vector<NodePath> setup_shapes(const FlexBuffer& buffer)
 {
     std::vector<NodePath> shapes;
 
-    for (size_t i=0, i_end=buffer.shape_flags_.size(); i < i_end; ++i)
+    for (int i=0, i_end=buffer.shape_flags_.size(); i < i_end; ++i)
     {
         const int flags = buffer.shape_flags_[i];
 
@@ -53,6 +53,10 @@ std::vector<NodePath> setup_shapes(const FlexBuffer& buffer)
             NodePath np = rpcore::create_cube("box");
             np.reparent_to(rpcore::Globals::render);
             shapes.push_back(np);
+
+            NodePath p = rpcore::create_points("point", 1);
+            p.set_pos(5, 5, 5);
+            p.reparent_to(rpcore::Globals::render);
         }
         else if (type == eNvFlexShapeConvexMesh)
         {
@@ -74,7 +78,7 @@ std::vector<NodePath> setup_shapes(const FlexBuffer& buffer)
 
 void update_shapes(const FlexBuffer& buffer, std::vector<NodePath>& shapes)
 {
-    for (size_t i=0, i_end=buffer.shape_flags_.size(); i < i_end; ++i)
+    for (int i=0, i_end=buffer.shape_flags_.size(); i < i_end; ++i)
     {
         const int flags = buffer.shape_flags_[i];
 
@@ -92,7 +96,7 @@ void update_shapes(const FlexBuffer& buffer, std::vector<NodePath>& shapes)
         // render with prev positions to match particle update order
         // can also think of this as current/next
         const LQuaternionf& rotation = buffer.shape_prev_rotations_[i];
-        const LVecBase3f position = buffer.shape_prev_positions_[i].get_xyz();
+        const LVecBase3f& position = buffer.shape_prev_positions_[i].get_xyz();
 
         NvFlexCollisionGeometry geo = buffer.shape_geometry_[i];
 
@@ -105,7 +109,6 @@ void update_shapes(const FlexBuffer& buffer, std::vector<NodePath>& shapes)
         else if (type == eNvFlexShapeBox)
         {
             shapes[i].set_pos_quat_scale(position, rotation, LVecBase3f(geo.box.halfExtents[0], geo.box.halfExtents[1], geo.box.halfExtents[2]) * 2.0f);
-            shapes[i].set_color(LColorf(color, 1.0f));
         }
         else if (type == eNvFlexShapeConvexMesh)
         {
@@ -115,10 +118,6 @@ void update_shapes(const FlexBuffer& buffer, std::vector<NodePath>& shapes)
         }
         else if (type == eNvFlexShapeSDF)
         {
-        }
-        else
-        {
-            shapes.push_back(NodePath());
         }
     }
 }

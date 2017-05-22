@@ -51,7 +51,7 @@ public:
         // plinth
         add_box(buffer, 1.0f, LVecBase3f(0.0f, 0.0f, 0.0f));
 
-        buffer.positions_.push_back(LVecBase4f(0.0f, 0.5f, 0.0f, 1.0f));
+        buffer.positions_.push_back(LVecBase4f(0.0f, 0.0f, 0.5f, 1.0f));
         buffer.velocities_.push_back(LVecBase3f(0.0f));
         buffer.phases_.push_back(0);
 

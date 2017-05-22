@@ -26,7 +26,7 @@
 
 #include <flex_buffer.hpp>
 
-void add_box(FlexBuffer& buffer, const LVecBase3f& half_edge=LVecBase3f(2.0f), const LVecBase3f& center=LVecBase3f(0.0f), const LQuaternionf& quat=LQuaternionf(), bool dynamic=false)
+void add_box(FlexBuffer& buffer, const LVecBase3f& half_edge=LVecBase3f(2.0f), const LVecBase3f& center=LVecBase3f(0.0f), const LQuaternionf& quat=LQuaternionf::ident_quat(), bool dynamic=false)
 {
     // physics
     buffer.shape_positions_.push_back(LVecBase4f(center, 0.0f));
