@@ -27,8 +27,19 @@
 #include <NvFlex.h>
 
 #include <render_pipeline/rpcore/util/primitives.hpp>
+#include <render_pipeline/rpcore/util/circular_points_node.hpp>
 
 #include <flex_buffer.hpp>
+
+std::shared_ptr<rpcore::CircularPointsNode> setup_particles(const FlexBuffer& buffer, const NvFlexParams& params)
+{
+    std::vector<LPoint3f> positions;
+    positions.reserve(buffer.positions_.size());
+    for (int k=0, k_end=buffer.positions_.size(); k < k_end; ++k)
+        positions.push_back(buffer.positions_[k].get_xyz());
+
+    return std::make_shared<rpcore::CircularPointsNode>("particles", positions, params.radius, "", GeomEnums::UH_dynamic);
+}
 
 std::vector<NodePath> setup_shapes(const FlexBuffer& buffer)
 {
@@ -50,13 +61,7 @@ std::vector<NodePath> setup_shapes(const FlexBuffer& buffer)
         }
         else if (type == eNvFlexShapeBox)
         {
-            NodePath np = rpcore::create_cube("box");
-            np.reparent_to(rpcore::Globals::render);
-            shapes.push_back(np);
-
-            NodePath p = rpcore::create_points("point", 1);
-            p.set_pos(5, 5, 5);
-            p.reparent_to(rpcore::Globals::render);
+            shapes.push_back(rpcore::create_cube("box"));
         }
         else if (type == eNvFlexShapeConvexMesh)
         {
@@ -74,6 +79,17 @@ std::vector<NodePath> setup_shapes(const FlexBuffer& buffer)
     }
 
     return shapes;
+}
+
+void update_particles(const FlexBuffer& buffer, std::shared_ptr<rpcore::CircularPointsNode>& circular_points_node)
+{
+    std::vector<LPoint3f> positions;
+    positions.reserve(circular_points_node->get_point_count());
+    for (int k=0, k_end=circular_points_node->get_point_count(); k < k_end; ++k)
+        positions.push_back(buffer.positions_[k].get_xyz());
+
+    circular_points_node->set_positions(positions);
+    circular_points_node->upload_positions();
 }
 
 void update_shapes(const FlexBuffer& buffer, std::vector<NodePath>& shapes)

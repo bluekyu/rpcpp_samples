@@ -55,16 +55,24 @@ public:
         buffer.velocities_.push_back(LVecBase3f(0.0f));
         buffer.phases_.push_back(0);
 
+        circular_points_node_ = setup_particles(buffer, flex_plugin_->get_flex_params());
+        circular_points_node_->get_nodepath().reparent_to(rpcore::Globals::render);
+
         shapes_ = setup_shapes(buffer);
+        for (auto& np: shapes_)
+            np.reparent_to(rpcore::Globals::render);
+
         update_shapes(buffer, shapes_);
     }
 
     void sync_flex(FlexBuffer& buffer) final
     {
+        update_particles(buffer, circular_points_node_);
         update_shapes(buffer, shapes_);
     }
 
 private:
     std::shared_ptr<FlexPlugin> flex_plugin_;
+    std::shared_ptr<rpcore::CircularPointsNode> circular_points_node_;
     std::vector<NodePath> shapes_;
 };
