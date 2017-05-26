@@ -10,8 +10,9 @@ if(NOT TARGET NvFlex::CUDA)
     find_package(NvFlex REQUIRED)
 endif()
 
-render_pipeline_FIND_PLUGINS("flex")
+render_pipeline_FIND_PLUGINS("rpflex")
 
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/01-Initial-Overlap")
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/01-Instancing-Flex")
+#add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Flex-Friction-Ramp")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Flex-Initial-Overlap")
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Flex-Instancing-Flex")
 # ==================================================================================================

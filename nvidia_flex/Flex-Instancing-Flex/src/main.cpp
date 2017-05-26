@@ -39,22 +39,22 @@
 #include <render_pipeline/rpcore/util/primitives.hpp>
 #include <render_pipeline/rpcore/pluginbase/manager.h>
 
-#include <flex_plugin.hpp>
-#include <flex_instance_interface.hpp>
-#include <flex_buffer.hpp>
+#include <rpflex/plugin.hpp>
+#include <rpflex/instance_interface.hpp>
+#include <rpflex/flex_buffer.hpp>
 
-class ParticlesInstance: public FlexInstanceInterface
+class ParticlesInstance: public rpflex::InstanceInterface
 {
 public:
     ParticlesInstance(const std::shared_ptr<rpcore::InstancingNode>& instanced_node): instanced_node_(instanced_node) {}
 
-    void initialize(FlexBuffer& buffer) final;
-    void sync_flex(FlexBuffer& buffer) final;
+    void initialize(rpflex::FlexBuffer& buffer) final;
+    void sync_flex(rpflex::FlexBuffer& buffer) final;
 
     std::shared_ptr<rpcore::InstancingNode> instanced_node_;
 };
 
-void ParticlesInstance::initialize(FlexBuffer& buffer)
+void ParticlesInstance::initialize(rpflex::FlexBuffer& buffer)
 {
     const auto& transforms = instanced_node_->get_transforms();
 
@@ -66,7 +66,7 @@ void ParticlesInstance::initialize(FlexBuffer& buffer)
     }
 }
 
-void ParticlesInstance::sync_flex(FlexBuffer& buffer)
+void ParticlesInstance::sync_flex(rpflex::FlexBuffer& buffer)
 {
     // read back
     auto& transforms = instanced_node_->modify_transforms();
@@ -101,13 +101,13 @@ int main(int argc, char* argv[])
     // Set time of day
     render_pipeline->get_daytime_mgr()->set_time("19:17");
 
-    if (!render_pipeline->get_plugin_mgr()->is_plugin_enabled("flex"))
+    if (!render_pipeline->get_plugin_mgr()->is_plugin_enabled("rpflex"))
     {
         rpcore::RPObject::global_error("Main", "Flex plugin is NOT enabled.");
         return 1;
     }
 
-    auto& flex_plugin = std::dynamic_pointer_cast<FlexPlugin>(render_pipeline->get_plugin_mgr()->get_instance("flex"));
+    auto& flex_plugin = std::dynamic_pointer_cast<rpflex::Plugin>(render_pipeline->get_plugin_mgr()->get_instance("rpflex"));
 
     NodePath particle = rpcore::create_sphere("particle", 6, 6);
     particle.set_scale(0.1);

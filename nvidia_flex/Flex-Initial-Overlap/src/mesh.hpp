@@ -29,25 +29,21 @@
 #include <render_pipeline/rpcore/util/primitives.hpp>
 #include <render_pipeline/rpcore/util/circular_points_node.hpp>
 
-#include <flex_buffer.hpp>
+#include <rpflex/flex_buffer.hpp>
+#include <rpflex/utils/shape.hpp>
 
-std::shared_ptr<rpcore::CircularPointsNode> setup_particles(const FlexBuffer& buffer, const NvFlexParams& params)
+class FlexEntity
 {
-    std::vector<LPoint3f> positions;
-    positions.reserve(buffer.positions_.size());
-    for (int k=0, k_end=buffer.positions_.size(); k < k_end; ++k)
-        positions.push_back(buffer.positions_[k].get_xyz());
+public:
+    virtual void update(const rpflex::FlexBuffer& buffer) = 0;
+};
 
-    return std::make_shared<rpcore::CircularPointsNode>("particles", positions, params.radius, "", GeomEnums::UH_dynamic);
-}
-
-std::vector<NodePath> setup_shapes(const FlexBuffer& buffer)
+class FlexShapeEntity: public FlexEntity
 {
-    std::vector<NodePath> shapes;
-
-    for (int i=0, i_end=buffer.shape_flags_.size(); i < i_end; ++i)
+public:
+    FlexShapeEntity(const rpflex::FlexBuffer& buffer, const std::shared_ptr<rpflex::RPFlexShape>& flex_shape): flex_shape_(flex_shape)
     {
-        const int flags = buffer.shape_flags_[i];
+        const int flags = buffer.shape_flags_[flex_shape_->get_shape_buffer_index()];
 
         // unpack flags
         int type = int(flags & eNvFlexShapeFlagTypeMask);
@@ -61,7 +57,7 @@ std::vector<NodePath> setup_shapes(const FlexBuffer& buffer)
         }
         else if (type == eNvFlexShapeBox)
         {
-            shapes.push_back(rpcore::create_cube("box"));
+            nodepath_ = rpcore::create_cube("box");
         }
         else if (type == eNvFlexShapeConvexMesh)
         {
@@ -74,29 +70,17 @@ std::vector<NodePath> setup_shapes(const FlexBuffer& buffer)
         }
         else
         {
-            shapes.push_back(NodePath());
+            std::cout << "Unknown shape type." << std::endl;
         }
+
+        nodepath_.reparent_to(rpcore::Globals::render);
     }
 
-    return shapes;
-}
-
-void update_particles(const FlexBuffer& buffer, std::shared_ptr<rpcore::CircularPointsNode>& circular_points_node)
-{
-    std::vector<LPoint3f> positions;
-    positions.reserve(circular_points_node->get_point_count());
-    for (int k=0, k_end=circular_points_node->get_point_count(); k < k_end; ++k)
-        positions.push_back(buffer.positions_[k].get_xyz());
-
-    circular_points_node->set_positions(positions);
-    circular_points_node->upload_positions();
-}
-
-void update_shapes(const FlexBuffer& buffer, std::vector<NodePath>& shapes)
-{
-    for (int i=0, i_end=buffer.shape_flags_.size(); i < i_end; ++i)
+    void update(const rpflex::FlexBuffer& buffer)
     {
-        const int flags = buffer.shape_flags_[i];
+        int index = flex_shape_->get_shape_buffer_index();
+
+        const int flags = buffer.shape_flags_[index];
 
         // unpack flags
         int type = int(flags & eNvFlexShapeFlagTypeMask);
@@ -111,10 +95,10 @@ void update_shapes(const FlexBuffer& buffer, std::vector<NodePath>& shapes)
 
         // render with prev positions to match particle update order
         // can also think of this as current/next
-        const LQuaternionf& rotation = buffer.shape_prev_rotations_[i];
-        const LVecBase3f& position = buffer.shape_prev_positions_[i].get_xyz();
+        const LQuaternionf& rotation = buffer.shape_prev_rotations_[index];
+        const LVecBase3f& position = buffer.shape_prev_positions_[index].get_xyz();
 
-        NvFlexCollisionGeometry geo = buffer.shape_geometry_[i];
+        NvFlexCollisionGeometry geo = buffer.shape_geometry_[index];
 
         if (type == eNvFlexShapeSphere)
         {
@@ -124,7 +108,7 @@ void update_shapes(const FlexBuffer& buffer, std::vector<NodePath>& shapes)
         }
         else if (type == eNvFlexShapeBox)
         {
-            shapes[i].set_pos_quat_scale(position, rotation, LVecBase3f(geo.box.halfExtents[0], geo.box.halfExtents[1], geo.box.halfExtents[2]) * 2.0f);
+            nodepath_.set_pos_quat_scale(position, rotation, LVecBase3f(geo.box.halfExtents[0], geo.box.halfExtents[1], geo.box.halfExtents[2]) * 2.0f);
         }
         else if (type == eNvFlexShapeConvexMesh)
         {
@@ -136,4 +120,37 @@ void update_shapes(const FlexBuffer& buffer, std::vector<NodePath>& shapes)
         {
         }
     }
-}
+
+private:
+    NodePath nodepath_;
+    std::shared_ptr<rpflex::RPFlexShape> flex_shape_;
+};
+
+class FlexParticlesEntity: public FlexEntity
+{
+public:
+    FlexParticlesEntity(const rpflex::FlexBuffer& buffer, const NvFlexParams& params)
+    {
+        std::vector<LPoint3f> positions;
+        positions.reserve(buffer.positions_.size());
+        for (int k=0, k_end=buffer.positions_.size(); k < k_end; ++k)
+            positions.push_back(buffer.positions_[k].get_xyz());
+
+        particles_node_ = std::make_shared<rpcore::CircularPointsNode>("particles", positions, params.radius, "", GeomEnums::UH_dynamic);
+        particles_node_->get_nodepath().reparent_to(rpcore::Globals::render);
+    }
+
+    void update(const rpflex::FlexBuffer& buffer)
+    {
+        std::vector<LPoint3f> positions;
+        positions.reserve(particles_node_->get_point_count());
+        for (int k=0, k_end=particles_node_->get_point_count(); k < k_end; ++k)
+            positions.push_back(buffer.positions_[k].get_xyz());
+
+        particles_node_->set_positions(positions);
+        particles_node_->upload_positions();
+    }
+
+private:
+    std::shared_ptr<rpcore::CircularPointsNode> particles_node_;
+};

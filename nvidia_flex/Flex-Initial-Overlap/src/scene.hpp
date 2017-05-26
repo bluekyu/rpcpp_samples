@@ -26,17 +26,17 @@
 
 #include <NvFlex.h>
 
-#include <flex_plugin.hpp>
-#include <flex_instance_interface.hpp>
-#include <flex_buffer.hpp>
+#include <rpflex/plugin.hpp>
+#include <rpflex/instance_interface.hpp>
+#include <rpflex/flex_buffer.hpp>
+#include <rpflex/utils/shape_box.hpp>
 
-#include "helpers.hpp"
 #include "mesh.hpp"
 
-class Scene: public FlexInstanceInterface
+class Scene: public rpflex::InstanceInterface
 {
 public:
-    Scene(const std::shared_ptr<FlexPlugin>& flex_plugin): flex_plugin_(flex_plugin)
+    Scene(const std::shared_ptr<rpflex::Plugin>& flex_plugin): flex_plugin_(flex_plugin)
     {
         auto& params = flex_plugin_->modify_flex_params();
         params.radius = 0.1f;
@@ -46,33 +46,29 @@ public:
         params.maxAcceleration = 50.0f;
     }
 
-    void initialize(FlexBuffer& buffer) final
+    void initialize(rpflex::FlexBuffer& buffer) final
     {
         // plinth
-        add_box(buffer, 1.0f, LVecBase3f(0.0f, 0.0f, 0.0f));
+        entities_.push_back(std::make_shared<FlexShapeEntity>(buffer, std::make_shared<rpflex::RPFlexShapeBox>(buffer, 1.0f, LVecBase3f(0.0f, 0.0f, 0.0f))));
 
         buffer.positions_.push_back(LVecBase4f(0.0f, 0.0f, 0.5f, 1.0f));
         buffer.velocities_.push_back(LVecBase3f(0.0f));
         buffer.phases_.push_back(0);
 
-        circular_points_node_ = setup_particles(buffer, flex_plugin_->get_flex_params());
-        circular_points_node_->get_nodepath().reparent_to(rpcore::Globals::render);
+        entities_.push_back(std::make_shared<FlexParticlesEntity>(buffer, flex_plugin_->get_flex_params()));
 
-        shapes_ = setup_shapes(buffer);
-        for (auto& np: shapes_)
-            np.reparent_to(rpcore::Globals::render);
-
-        update_shapes(buffer, shapes_);
+        for (auto& shape: entities_)
+            shape->update(buffer);
     }
 
-    void sync_flex(FlexBuffer& buffer) final
+    void sync_flex(rpflex::FlexBuffer& buffer) final
     {
-        update_particles(buffer, circular_points_node_);
-        update_shapes(buffer, shapes_);
+        for (auto& shape: entities_)
+            shape->update(buffer);
     }
 
 private:
-    std::shared_ptr<FlexPlugin> flex_plugin_;
+    std::shared_ptr<rpflex::Plugin> flex_plugin_;
     std::shared_ptr<rpcore::CircularPointsNode> circular_points_node_;
-    std::vector<NodePath> shapes_;
+    std::vector<std::shared_ptr<FlexEntity>> entities_;
 };

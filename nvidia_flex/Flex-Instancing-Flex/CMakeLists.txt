@@ -2,7 +2,7 @@
 # Date  : 2017-05-12
 
 cmake_minimum_required(VERSION 3.6)
-project(01-Instancing-Flex)
+project(Flex-Instancing-Flex)
 
 # === configure ====================================================================================
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
@@ -36,7 +36,7 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE render_pipeline
-    rpplugin::flex
+    rpplugin::rpflex
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "rpcpp_samples/nvidia_flex")

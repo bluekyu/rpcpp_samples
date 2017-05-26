@@ -39,9 +39,9 @@
 #include <render_pipeline/rpcore/util/primitives.hpp>
 #include <render_pipeline/rpcore/pluginbase/manager.h>
 
-#include <flex_plugin.hpp>
-#include <flex_instance_interface.hpp>
-#include <flex_buffer.hpp>
+#include <rpflex/plugin.hpp>
+#include <rpflex/instance_interface.hpp>
+#include <rpflex/flex_buffer.hpp>
 
 #include "scene.hpp"
 
@@ -64,13 +64,13 @@ int main(int argc, char* argv[])
     // Set time of day
     render_pipeline->get_daytime_mgr()->set_time("19:17");
 
-    if (!render_pipeline->get_plugin_mgr()->is_plugin_enabled("flex"))
+    if (!render_pipeline->get_plugin_mgr()->is_plugin_enabled("rpflex"))
     {
         rpcore::RPObject::global_error("Main", "Flex plugin is NOT enabled.");
         return 1;
     }
 
-    auto& flex_plugin = std::dynamic_pointer_cast<FlexPlugin>(render_pipeline->get_plugin_mgr()->get_instance("flex"));
+    auto& flex_plugin = std::dynamic_pointer_cast<rpflex::Plugin>(render_pipeline->get_plugin_mgr()->get_instance("rpflex"));
 
     flex_plugin->add_instance(std::make_shared<Scene>(flex_plugin));
 
