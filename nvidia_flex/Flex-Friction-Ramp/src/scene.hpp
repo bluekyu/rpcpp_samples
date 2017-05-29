@@ -40,22 +40,32 @@ public:
     {
         auto& params = flex_plugin_->modify_flex_params();
         params.radius = 0.1f;
-        params.numIterations = 2;
-
-        // test max acceleration clamping is working, test at 5x gravity
-        params.maxAcceleration = 50.0f;
+        params.dynamicFriction = 0.35f;
+        params.dissipation = 0.0f;
+        params.numIterations = 8;
+        params.viscosity = 0.0f;
+        params.drag = 0.0f;
+        params.lift = 0.0f;
+        params.collisionDistance = params.radius * 0.5f;
     }
 
     void initialize(rpflex::FlexBuffer& buffer) final
     {
-        // plinth
-        entities_.push_back(std::make_shared<FlexShapeEntity>(buffer, std::make_shared<rpflex::RPFlexShapeBox>(buffer, 1.0f, LVecBase3f(0.0f, 0.0f, 0.0f))));
+        for (int i = 0; i < 3; ++i)
+        {
+            LQuaternionf quat;
+            quat.set_from_axis_angle(-11.25f*(i + 1), LVecBase3f(0.0f, -1.0f, 0.0f));
 
-        buffer.positions_.push_back(LVecBase4f(0.0f, 0.0f, 0.5f, 1.0f));
-        buffer.velocities_.push_back(LVecBase3f(0.0f));
-        buffer.phases_.push_back(0);
+            // ramp
+            entities_.push_back(std::make_shared<FlexShapeEntity>(buffer, std::make_shared<rpflex::RPFlexShapeBox>(buffer,
+                LVecBase3f(5.0f, 1.0f, 0.25f), LVecBase3f(3.0f, i*2.0f, 1.0f), quat)));
+        }
 
-        entities_.push_back(std::make_shared<FlexParticlesEntity>(buffer, flex_plugin_->get_flex_params()));
+        //buffer.positions_.push_back(LVecBase4f(0.0f, 0.0f, 3.5f, 1.0f));
+        //buffer.velocities_.push_back(LVecBase3f(0.0f));
+        //buffer.phases_.push_back(0);
+
+        //entities_.push_back(std::make_shared<FlexParticlesEntity>(buffer, flex_plugin_->get_flex_params()));
 
         for (auto& entity: entities_)
             entity->update(buffer);
