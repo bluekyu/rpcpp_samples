@@ -48,14 +48,16 @@ class ParticlesInstance: public rpflex::InstanceInterface
 public:
     ParticlesInstance(const std::shared_ptr<rpcore::InstancingNode>& instanced_node): instanced_node_(instanced_node) {}
 
-    void initialize(rpflex::FlexBuffer& buffer) final;
-    void sync_flex(rpflex::FlexBuffer& buffer) final;
+    void initialize(rpflex::Plugin& rpflex_plugin) final;
+    void sync_flex(rpflex::Plugin& rpflex_plugin) final;
 
     std::shared_ptr<rpcore::InstancingNode> instanced_node_;
 };
 
-void ParticlesInstance::initialize(rpflex::FlexBuffer& buffer)
+void ParticlesInstance::initialize(rpflex::Plugin& rpflex_plugin)
 {
+    auto& buffer = rpflex_plugin.modify_flex_buffer();
+
     const auto& transforms = instanced_node_->get_transforms();
 
     auto phase = NvFlexMakePhase(0, eNvFlexPhaseSelfCollide);
@@ -66,8 +68,10 @@ void ParticlesInstance::initialize(rpflex::FlexBuffer& buffer)
     }
 }
 
-void ParticlesInstance::sync_flex(rpflex::FlexBuffer& buffer)
+void ParticlesInstance::sync_flex(rpflex::Plugin& rpflex_plugin)
 {
+    const auto& buffer = rpflex_plugin.get_flex_buffer();
+
     // read back
     auto& transforms = instanced_node_->modify_transforms();
 

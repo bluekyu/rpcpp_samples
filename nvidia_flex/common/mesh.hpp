@@ -24,25 +24,26 @@
 
 #pragma once
 
-#include <NvFlex.h>
-
 #include <render_pipeline/rpcore/util/primitives.hpp>
 #include <render_pipeline/rpcore/util/circular_points_node.hpp>
 
+#include <rpflex/plugin.hpp>
 #include <rpflex/flex_buffer.hpp>
 #include <rpflex/utils/shape.hpp>
 
 class FlexEntity
 {
 public:
-    virtual void update(const rpflex::FlexBuffer& buffer) = 0;
+    virtual void update(rpflex::Plugin& rpflex_plugin) = 0;
 };
 
 class FlexShapeEntity: public FlexEntity
 {
 public:
-    FlexShapeEntity(const rpflex::FlexBuffer& buffer, const std::shared_ptr<rpflex::RPFlexShape>& flex_shape): flex_shape_(flex_shape)
+    FlexShapeEntity(rpflex::Plugin& rpflex_plugin, const std::shared_ptr<rpflex::RPFlexShape>& flex_shape): flex_shape_(flex_shape)
     {
+        const auto& buffer = rpflex_plugin.get_flex_buffer();
+
         const int flags = buffer.shape_flags_[flex_shape_->get_shape_buffer_index()];
 
         // unpack flags
@@ -76,8 +77,10 @@ public:
         nodepath_.reparent_to(rpcore::Globals::render);
     }
 
-    void update(const rpflex::FlexBuffer& buffer)
+    void update(rpflex::Plugin& rpflex_plugin)
     {
+        const auto& buffer = rpflex_plugin.get_flex_buffer();
+
         int index = flex_shape_->get_shape_buffer_index();
 
         const int flags = buffer.shape_flags_[index];
@@ -129,19 +132,24 @@ private:
 class FlexParticlesEntity: public FlexEntity
 {
 public:
-    FlexParticlesEntity(const rpflex::FlexBuffer& buffer, const NvFlexParams& params)
+    FlexParticlesEntity(rpflex::Plugin& rpflex_plugin)
     {
+        const auto& buffer = rpflex_plugin.get_flex_buffer();
+        const auto& flex_parmas = rpflex_plugin.get_flex_params();
+
         std::vector<LPoint3f> positions;
         positions.reserve(buffer.positions_.size());
         for (int k=0, k_end=buffer.positions_.size(); k < k_end; ++k)
             positions.push_back(buffer.positions_[k].get_xyz());
 
-        particles_node_ = std::make_shared<rpcore::CircularPointsNode>("particles", positions, params.radius, "", GeomEnums::UH_dynamic);
+        particles_node_ = std::make_shared<rpcore::CircularPointsNode>("particles", positions, flex_parmas.radius, "", GeomEnums::UH_dynamic);
         particles_node_->get_nodepath().reparent_to(rpcore::Globals::render);
     }
 
-    void update(const rpflex::FlexBuffer& buffer)
+    void update(rpflex::Plugin& rpflex_plugin)
     {
+        const auto& buffer = rpflex_plugin.get_flex_buffer();
+
         std::vector<LPoint3f> positions;
         positions.reserve(particles_node_->get_point_count());
         for (int k=0, k_end=particles_node_->get_point_count(); k < k_end; ++k)
@@ -149,6 +157,11 @@ public:
 
         particles_node_->set_positions(positions);
         particles_node_->upload_positions();
+    }
+
+    const std::shared_ptr<rpcore::CircularPointsNode>& get_particles_node(void) const
+    {
+        return particles_node_;
     }
 
 private:

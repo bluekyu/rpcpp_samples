@@ -24,8 +24,6 @@
 
 #pragma once
 
-#include <NvFlex.h>
-
 #include <rpflex/plugin.hpp>
 #include <rpflex/instance_interface.hpp>
 #include <rpflex/flex_buffer.hpp>
@@ -36,9 +34,10 @@
 class Scene: public rpflex::InstanceInterface
 {
 public:
-    Scene(const std::shared_ptr<rpflex::Plugin>& flex_plugin): flex_plugin_(flex_plugin)
+    void initialize(rpflex::Plugin& rpflex_plugin) final
     {
-        auto& params = flex_plugin_->modify_flex_params();
+        auto& buffer = rpflex_plugin.modify_flex_buffer();
+        auto& params = rpflex_plugin.modify_flex_params();
         params.radius = 0.1f;
         params.dynamicFriction = 0.35f;
         params.dissipation = 0.0f;
@@ -47,17 +46,14 @@ public:
         params.drag = 0.0f;
         params.lift = 0.0f;
         params.collisionDistance = params.radius * 0.5f;
-    }
 
-    void initialize(rpflex::FlexBuffer& buffer) final
-    {
         for (int i = 0; i < 3; ++i)
         {
             LQuaternionf quat;
             quat.set_from_axis_angle(-11.25f*(i + 1), LVecBase3f(0.0f, -1.0f, 0.0f));
 
             // ramp
-            entities_.push_back(std::make_shared<FlexShapeEntity>(buffer, std::make_shared<rpflex::RPFlexShapeBox>(buffer,
+            entities_.push_back(std::make_shared<FlexShapeEntity>(rpflex_plugin, std::make_shared<rpflex::RPFlexShapeBox>(buffer,
                 LVecBase3f(5.0f, 1.0f, 0.25f), LVecBase3f(3.0f, i*2.0f, 1.0f), quat)));
         }
 
@@ -68,16 +64,16 @@ public:
         //entities_.push_back(std::make_shared<FlexParticlesEntity>(buffer, flex_plugin_->get_flex_params()));
 
         for (auto& entity: entities_)
-            entity->update(buffer);
+            entity->update(rpflex_plugin);
     }
 
-    void sync_flex(rpflex::FlexBuffer& buffer) final
+    void sync_flex(rpflex::Plugin& rpflex_plugin) final
     {
+        auto& buffer = rpflex_plugin.modify_flex_buffer();
         for (auto& entity: entities_)
-            entity->update(buffer);
+            entity->update(rpflex_plugin);
     }
 
 private:
-    std::shared_ptr<rpflex::Plugin> flex_plugin_;
     std::vector<std::shared_ptr<FlexEntity>> entities_;
 };

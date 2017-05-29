@@ -12,6 +12,7 @@ endif()
 
 render_pipeline_FIND_PLUGINS("rpflex")
 
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Flex-Adhesion")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Flex-Dam-Break")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Flex-Friction-Ramp")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Flex-Initial-Overlap")

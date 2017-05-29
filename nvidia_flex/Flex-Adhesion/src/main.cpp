@@ -49,7 +49,7 @@ int main(int argc, char* argv[])
 {
     // Setup window size, title and so on
     load_prc_file_data("",
-        "window-title Render Pipeline - Initial Overlap");
+        "window-title Render Pipeline - Dam Break");
 
     PandaFramework framework;
     framework.open_framework(argc, argv);

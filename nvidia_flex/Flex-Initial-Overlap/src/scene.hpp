@@ -36,38 +36,36 @@
 class Scene: public rpflex::InstanceInterface
 {
 public:
-    Scene(const std::shared_ptr<rpflex::Plugin>& flex_plugin): flex_plugin_(flex_plugin)
+    void initialize(rpflex::Plugin& rpflex_plugin) final
     {
-        auto& params = flex_plugin_->modify_flex_params();
+        auto& buffer = rpflex_plugin.modify_flex_buffer();
+        auto& params = rpflex_plugin.modify_flex_params();
         params.radius = 0.1f;
         params.numIterations = 2;
 
         // test max acceleration clamping is working, test at 5x gravity
         params.maxAcceleration = 50.0f;
-    }
 
-    void initialize(rpflex::FlexBuffer& buffer) final
-    {
         // plinth
-        entities_.push_back(std::make_shared<FlexShapeEntity>(buffer, std::make_shared<rpflex::RPFlexShapeBox>(buffer, 1.0f, LVecBase3f(0.0f, 0.0f, 0.0f))));
+        entities_.push_back(std::make_shared<FlexShapeEntity>(rpflex_plugin, std::make_shared<rpflex::RPFlexShapeBox>(buffer, 1.0f, LVecBase3f(0.0f, 0.0f, 0.0f))));
 
         buffer.positions_.push_back(LVecBase4f(0.0f, 0.0f, 0.5f, 1.0f));
         buffer.velocities_.push_back(LVecBase3f(0.0f));
         buffer.phases_.push_back(0);
 
-        entities_.push_back(std::make_shared<FlexParticlesEntity>(buffer, flex_plugin_->get_flex_params()));
+        entities_.push_back(std::make_shared<FlexParticlesEntity>(rpflex_plugin));
 
         for (auto& entity: entities_)
-            entity->update(buffer);
+            entity->update(rpflex_plugin);
     }
 
-    void sync_flex(rpflex::FlexBuffer& buffer) final
+    void sync_flex(rpflex::Plugin& rpflex_plugin) final
     {
+        auto& buffer = rpflex_plugin.modify_flex_buffer();
         for (auto& entity: entities_)
-            entity->update(buffer);
+            entity->update(rpflex_plugin);
     }
 
 private:
-    std::shared_ptr<rpflex::Plugin> flex_plugin_;
     std::vector<std::shared_ptr<FlexEntity>> entities_;
 };

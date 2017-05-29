@@ -26,6 +26,7 @@
 
 #include <rpflex/plugin.hpp>
 #include <rpflex/instance_interface.hpp>
+#include <rpflex/utils/shape_box.hpp>
 
 #include "mesh.hpp"
 #include "helpers.hpp"
@@ -33,71 +34,82 @@
 class Scene: public rpflex::InstanceInterface
 {
 public:
-    Scene(float radius): radius_(radius)
-    {
-    }
-
     void initialize(rpflex::Plugin& rpflex_plugin) final
     {
         auto& buffer = rpflex_plugin.modify_flex_buffer();
         auto& flex_params = rpflex_plugin.modify_flex_params();
         auto& params = rpflex_plugin.modify_plugin_params();
 
-        const float rest_distance = radius_ * 0.65f;
+        float radius = 0.1f;
 
-        int dx = int(std::ceil(1.0f / rest_distance));
-        int dy = int(std::ceil(1.0f / rest_distance));
-        int dz = int(std::ceil(2.0f / rest_distance));
-
-        CreateParticleGrid(buffer, LVecBase3f(0.0f, 0.0f, rest_distance), dx, dy, dz, rest_distance, LVecBase3f(0.0f), 1.0f, false,
-            0.0f, NvFlexMakePhase(0, eNvFlexPhaseSelfCollide | eNvFlexPhaseFluid), rest_distance*0.01f);
-
-        params.scene_lower = LVecBase3f(0.0f, 0.5f, 0.0f);
-        params.scene_upper = LVecBase3f(3.0f, 0.5f, 0.0f);
-
-        params.substeps_count = 2;
+        flex_params.radius = radius;
 
         flex_params.fluid = true;
-        flex_params.radius = radius_;
-        flex_params.fluidRestDistance = rest_distance;
-        flex_params.dynamicFriction = 0.f;
-        flex_params.restitution = 0.001f;
-
         flex_params.numIterations = 3;
-        flex_params.relaxationFactor = 1.0f;
+        flex_params.vorticityConfinement = 0.0f;
+        flex_params.fluidRestDistance = flex_params.radius*0.55f;
+        flex_params.anisotropyScale = 3.0f / radius;
+        flex_params.smoothing = 0.5f;
+        flex_params.relaxationFactor = 1.f;
+        flex_params.restitution = 0.0f;
+        flex_params.collisionDistance = 0.01f;
 
-        flex_params.smoothing = 0.4f;
-        flex_params.anisotropyScale = 3.0f / radius_;
+        //g_fluidColor = Vec4(0.0f, 0.8f, 0.2f, 1.0f);
+        //g_fluidColor = Vec4(0.7f, 0.6f, 0.6f, 0.2f);
 
-        flex_params.viscosity = 0.001f;
-        flex_params.cohesion = 0.1f;
-        flex_params.vorticityConfinement = 80.0f;
+        flex_params.dynamicFriction = 0.5f;
+        flex_params.viscosity = 50.0f;
+        flex_params.adhesion = 0.5f;
+        flex_params.cohesion = 0.08f;
         flex_params.surfaceTension = 0.0f;
 
-        flex_params.numPlanes = 5;
+        params.num_extra_particles = 64 * 1024;
 
-        // limit velocity to CFL condition
-        flex_params.maxSpeed = 0.5f * radius_ * params.substeps_count / (1.0f / 30.0f);
+        entities_.push_back(std::make_shared<FlexShapeEntity>(rpflex_plugin, std::make_shared<rpflex::RPFlexShapeBox>(
+            buffer, LVecBase3f(1.0f, 0.1f, 1.5f), LVecBase3f(0.0f, 0.0f, 1.5f))));
+        entities_.push_back(std::make_shared<FlexShapeEntity>(rpflex_plugin, std::make_shared<rpflex::RPFlexShapeBox>(
+            buffer, LVecBase3f(1.0f, 6.0f, 0.1f), LVecBase3f(-1.0f, 0.0f, 3.0f))));
 
-        params.max_diffuse_particles = 0;
+        emitter.mEnabled = true;
+        emitter.mSpeed = (flex_params.fluidRestDistance*2.f / (1/60.0f));
 
-        params.wave_floor_tilt = 0.0f;
+        //flex_params.numPlanes = 3;
+    }
 
+    void post_initialize(rpflex::Plugin& rpflex_plugin) final
+    {
         // create particle node.
-        entities_.push_back(std::make_shared<FlexParticlesEntity>(rpflex_plugin));
-        for (auto& entity: entities_)
-            entity->update(rpflex_plugin);
+        particles_entity_ = std::make_shared<FlexParticlesEntity>(rpflex_plugin);
+        entities_.push_back(particles_entity_);
+
+        // emitter
+        rpcore::Globals::base->accept("e", [](const Event* ev, void* data) {
+            reinterpret_cast<Scene*>(data)->toggle_emit();
+        }, this);
     }
 
     void sync_flex(rpflex::Plugin& rpflex_plugin) final
     {
         auto& buffer = rpflex_plugin.modify_flex_buffer();
+
+        if (is_emit)
+        {
+            UpdateEmitters(rpflex_plugin, emitter);
+            particles_entity_->get_particles_node()->set_active_point_count(buffer.active_indices_.size());
+        }
+
         for (auto& entity: entities_)
             entity->update(rpflex_plugin);
     }
 
+    void toggle_emit(void)
+    {
+        is_emit = !is_emit;
+    }
+
 private:
     std::vector<std::shared_ptr<FlexEntity>> entities_;
-
-    float radius_;
+    std::shared_ptr<FlexParticlesEntity> particles_entity_;
+    Emitter emitter;
+    bool is_emit = false;
 };

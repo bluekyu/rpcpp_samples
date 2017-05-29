@@ -27,9 +27,23 @@
 
 #pragma once
 
+#include <rpflex/plugin.hpp>
 #include <rpflex/flex_buffer.hpp>
 
 #include "maths.hpp"
+
+struct Emitter
+{
+    Emitter() : mSpeed(0.0f), mEnabled(false), mLeftOver(0.0f), mWidth(8)   {}
+
+    LVecBase3f mPos;
+    LVecBase3f mDir;
+    LVecBase3f mRight;
+    float mSpeed;
+    bool mEnabled;
+    float mLeftOver;
+    int mWidth;
+};
 
 void CreateParticleGrid(rpflex::FlexBuffer& buffer, const LVecBase3f& lower, int dimx, int dimy, int dimz, float radius,
     const LVecBase3f& velocity, float invMass, bool rigid, float rigidStiffness, int phase, float jitter=0.005f)
@@ -61,3 +75,82 @@ void CreateParticleGrid(rpflex::FlexBuffer& buffer, const LVecBase3f& lower, int
         buffer.rigid_offsets_.push_back(int(buffer.rigid_indices_.size()));
     }
 }
+
+void UpdateEmitters(rpflex::Plugin& rpflex_plugin, Emitter& emitter)
+{
+    const auto& flex_params = rpflex_plugin.get_flex_params();
+    auto& buffer = rpflex_plugin.modify_flex_buffer();
+
+    NodePath cam = rpcore::Globals::base->get_cam();
+
+    LVecBase3f spinned_cam = cam.get_hpr(rpcore::Globals::render) + LVecBase3f(15, 0, 0);
+
+    LQuaternionf rot;
+    rot.set_hpr(spinned_cam);
+    LMatrix4f mat;
+    rot.extract_to_matrix(mat);
+
+    const LVecBase3f forward((LVecBase4f(0, 1, 0, 0) * mat).get_xyz());
+    const LVecBase3f right(forward.cross(LVecBase3f(0.0f, 0.0f, 1.0f)).normalized());
+
+    emitter.mDir = (forward + LVecBase3f(0.0, 0.0f, 0.4f)).normalized();
+    emitter.mRight = right;
+    emitter.mPos = cam.get_pos(rpcore::Globals::render) + forward*1.f + LVecBase3f(0.0f, 0.0f, 0.2f) + right*0.65f;
+
+    // process emitters
+    int activeCount = NvFlexGetActiveCount(rpflex_plugin.get_flex_solver());
+
+    float r;
+    int phase;
+
+    if (flex_params.fluid)
+    {
+        r = flex_params.fluidRestDistance;
+        phase = NvFlexMakePhase(0, eNvFlexPhaseSelfCollide | eNvFlexPhaseFluid);
+    }
+    else
+    {
+        r = flex_params.solidRestDistance;
+        phase = NvFlexMakePhase(0, eNvFlexPhaseSelfCollide);
+    }
+
+    float numParticles = (emitter.mSpeed / r) * (1/60.0f);
+
+    // whole number to emit
+    int n = int(numParticles + emitter.mLeftOver);
+
+    if (n)
+        emitter.mLeftOver = (numParticles + emitter.mLeftOver) - n;
+    else
+        emitter.mLeftOver += numParticles;
+
+    // create a grid of particles (n particles thick)
+    for (int k = 0; k < n; ++k)
+    {
+        int emitterWidth = emitter.mWidth;
+        int numParticles = emitterWidth*emitterWidth;
+        for (int i = 0; i < numParticles; ++i)
+        {
+            float x = float(i%emitterWidth) - float(emitterWidth/2);
+            float y = float((i / emitterWidth) % emitterWidth) - float(emitterWidth/2);
+
+            if ((x*x + y*y) <= (emitterWidth / 2)*(emitterWidth / 2))
+            {
+                LVecBase3f up = emitter.mDir.cross(emitter.mRight).normalized();
+                LVecBase3f offset = r*(emitter.mRight*x + up*y) + float(k)*emitter.mDir*r;
+
+                if (activeCount < buffer.positions_.size())
+                {
+                    buffer.positions_[activeCount] = LVecBase4f(emitter.mPos + offset, 1.0f);
+                    buffer.velocities_[activeCount] = emitter.mDir*emitter.mSpeed;
+                    buffer.phases_[activeCount] = phase;
+
+                    buffer.active_indices_.push_back(activeCount);
+
+                    activeCount++;
+                }
+            }
+        }
+    }
+}
+
