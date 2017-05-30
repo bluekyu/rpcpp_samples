@@ -39,9 +39,9 @@ public:
 
     void initialize(rpflex::Plugin& rpflex_plugin) final
     {
-        auto& buffer = rpflex_plugin.modify_flex_buffer();
-        auto& flex_params = rpflex_plugin.modify_flex_params();
-        auto& params = rpflex_plugin.modify_plugin_params();
+        auto& buffer = rpflex_plugin.get_flex_buffer();
+        auto& flex_params = rpflex_plugin.get_flex_params();
+        auto& params = rpflex_plugin.get_plugin_params();
 
         const float rest_distance = radius_ * 0.65f;
 
@@ -91,7 +91,7 @@ public:
 
     void sync_flex(rpflex::Plugin& rpflex_plugin) final
     {
-        auto& buffer = rpflex_plugin.modify_flex_buffer();
+        auto& buffer = rpflex_plugin.get_flex_buffer();
         for (auto& entity: entities_)
             entity->update(rpflex_plugin);
     }

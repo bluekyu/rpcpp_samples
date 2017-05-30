@@ -56,15 +56,15 @@ public:
 
 void ParticlesInstance::initialize(rpflex::Plugin& rpflex_plugin)
 {
-    auto& buffer = rpflex_plugin.modify_flex_buffer();
+    auto& buffer = rpflex_plugin.get_flex_buffer();
 
     const auto& transforms = instanced_node_->get_transforms();
 
     auto phase = NvFlexMakePhase(0, eNvFlexPhaseSelfCollide);
     for (size_t k = 0, k_end = transforms.size(); k < k_end; ++k)
     {
-        buffer.positions_.push_back(LVecBase4(transforms[k].get_row3(3), 1));
-        buffer.phases_.push_back(phase);
+        buffer.positions.push_back(LVecBase4(transforms[k].get_row3(3), 1));
+        buffer.phases.push_back(phase);
     }
 }
 
@@ -79,7 +79,7 @@ void ParticlesInstance::sync_flex(rpflex::Plugin& rpflex_plugin)
 
     for (int k = 0, k_end = transforms.size(); k < k_end; ++k)
     {
-        *t = (LMatrix4f::translate_mat(buffer.positions_[k].get_xyz()));
+        *t = (LMatrix4f::translate_mat(buffer.positions[k].get_xyz()));
         ++t;
     }
 

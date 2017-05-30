@@ -38,8 +38,8 @@ class Scene: public rpflex::InstanceInterface
 public:
     void initialize(rpflex::Plugin& rpflex_plugin) final
     {
-        auto& buffer = rpflex_plugin.modify_flex_buffer();
-        auto& params = rpflex_plugin.modify_flex_params();
+        auto& buffer = rpflex_plugin.get_flex_buffer();
+        auto& params = rpflex_plugin.get_flex_params();
         params.radius = 0.1f;
         params.numIterations = 2;
 
@@ -47,11 +47,11 @@ public:
         params.maxAcceleration = 50.0f;
 
         // plinth
-        entities_.push_back(std::make_shared<FlexShapeEntity>(rpflex_plugin, std::make_shared<rpflex::RPFlexShapeBox>(buffer, 1.0f, LVecBase3f(0.0f, 0.0f, 0.0f))));
+        entities_.push_back(std::make_shared<FlexShapeEntity>(rpflex_plugin, std::make_shared<rpflex::RPFlexShapeBox>(rpflex_plugin, 1.0f, LVecBase3f(0.0f, 0.0f, 0.0f))));
 
-        buffer.positions_.push_back(LVecBase4f(0.0f, 0.0f, 0.5f, 1.0f));
-        buffer.velocities_.push_back(LVecBase3f(0.0f));
-        buffer.phases_.push_back(0);
+        buffer.positions.push_back(LVecBase4f(0.0f, 0.0f, 0.5f, 1.0f));
+        buffer.velocities.push_back(LVecBase3f(0.0f));
+        buffer.phases.push_back(0);
 
         entities_.push_back(std::make_shared<FlexParticlesEntity>(rpflex_plugin));
 
@@ -61,7 +61,7 @@ public:
 
     void sync_flex(rpflex::Plugin& rpflex_plugin) final
     {
-        auto& buffer = rpflex_plugin.modify_flex_buffer();
+        auto& buffer = rpflex_plugin.get_flex_buffer();
         for (auto& entity: entities_)
             entity->update(rpflex_plugin);
     }

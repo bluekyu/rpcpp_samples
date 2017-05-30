@@ -48,8 +48,8 @@ struct Emitter
 void CreateParticleGrid(rpflex::FlexBuffer& buffer, const LVecBase3f& lower, int dimx, int dimy, int dimz, float radius,
     const LVecBase3f& velocity, float invMass, bool rigid, float rigidStiffness, int phase, float jitter=0.005f)
 {
-    if (rigid && buffer.rigid_indices_.empty())
-        buffer.rigid_offsets_.push_back(0);
+    if (rigid && buffer.rigid_indices.empty())
+        buffer.rigid_offsets.push_back(0);
 
     for (int x = 0; x < dimx; ++x)
     {
@@ -58,28 +58,28 @@ void CreateParticleGrid(rpflex::FlexBuffer& buffer, const LVecBase3f& lower, int
             for (int z=0; z < dimz; ++z)
             {
                 if (rigid)
-                    buffer.rigid_indices_.push_back(int(buffer.positions_.size()));
+                    buffer.rigid_indices.push_back(int(buffer.positions.size()));
 
                 LVecBase3f position = lower + LVecBase3f(float(x), float(y), float(z))*radius + RandomUnitVector()*jitter;
 
-                buffer.positions_.push_back(LVecBase4f(position, invMass));
-                buffer.velocities_.push_back(velocity);
-                buffer.phases_.push_back(phase);
+                buffer.positions.push_back(LVecBase4f(position, invMass));
+                buffer.velocities.push_back(velocity);
+                buffer.phases.push_back(phase);
             }
         }
     }
 
     if (rigid)
     {
-        buffer.rigid_coefficients_.push_back(rigidStiffness);
-        buffer.rigid_offsets_.push_back(int(buffer.rigid_indices_.size()));
+        buffer.rigid_coefficients.push_back(rigidStiffness);
+        buffer.rigid_offsets.push_back(int(buffer.rigid_indices.size()));
     }
 }
 
 void UpdateEmitters(rpflex::Plugin& rpflex_plugin, Emitter& emitter)
 {
     const auto& flex_params = rpflex_plugin.get_flex_params();
-    auto& buffer = rpflex_plugin.modify_flex_buffer();
+    auto& buffer = rpflex_plugin.get_flex_buffer();
 
     NodePath cam = rpcore::Globals::base->get_cam();
 
@@ -139,13 +139,13 @@ void UpdateEmitters(rpflex::Plugin& rpflex_plugin, Emitter& emitter)
                 LVecBase3f up = emitter.mDir.cross(emitter.mRight).normalized();
                 LVecBase3f offset = r*(emitter.mRight*x + up*y) + float(k)*emitter.mDir*r;
 
-                if (activeCount < buffer.positions_.size())
+                if (activeCount < buffer.positions.size())
                 {
-                    buffer.positions_[activeCount] = LVecBase4f(emitter.mPos + offset, 1.0f);
-                    buffer.velocities_[activeCount] = emitter.mDir*emitter.mSpeed;
-                    buffer.phases_[activeCount] = phase;
+                    buffer.positions[activeCount] = LVecBase4f(emitter.mPos + offset, 1.0f);
+                    buffer.velocities[activeCount] = emitter.mDir*emitter.mSpeed;
+                    buffer.phases[activeCount] = phase;
 
-                    buffer.active_indices_.push_back(activeCount);
+                    buffer.active_indices.push_back(activeCount);
 
                     activeCount++;
                 }

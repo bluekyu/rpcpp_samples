@@ -36,9 +36,9 @@ class Scene: public rpflex::InstanceInterface
 public:
     void initialize(rpflex::Plugin& rpflex_plugin) final
     {
-        auto& buffer = rpflex_plugin.modify_flex_buffer();
-        auto& flex_params = rpflex_plugin.modify_flex_params();
-        auto& params = rpflex_plugin.modify_plugin_params();
+        auto& buffer = rpflex_plugin.get_flex_buffer();
+        auto& flex_params = rpflex_plugin.get_flex_params();
+        auto& params = rpflex_plugin.get_plugin_params();
 
         float radius = 0.1f;
 
@@ -66,9 +66,9 @@ public:
         params.num_extra_particles = 64 * 1024;
 
         entities_.push_back(std::make_shared<FlexShapeEntity>(rpflex_plugin, std::make_shared<rpflex::RPFlexShapeBox>(
-            buffer, LVecBase3f(1.0f, 0.1f, 1.5f), LVecBase3f(0.0f, 0.0f, 1.5f))));
+            rpflex_plugin, LVecBase3f(1.0f, 0.1f, 1.5f), LVecBase3f(0.0f, 0.0f, 1.5f))));
         entities_.push_back(std::make_shared<FlexShapeEntity>(rpflex_plugin, std::make_shared<rpflex::RPFlexShapeBox>(
-            buffer, LVecBase3f(1.0f, 6.0f, 0.1f), LVecBase3f(-1.0f, 0.0f, 3.0f))));
+            rpflex_plugin, LVecBase3f(1.0f, 6.0f, 0.1f), LVecBase3f(-1.0f, 0.0f, 3.0f))));
 
         emitter.mEnabled = true;
         emitter.mSpeed = (flex_params.fluidRestDistance*2.f / (1/60.0f));
@@ -82,6 +82,8 @@ public:
         particles_entity_ = std::make_shared<FlexParticlesEntity>(rpflex_plugin);
         entities_.push_back(particles_entity_);
 
+        particles_entity_->get_particles_node()->set_active_point_count(rpflex_plugin.get_flex_buffer().active_indices.size());
+
         // emitter
         rpcore::Globals::base->accept("e", [](const Event* ev, void* data) {
             reinterpret_cast<Scene*>(data)->toggle_emit();
@@ -90,12 +92,12 @@ public:
 
     void sync_flex(rpflex::Plugin& rpflex_plugin) final
     {
-        auto& buffer = rpflex_plugin.modify_flex_buffer();
+        auto& buffer = rpflex_plugin.get_flex_buffer();
 
         if (is_emit)
         {
             UpdateEmitters(rpflex_plugin, emitter);
-            particles_entity_->get_particles_node()->set_active_point_count(buffer.active_indices_.size());
+            particles_entity_->get_particles_node()->set_active_point_count(buffer.active_indices.size());
         }
 
         for (auto& entity: entities_)

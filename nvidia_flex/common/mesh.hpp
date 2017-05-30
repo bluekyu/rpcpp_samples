@@ -44,7 +44,7 @@ public:
     {
         const auto& buffer = rpflex_plugin.get_flex_buffer();
 
-        const int flags = buffer.shape_flags_[flex_shape_->get_shape_buffer_index()];
+        const int flags = buffer.shape_flags[flex_shape_->get_shape_buffer_index()];
 
         // unpack flags
         int type = int(flags & eNvFlexShapeFlagTypeMask);
@@ -83,7 +83,7 @@ public:
 
         int index = flex_shape_->get_shape_buffer_index();
 
-        const int flags = buffer.shape_flags_[index];
+        const int flags = buffer.shape_flags[index];
 
         // unpack flags
         int type = int(flags & eNvFlexShapeFlagTypeMask);
@@ -98,10 +98,10 @@ public:
 
         // render with prev positions to match particle update order
         // can also think of this as current/next
-        const LQuaternionf& rotation = buffer.shape_prev_rotations_[index];
-        const LVecBase3f& position = buffer.shape_prev_positions_[index].get_xyz();
+        const LQuaternionf& rotation = buffer.shape_prev_rotations[index];
+        const LVecBase3f& position = buffer.shape_prev_positions[index].get_xyz();
 
-        NvFlexCollisionGeometry geo = buffer.shape_geometry_[index];
+        NvFlexCollisionGeometry geo = buffer.shape_geometry[index];
 
         if (type == eNvFlexShapeSphere)
         {
@@ -138,9 +138,9 @@ public:
         const auto& flex_parmas = rpflex_plugin.get_flex_params();
 
         std::vector<LPoint3f> positions;
-        positions.reserve(buffer.positions_.size());
-        for (int k=0, k_end=buffer.positions_.size(); k < k_end; ++k)
-            positions.push_back(buffer.positions_[k].get_xyz());
+        positions.reserve(buffer.positions.size());
+        for (int k=0, k_end=buffer.positions.size(); k < k_end; ++k)
+            positions.push_back(buffer.positions[k].get_xyz());
 
         particles_node_ = std::make_shared<rpcore::CircularPointsNode>("particles", positions, flex_parmas.radius, "", GeomEnums::UH_dynamic);
         particles_node_->get_nodepath().reparent_to(rpcore::Globals::render);
@@ -153,7 +153,7 @@ public:
         std::vector<LPoint3f> positions;
         positions.reserve(particles_node_->get_point_count());
         for (int k=0, k_end=particles_node_->get_point_count(); k < k_end; ++k)
-            positions.push_back(buffer.positions_[k].get_xyz());
+            positions.push_back(buffer.positions[k].get_xyz());
 
         particles_node_->set_positions(positions);
         particles_node_->upload_positions();
