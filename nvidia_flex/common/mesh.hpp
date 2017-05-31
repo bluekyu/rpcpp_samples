@@ -44,34 +44,33 @@ public:
     {
         const auto& buffer = rpflex_plugin.get_flex_buffer();
 
-        const int flags = buffer.shape_flags[flex_shape_->get_shape_buffer_index()];
-
-        // unpack flags
-        int type = int(flags & eNvFlexShapeFlagTypeMask);
-        //bool dynamic = int(flags&eNvFlexShapeFlagDynamic) > 0;
-
-        if (type == eNvFlexShapeSphere)
+        switch (flex_shape_->get_collision_shape_type(buffer))
         {
-        }
-        else if (type == eNvFlexShapeCapsule)
-        {
-        }
-        else if (type == eNvFlexShapeBox)
-        {
-            nodepath_ = rpcore::create_cube("box");
-        }
-        else if (type == eNvFlexShapeConvexMesh)
-        {
-        }
-        else if (type == eNvFlexShapeTriangleMesh)
-        {
-        }
-        else if (type == eNvFlexShapeSDF)
-        {
-        }
-        else
-        {
-            std::cout << "Unknown shape type." << std::endl;
+            case eNvFlexShapeSphere:
+            {
+                break;
+            }
+            case eNvFlexShapeCapsule:
+            {
+                break;
+            }
+            case eNvFlexShapeBox:
+            {
+                nodepath_ = rpcore::create_cube("box");
+                break;
+            }
+            case eNvFlexShapeConvexMesh:
+            {
+                break;
+            }
+            case eNvFlexShapeTriangleMesh:
+            {
+                break;
+            }
+            case eNvFlexShapeSDF:
+            {
+                break;
+            }
         }
 
         nodepath_.reparent_to(rpcore::Globals::render);
@@ -81,12 +80,9 @@ public:
     {
         const auto& buffer = rpflex_plugin.get_flex_buffer();
 
-        int index = flex_shape_->get_shape_buffer_index();
-
-        const int flags = buffer.shape_flags[index];
+        const int flags = flex_shape_->get_shape_flag(buffer);
 
         // unpack flags
-        int type = int(flags & eNvFlexShapeFlagTypeMask);
         //bool dynamic = int(flags&eNvFlexShapeFlagDynamic) > 0;
 
         LVecBase3f color = LVecBase3f(0.9f);
@@ -96,32 +92,7 @@ public:
             color = LVecBase3f(0.6f, 1.0, 0.6f);
         }
 
-        // render with prev positions to match particle update order
-        // can also think of this as current/next
-        const LQuaternionf& rotation = buffer.shape_prev_rotations[index];
-        const LVecBase3f& position = buffer.shape_prev_positions[index].get_xyz();
-
-        NvFlexCollisionGeometry geo = buffer.shape_geometry[index];
-
-        if (type == eNvFlexShapeSphere)
-        {
-        }
-        else if (type == eNvFlexShapeCapsule)
-        {
-        }
-        else if (type == eNvFlexShapeBox)
-        {
-            nodepath_.set_pos_quat_scale(position, rotation, LVecBase3f(geo.box.halfExtents[0], geo.box.halfExtents[1], geo.box.halfExtents[2]) * 2.0f);
-        }
-        else if (type == eNvFlexShapeConvexMesh)
-        {
-        }
-        else if (type == eNvFlexShapeTriangleMesh)
-        {
-        }
-        else if (type == eNvFlexShapeSDF)
-        {
-        }
+        nodepath_.set_mat(flex_shape_->get_transform(buffer));
     }
 
 private:
