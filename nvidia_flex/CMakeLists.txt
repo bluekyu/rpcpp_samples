@@ -18,3 +18,7 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Flex-Friction-Ramp")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Flex-Initial-Overlap")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Flex-Instancing-Flex")
 # ==================================================================================================
+
+# === install ======================================================================================
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/config/" DESTINATION "etc/rpsamples/rpflex")
+# ==================================================================================================

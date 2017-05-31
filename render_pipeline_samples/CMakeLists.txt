@@ -13,3 +13,7 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/07-Shading-Models")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/10-Plugin")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/11-Instancing")
 # ==================================================================================================
+
+# === install ======================================================================================
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/config/" DESTINATION "etc/rpsamples/default")
+# ==================================================================================================
