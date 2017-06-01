@@ -26,9 +26,9 @@
 #include <pandaSystem.h>
 
 #include <render_pipeline/rppanda/showbase/showbase.h>
-#include <render_pipeline/rpcore/render_pipeline.h>
-#include <render_pipeline/rpcore/mount_manager.h>
-#include <render_pipeline/rpcore/globals.h>
+#include <render_pipeline/rpcore/render_pipeline.hpp>
+#include <render_pipeline/rpcore/mount_manager.hpp>
+#include <render_pipeline/rpcore/globals.hpp>
 
 int main(int argc, char* argv[])
 {

@@ -28,10 +28,10 @@
 #include <load_prc_file.h>
 
 #include <render_pipeline/rppanda/showbase/showbase.h>
-#include <render_pipeline/rpcore/render_pipeline.h>
-#include <render_pipeline/rpcore/mount_manager.h>
+#include <render_pipeline/rpcore/render_pipeline.hpp>
+#include <render_pipeline/rpcore/mount_manager.hpp>
 #include <render_pipeline/rpcore/pluginbase/day_manager.h>
-#include <render_pipeline/rpcore/globals.h>
+#include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/util/movement_controller.h>
 
 int main(int argc, char* argv[])

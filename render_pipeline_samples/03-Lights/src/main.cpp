@@ -39,10 +39,10 @@
 #include <render_pipeline/rppanda/interval/lerp_interval.h>
 #include <render_pipeline/rppanda/interval/meta_interval.h>
 
-#include <render_pipeline/rpcore/render_pipeline.h>
-#include <render_pipeline/rpcore/mount_manager.h>
+#include <render_pipeline/rpcore/render_pipeline.hpp>
+#include <render_pipeline/rpcore/mount_manager.hpp>
 #include <render_pipeline/rpcore/pluginbase/day_manager.h>
-#include <render_pipeline/rpcore/globals.h>
+#include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/util/movement_controller.h>
 #include <render_pipeline/rpcore/native/rp_spot_light.h>
 
