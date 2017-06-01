@@ -34,7 +34,7 @@
 #include <render_pipeline/rpcore/mount_manager.hpp>
 #include <render_pipeline/rpcore/pluginbase/day_manager.h>
 #include <render_pipeline/rpcore/globals.hpp>
-#include <render_pipeline/rpcore/util/movement_controller.h>
+#include <render_pipeline/rpcore/util/movement_controller.hpp>
 #include <render_pipeline/rpcore/util/instancing_node.hpp>
 #include <render_pipeline/rpcore/util/primitives.hpp>
 #include <render_pipeline/rpcore/pluginbase/manager.h>
