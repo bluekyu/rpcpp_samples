@@ -41,7 +41,7 @@
 
 #include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/mount_manager.hpp>
-#include <render_pipeline/rpcore/pluginbase/day_manager.h>
+#include <render_pipeline/rpcore/pluginbase/day_manager.hpp>
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/util/movement_controller.hpp>
 #include <render_pipeline/rpcore/native/rp_spot_light.h>
