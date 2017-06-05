@@ -61,8 +61,13 @@ target_link_libraries(${PROJECT_NAME}
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     FOLDER "rpcpp_samples"
+    DEBUG_POSTFIX ${render_pipeline_DEBUG_POSTFIX}
+    RELWITHDEBINFO_POSTFIX ${render_pipeline_RELWITHDEBINFO_POSTFIX}
+    VERSION ${PROJECT_VERSION}
 )
+# ==================================================================================================
 
+# === target =======================================================================================
 # create plugin interface target
 add_library(${RPPLUGIN_ID} INTERFACE)
 
@@ -74,9 +79,7 @@ target_include_directories(${RPPLUGIN_ID}
 target_link_libraries(${RPPLUGIN_ID}
     INTERFACE render_pipeline
 )
-# ==================================================================================================
 
-# === target =======================================================================================
 # configure package
 set(PACKAGE_NAME "rpplugin_${RPPLUGIN_ID}")
 set(TARGET_NAMESPACE "rpplugin::")
@@ -104,6 +107,16 @@ install(TARGETS ${RPPLUGIN_ID} EXPORT ${TARGET_EXPORT_NAME})
 export(EXPORT ${TARGET_EXPORT_NAME}
     NAMESPACE ${TARGET_NAMESPACE}
     FILE "${PROJECT_BINARY_DIR}/${TARGET_EXPORT_NAME}.cmake"
+)
+
+install(FILES "${PROJECT_BINARY_DIR}/Debug/${PROJECT_NAME}${render_pipeline_DEBUG_POSTFIX}.pdb"
+    DESTINATION ${RPPLUGIN_INSTALL_DIR}
+    CONFIGURATIONS Debug
+)
+
+install(FILES "${PROJECT_BINARY_DIR}/RelWithDebInfo/${PROJECT_NAME}${render_pipeline_RELWITHDEBINFO_POSTFIX}.pdb"
+    DESTINATION ${RPPLUGIN_INSTALL_DIR}
+    CONFIGURATIONS RelWithDebInfo
 )
 
 install(FILES "${PROJECT_SOURCE_DIR}/config.yaml" DESTINATION ${RPPLUGIN_INSTALL_DIR})
