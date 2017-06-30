@@ -32,18 +32,13 @@
 
 int main(int argc, char* argv[])
 {
-    PandaFramework framework;
-    framework.open_framework(argc, argv);
-    WindowFramework* window = framework.open_window();
-
     // configure panda3d in program.
-    rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline;
+    rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline(argc, argv);
     render_pipeline->get_mount_mgr()->set_base_path("../share/render_pipeline");
     render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
-    render_pipeline->create(&framework, window);
+    render_pipeline->create();
 
-    framework.main_loop();
-    framework.close_framework();
+    render_pipeline->run();
 
     delete render_pipeline;
 

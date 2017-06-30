@@ -78,21 +78,18 @@ int main(int argc, char* argv[])
     load_prc_file_data("",
         "window-title Render Pipeline - Shading Models Demo");
 
-    PandaFramework framework;
-    framework.open_framework(argc, argv);
-    WindowFramework* window = framework.open_window();
-
     // configure panda3d in program.
-    rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline;
+    rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline(argc, argv);
     render_pipeline->get_mount_mgr()->set_base_path("../share/render_pipeline");
     render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
-    render_pipeline->create(&framework, window);
+    render_pipeline->create();
 
     // Set time of day
     render_pipeline->get_daytime_mgr()->set_time(0.769f);
 
     // Load the scene
-    NodePath model = window->load_model(window->get_render(), "../share/render_pipeline/models/07-Shading-Models/TestScene.bam");
+    NodePath model = rpcore::Globals::base->get_window_framework()->load_model(rpcore::Globals::render,
+        "../share/render_pipeline/models/07-Shading-Models/TestScene.bam");
     render_pipeline->prepare_scene(model);
 
     // Init movement controller
@@ -105,8 +102,9 @@ int main(int argc, char* argv[])
     render_pipeline->get_showbase()->accept("l", tour, controller.get());
     render_pipeline->get_showbase()->accept("r", reload_shaders, render_pipeline);
 
-    framework.main_loop();
-    framework.close_framework();
+    render_pipeline->run();
+
+    delete render_pipeline;
 
     return 0;
 }

@@ -72,18 +72,13 @@ int main(int argc, char* argv[])
     load_prc_file_data("",
         "window-title Render Pipeline - Lights demo");
 
-    PandaFramework framework;
-    framework.open_framework(argc, argv);
-    WindowFramework* window = framework.open_window();
-
     // ------ Begin of render pipeline code ------
 
     // configure panda3d in program.
-    rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline;
+    rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline(argc, argv);
     render_pipeline->get_mount_mgr()->set_base_path("../share/render_pipeline");
     render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
-
-    render_pipeline->create(&framework, window);
+    render_pipeline->create();
 
     // ------ End of render pipeline code, thats it! ------
 
@@ -91,7 +86,8 @@ int main(int argc, char* argv[])
     render_pipeline->get_daytime_mgr()->set_time("5:20");
 
     // Load the scene
-    NodePath model = window->load_model(window->get_render(), "../share/render_pipeline/models/03-Lights/Scene.bam");
+    NodePath model = rpcore::Globals::base->get_window_framework()->load_model(rpcore::Globals::render,
+        "../share/render_pipeline/models/03-Lights/Scene.bam");
 
     // Animate balls, this is for testing the motion blur
     CLerpInterval::BlendType blend_type = CLerpInterval::BT_no_blend;
@@ -212,7 +208,8 @@ int main(int argc, char* argv[])
         // Put Pandas on the edges
         if (k < 2 || k >= k_end - 2)
         {
-            NodePath panda = window->load_model(window->get_render(), "../share/render_pipeline/models/03-Lights/panda");
+            NodePath panda = rpcore::Globals::base->get_window_framework()->load_model(rpcore::Globals::render,
+                "../share/render_pipeline/models/03-Lights/panda");
             panda.reparent_to(rpcore::Globals::render);
             PT(Material) panda_mat = new Material("default");
             panda_mat->set_emission(0);
@@ -239,8 +236,7 @@ int main(int argc, char* argv[])
 
     rpcore::Globals::base->add_task(update, nullptr, "update");
 
-    framework.main_loop();
-    framework.close_framework();
+    render_pipeline->run();
 
     delete controller;
     delete render_pipeline;

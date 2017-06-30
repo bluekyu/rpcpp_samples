@@ -51,15 +51,11 @@ int main(int argc, char* argv[])
     load_prc_file_data("",
         "window-title Render Pipeline - Friction Ramp");
 
-    PandaFramework framework;
-    framework.open_framework(argc, argv);
-    WindowFramework* window = framework.open_window();
-
     // configure panda3d in program.
-    rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline;
+    rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline(argc, argv);
     render_pipeline->get_mount_mgr()->set_base_path("../share/render_pipeline");
     render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/rpflex");
-    render_pipeline->create(&framework, window);
+    render_pipeline->create();
 
     // Set time of day
     render_pipeline->get_daytime_mgr()->set_time("19:17");
@@ -83,8 +79,9 @@ int main(int argc, char* argv[])
         LVecBase3f(0));
     controller->setup();
 
-    framework.main_loop();
-    framework.close_framework();
+    render_pipeline->run();
+
+    delete render_pipeline;
 
     return 0;
 }
