@@ -57,29 +57,32 @@ int main(int argc, char* argv[])
     render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/rpflex");
     render_pipeline->create();
 
-    // Set time of day
-    render_pipeline->get_daytime_mgr()->set_time("19:17");
-
-    if (!render_pipeline->get_plugin_mgr()->is_plugin_enabled("rpflex"))
+    // for releasing smart pointers
     {
-        rpcore::RPObject::global_error("Main", "Flex plugin is NOT enabled.");
-        return 1;
+        // Set time of day
+        render_pipeline->get_daytime_mgr()->set_time("19:17");
+
+        if (!render_pipeline->get_plugin_mgr()->is_plugin_enabled("rpflex"))
+        {
+            rpcore::RPObject::global_error("Main", "Flex plugin is NOT enabled.");
+            return 1;
+        }
+
+        auto& flex_plugin = std::dynamic_pointer_cast<rpflex::Plugin>(render_pipeline->get_plugin_mgr()->get_instance("rpflex"));
+
+        flex_plugin->add_instance(std::make_shared<Scene>(0.05f));
+
+        // Initialize movement controller, this is a convenience class
+        // to provide an improved camera control compared to Panda3Ds default
+        // mouse controller.
+        std::shared_ptr<rpcore::MovementController> controller = std::make_shared<rpcore::MovementController>(rpcore::Globals::base);
+        controller->set_initial_position(
+            LVecBase3f(0, -20, 5),
+            LVecBase3f(0));
+        controller->setup();
+
+        render_pipeline->run();
     }
-
-    auto& flex_plugin = std::dynamic_pointer_cast<rpflex::Plugin>(render_pipeline->get_plugin_mgr()->get_instance("rpflex"));
-
-    flex_plugin->add_instance(std::make_shared<Scene>(0.05f));
-
-    // Initialize movement controller, this is a convenience class
-    // to provide an improved camera control compared to Panda3Ds default
-    // mouse controller.
-    std::shared_ptr<rpcore::MovementController> controller = std::make_shared<rpcore::MovementController>(rpcore::Globals::base);
-    controller->set_initial_position(
-        LVecBase3f(0, -20, 5),
-        LVecBase3f(0));
-    controller->setup();
-
-    render_pipeline->run();
 
     delete render_pipeline;
 
