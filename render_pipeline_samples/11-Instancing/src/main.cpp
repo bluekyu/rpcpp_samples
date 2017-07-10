@@ -22,8 +22,6 @@
  * SOFTWARE.
  */
 
-#include <pandaFramework.h>
-#include <pandaSystem.h>
 #include <load_prc_file.h>
 #include <nodePathCollection.h>
 
@@ -34,6 +32,7 @@
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/util/movement_controller.hpp>
 #include <render_pipeline/rpcore/util/instancing_node.hpp>
+#include <render_pipeline/rpcore/loader.hpp>
 
 int main(int argc, char* argv[])
 {
@@ -51,8 +50,8 @@ int main(int argc, char* argv[])
     render_pipeline->get_daytime_mgr()->set_time("19:17");
 
     // Load the scene
-    NodePath model = rpcore::Globals::base->get_window_framework()->load_model(rpcore::Globals::render,
-        "../share/render_pipeline/models/11-Instancing/Scene.bam");
+    NodePath model = rpcore::RPLoader::load_model("../share/render_pipeline/models/11-Instancing/Scene.bam");
+    model.reparent_to(rpcore::Globals::render);
 
     // Find the prefab object, we are going to in instance this object
     // multiple times

@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <pandaFramework.h>
-#include <pandaSystem.h>
-#include <texturePool.h>
 #include <load_prc_file.h>
 
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
@@ -33,6 +30,7 @@
 #include <render_pipeline/rpcore/pluginbase/day_manager.hpp>
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/util/movement_controller.hpp>
+#include <render_pipeline/rpcore/loader.hpp>
 
 void reload_shaders(const Event* ev, void* user_data)
 {
@@ -88,9 +86,8 @@ int main(int argc, char* argv[])
     render_pipeline->get_daytime_mgr()->set_time(0.769f);
 
     // Load the scene
-    NodePath model = rpcore::Globals::base->get_window_framework()->load_model(rpcore::Globals::render,
-        "../share/render_pipeline/models/07-Shading-Models/TestScene.bam");
-    render_pipeline->prepare_scene(model);
+    NodePath model = rpcore::RPLoader::load_model("../share/render_pipeline/models/07-Shading-Models/TestScene.bam");
+    model.reparent_to(rpcore::Globals::render);
 
     // Init movement controller
     std::shared_ptr<rpcore::MovementController> controller = std::make_shared<rpcore::MovementController>(rpcore::Globals::base);
@@ -99,8 +96,8 @@ int main(int argc, char* argv[])
         LVecBase3f(4.7f, -16.7f, 3.4f));
     controller->setup();
 
-    render_pipeline->get_showbase()->accept("l", tour, controller.get());
-    render_pipeline->get_showbase()->accept("r", reload_shaders, render_pipeline);
+    rpcore::Globals::base->accept("l", tour, controller.get());
+    rpcore::Globals::base->accept("r", reload_shaders, render_pipeline);
 
     render_pipeline->run();
 

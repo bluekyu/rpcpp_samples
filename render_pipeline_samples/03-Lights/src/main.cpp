@@ -26,9 +26,6 @@
 #include <queue>
 #include <random>
 
-#include <pandaFramework.h>
-#include <pandaSystem.h>
-#include <texturePool.h>
 #include <load_prc_file.h>
 #include <nodePathCollection.h>
 #include <spotlight.h>
@@ -45,6 +42,7 @@
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/util/movement_controller.hpp>
 #include <render_pipeline/rpcore/native/rp_spot_light.h>
+#include <render_pipeline/rpcore/loader.hpp>
 
 float half_energy = 5000;
 float lamp_fov = 70;
@@ -86,8 +84,8 @@ int main(int argc, char* argv[])
     render_pipeline->get_daytime_mgr()->set_time("5:20");
 
     // Load the scene
-    NodePath model = rpcore::Globals::base->get_window_framework()->load_model(rpcore::Globals::render,
-        "../share/render_pipeline/models/03-Lights/Scene.bam");
+    NodePath model = rpcore::RPLoader::load_model("../share/render_pipeline/models/03-Lights/Scene.bam");
+    model.reparent_to(rpcore::Globals::render);
 
     // Animate balls, this is for testing the motion blur
     CLerpInterval::BlendType blend_type = CLerpInterval::BT_no_blend;
@@ -208,8 +206,7 @@ int main(int argc, char* argv[])
         // Put Pandas on the edges
         if (k < 2 || k >= k_end - 2)
         {
-            NodePath panda = rpcore::Globals::base->get_window_framework()->load_model(rpcore::Globals::render,
-                "../share/render_pipeline/models/03-Lights/panda");
+            NodePath panda = rpcore::RPLoader::load_model("../share/render_pipeline/models/03-Lights/panda");
             panda.reparent_to(rpcore::Globals::render);
             PT(Material) panda_mat = new Material("default");
             panda_mat->set_emission(0);

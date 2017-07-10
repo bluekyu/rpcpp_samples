@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <pandaFramework.h>
-#include <pandaSystem.h>
-#include <texturePool.h>
 #include <load_prc_file.h>
 
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
@@ -33,6 +30,7 @@
 #include <render_pipeline/rpcore/pluginbase/day_manager.hpp>
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/util/movement_controller.hpp>
+#include <render_pipeline/rpcore/loader.hpp>
 
 void tour(const Event* ev, void* user_data)
 {
@@ -63,9 +61,8 @@ int main(int argc, char* argv[])
     render_pipeline->get_daytime_mgr()->set_time("20:08");
 
     // Load the scene
-    NodePath model = rpcore::Globals::base->get_window_framework()->load_model(rpcore::Globals::render,
-        "../share/render_pipeline/models/06-Car/scene.bam");
-    render_pipeline->prepare_scene(rpcore::Globals::render);
+    NodePath model = rpcore::RPLoader::load_model("../share/render_pipeline/models/06-Car/scene.bam");
+    model.reparent_to(rpcore::Globals::render);
 
     // Init movement controller
     std::shared_ptr<rpcore::MovementController> controller = std::make_shared<rpcore::MovementController>(rpcore::Globals::base);
@@ -74,7 +71,7 @@ int main(int argc, char* argv[])
         LVecBase3f(-5.9f, -4.0f, 1.6f));
     controller->setup();
 
-    render_pipeline->get_showbase()->accept("l", tour, controller.get());
+    rpcore::Globals::base->accept("l", tour, controller.get());
 
     render_pipeline->run();
 

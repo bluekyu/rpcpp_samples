@@ -22,9 +22,6 @@
  * SOFTWARE.
  */
 
-#include <pandaFramework.h>
-#include <pandaSystem.h>
-#include <texturePool.h>
 #include <load_prc_file.h>
 
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
@@ -33,6 +30,7 @@
 #include <render_pipeline/rpcore/pluginbase/day_manager.hpp>
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/util/movement_controller.hpp>
+#include <render_pipeline/rpcore/loader.hpp>
 
 int main(int argc, char* argv[])
 {
@@ -50,8 +48,8 @@ int main(int argc, char* argv[])
     render_pipeline->get_daytime_mgr()->set_time("19:17");
 
     // Load the scene
-    NodePath model = rpcore::Globals::base->get_window_framework()->load_model(rpcore::Globals::render,
-        "../share/render_pipeline/models/01-Material-Demo/TestScene.bam");
+    NodePath model = rpcore::RPLoader::load_model("../share/render_pipeline/models/01-Material-Demo/TestScene.bam");
+    model.reparent_to(rpcore::Globals::render);
     render_pipeline->prepare_scene(rpcore::Globals::render);
 
     // Enable parallax mapping on the floor
