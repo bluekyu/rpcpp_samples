@@ -23,7 +23,8 @@ cmake_minimum_required(VERSION 3.6)
 
 find_path(NvFlex_INCLUDE_DIR
     NAMES "NvFlex.h"
-    HINTS "${NvFlex_ROOT}/include"
+    PATHS "${NvFlex_ROOT}"
+    PATH_SUFFIXES include
 )
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -42,8 +43,8 @@ foreach(component ${NvFlex_COMPONENTS})
         set(_lib_name ${component}${configuration})
         find_library(NvFlex_LIBRARY_${_lib_name}
             NAMES ${_lib_name}_x${NvFlex_arch_suffix}
-            HINTS "${NvFlex_ROOT}/lib"
-            PATH_SUFFIXES win${NvFlex_arch_suffix}
+            PATHS "${NvFlex_ROOT}"
+            PATH_SUFFIXES "win${NvFlex_arch_suffix}/lib"
         )
         unset(_lib_name)
     endforeach()
@@ -55,8 +56,8 @@ foreach(component ${NvFlex_GPU_COMPONENTS})
             set(_lib_name ${component}${configuration}${gpu_type})
             find_library(NvFlex_LIBRARY_${_lib_name}
                 NAMES ${_lib_name}_x${NvFlex_arch_suffix}
-                HINTS "${NvFlex_ROOT}/lib"
-                PATH_SUFFIXES win${NvFlex_arch_suffix}
+                PATHS "${NvFlex_ROOT}"
+                PATH_SUFFIXES "win${NvFlex_arch_suffix}/lib"
             )
             unset(_lib_name)
         endforeach()
