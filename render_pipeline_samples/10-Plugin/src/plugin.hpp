@@ -36,6 +36,6 @@ public:
     void on_stage_setup(void) override;
 
 private:
-    struct Impl;
+    class Impl;
     std::unique_ptr<Impl> impl_;
 };

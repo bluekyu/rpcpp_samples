@@ -30,8 +30,9 @@
 
 RENDER_PIPELINE_PLUGIN_CREATOR(Plugin)
 
-struct Plugin::Impl
+class Plugin::Impl
 {
+public:
     static RequrieType require_plugins_;
 
     std::shared_ptr<SampleStage> stage_;
