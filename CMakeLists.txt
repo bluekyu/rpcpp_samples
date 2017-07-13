@@ -17,5 +17,6 @@ add_subdirectory("01-Crytek-Sponza")
 add_subdirectory("02-San-Miguel")
 add_subdirectory("03-Shading-Models-VR")
 add_subdirectory("nvidia_flex")
+add_subdirectory("panda3d_samples")
 add_subdirectory("render_pipeline_samples")
 # ==================================================================================================
