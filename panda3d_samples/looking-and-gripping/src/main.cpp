@@ -24,11 +24,7 @@
 
 #include <load_prc_file.h>
 
-#include <render_pipeline/rpcore/render_pipeline.hpp>
-#include <render_pipeline/rpcore/mount_manager.hpp>
-#include <render_pipeline/rpcore/pluginbase/day_manager.hpp>
-#include <render_pipeline/rpcore/globals.hpp>
-#include <render_pipeline/rpcore/util/movement_controller.hpp>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
 
 #include "scene.hpp"
 
@@ -39,23 +35,11 @@ int main(int argc, char* argv[])
         "window-title Panda3D: Tutorial - Joint Manipulation");
 
     // configure panda3d in program.
-    rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline(argc, argv);
-    render_pipeline->get_mount_mgr()->set_base_path("../share/render_pipeline");
-    render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
-    render_pipeline->create();
-
-    // Set time of day
-    render_pipeline->get_daytime_mgr()->set_time("19:17");
+    rppanda::ShowBase base(argc, argv);
 
     auto scene = std::make_shared<Scene>();
 
-    rpcore::MovementController* controller =  new rpcore::MovementController(rpcore::Globals::base);
-    controller->setup();
-
-    render_pipeline->run();
-
-    delete controller;
-    delete render_pipeline;
+    base.run();
 
     return 0;
 }
