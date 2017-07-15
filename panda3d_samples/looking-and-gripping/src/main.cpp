@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2016, Center of human-centered interaction for coexistence.
+ * Copyright (c) 2016-2017, Younguk Kim (bluekyu)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,22 +22,22 @@
  * SOFTWARE.
  */
 
-#include <load_prc_file.h>
-
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
-
-#include "scene.hpp"
+#include <render_pipeline/rppanda/gui/onscreen_text.hpp>
 
 int main(int argc, char* argv[])
 {
-    // Setup window size, title and so on
-    load_prc_file_data("",
-        "window-title Panda3D: Tutorial - Joint Manipulation");
-
-    // configure panda3d in program.
     rppanda::ShowBase base(argc, argv);
 
-    auto scene = std::make_shared<Scene>();
+    rppanda::OnscreenText::Parameters params;
+    params.text = "Panda3D: Tutorial - Joint Manipulation";
+    params.fg = LColor(1, 1, 1, 1);
+    params.parent = rppanda::ShowBase::get_global_ptr()->get_aspect_2d().find("a2d_bottom_right");
+    params.align = TextProperties::A_right;
+    params.pos = LVecBase2(-0.1f, 0.1f);
+    params.shadow = LColor(0, 0, 0, 0.5f);
+    params.scale = 0.08f;
+    rppanda::OnscreenText title_(params);
 
     base.run();
 

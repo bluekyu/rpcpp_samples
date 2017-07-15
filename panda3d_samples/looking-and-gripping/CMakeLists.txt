@@ -14,8 +14,6 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 # set input files
 set(sources_files
     "${PROJECT_SOURCE_DIR}/src/main.cpp"
-    "${PROJECT_SOURCE_DIR}/src/scene.cpp"
-    "${PROJECT_SOURCE_DIR}/src/scene.hpp"
 )
 
 # grouping
