@@ -11,6 +11,9 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake)
 
 # check package
 include(FindPackages)
+if(WIN32)
+    include(windows_utils)
+endif()
 
 # subdirectory
 set(rpcpp_samples_list "panda3d_samples" "render_pipeline_samples" "nvidia_flex"

@@ -29,6 +29,7 @@ add_executable(${PROJECT_NAME} ${sources_files})
 
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_auto_type)
 if(MSVC)
+    add_longpath_manifest(${PROJECT_NAME})
     target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251)
 else()
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
