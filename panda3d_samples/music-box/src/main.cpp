@@ -100,16 +100,8 @@ public:
         // The open/close file has both effects in it.Fortunatly we can use intervals
         // to easily define parts of a sound file to play
 
-        rppanda::SoundInterval::Parameters lid_open_sfx_params;
-        lid_open_sfx_params.sound = lid_sfx_;
-        lid_open_sfx_params.duration = 2.0f;
-        lid_open_sfx_params.start_time = 0.0f;
-        lid_open_sfx_ = new rppanda::SoundInterval(lid_open_sfx_params);
-
-        rppanda::SoundInterval::Parameters lid_close_sfx_params;
-        lid_close_sfx_params.sound = lid_sfx_;
-        lid_close_sfx_params.start_time = 5.0f;
-        lid_close_sfx_ = new rppanda::SoundInterval(lid_close_sfx_params);
+        lid_open_sfx_ = new rppanda::SoundInterval(lid_sfx_, false, 2.0f, {}, {}, 0.0f);
+        lid_close_sfx_ = new rppanda::SoundInterval(lid_sfx_, false, 0.0f, {}, {}, 5.0f);
 
         // For this tutorial, it seemed appropriate to have on screen controls.
         // The following code creates them.
@@ -169,20 +161,12 @@ public:
 
         // This sets up an interval to play the close sound and actually close the box
         // at the same time.
-        rppanda::LerpHprInterval::Parameters lid_close_params;
-        lid_close_params.nodepath = hinge_node_;
-        lid_close_params.duration = 2.0f;
-        lid_close_params.hpr = LVecBase3(0, 90, 0);
-        lid_close_params.blend_type = CLerpInterval::BlendType::BT_ease_in_out;
-        lid_close_ = new rppanda::Parallel({lid_close_sfx_, new rppanda::LerpHprInterval(lid_close_params)});
+        lid_close_ = new rppanda::Parallel({lid_close_sfx_, new rppanda::LerpHprInterval(
+            hinge_node_, 2.0f, LVecBase3(0, 90, 0), {}, {}, {}, CLerpInterval::BlendType::BT_ease_in_out)});
 
         // Same thing for opening the box
-        rppanda::LerpHprInterval::Parameters lid_open_params;
-        lid_open_params.nodepath = hinge_node_;
-        lid_open_params.duration = 2.0f;
-        lid_open_params.hpr = LVecBase3(0, 0, 0);
-        lid_open_params.blend_type = CLerpInterval::BlendType::BT_ease_in_out;
-        lid_open_ = new rppanda::Parallel({ lid_open_sfx_, new rppanda::LerpHprInterval(lid_open_params) });
+        lid_open_ = new rppanda::Parallel({ lid_open_sfx_, new rppanda::LerpHprInterval(
+            hinge_node_, 2.0f, LVecBase3(0, 0, 0), {}, {}, {}, CLerpInterval::BlendType::BT_ease_in_out)});
 
         // The interval for turning the panda
         //panda_turn_ = panda_. hprInterval(7, (360, 0, 0))

@@ -90,77 +90,36 @@ int main(int argc, char* argv[])
     // Animate balls, this is for testing the motion blur
     CLerpInterval::BlendType blend_type = CLerpInterval::BT_no_blend;
 
-    {
-        NodePath np = model.find("**/MBRotate");
+    NodePath np = model.find("**/MBRotate");
+    PT(rppanda::LerpHprInterval) lerp = new rppanda::LerpHprInterval(
+        np, 1.5f, LVecBase3(360, 360, 0), LVecBase3(0, 0, 0), {}, {}, blend_type);
+    lerp->loop();
 
-        rppanda::LerpHprInterval::Parameters params;
-        params.nodepath = np;
-        params.duration = 1.5;
-        params.hpr = LVecBase3(360, 360, 0);
-        params.start_hpr = LVecBase3(0, 0, 0);
-        params.blend_type = blend_type;
-        PT(rppanda::LerpHprInterval) lerp = new rppanda::LerpHprInterval(params);
-        lerp->loop();
-    }
+    np = model.find("**/MBUpDown");
+    LVecBase3 np_pos = np.get_pos() - LVecBase3(0, 0, 2);
+    PT(rppanda::LerpPosInterval) lerp_updown_begin = new rppanda::LerpPosInterval(
+        np, 0.15f, np_pos + LVecBase3(0, 0, 6), np_pos, {}, blend_type);
+    PT(rppanda::LerpPosInterval) lerp_updown_end = new rppanda::LerpPosInterval(
+        np, 0.15f, np_pos, np_pos + LVecBase3(0, 0, 6), {}, blend_type);
+    PT(rppanda::Sequence) updown_seq = new rppanda::Sequence({ lerp_updown_begin, lerp_updown_end });
+    updown_seq->loop();
 
-    {
-        NodePath np = model.find("**/MBUpDown");
-        const LVecBase3& np_pos = np.get_pos() - LVecBase3(0, 0, 2);
+    np = model.find("**/MBFrontBack");
+    np_pos = np.get_pos() - LVecBase3(0, 0, 2);
+    PT(rppanda::LerpPosInterval) lerp_fronback_begin = new rppanda::LerpPosInterval(
+        np, 0.15f, np_pos + LVecBase3(0, 6, 0), np_pos, {}, blend_type);
+    PT(rppanda::LerpPosInterval) lerp_frontback_end = new rppanda::LerpPosInterval(
+        np, 0.15f, np_pos, np_pos + LVecBase3(0, 6, 0), {}, blend_type);
+    PT(rppanda::Sequence) front_backseq = new rppanda::Sequence({ lerp_fronback_begin, lerp_frontback_end });
+    front_backseq->loop();
 
-        rppanda::LerpPosInterval::Parameters params;
-        params.nodepath = np;
-        params.duration = 0.15;
-        params.pos = np_pos + LVecBase3(0, 0, 6);
-        params.start_pos = np_pos;
-        params.blend_type = blend_type;
-        PT(rppanda::LerpPosInterval) lerp1 = new rppanda::LerpPosInterval(params);
-
-        params.pos = np_pos;
-        params.start_pos = np_pos + LVecBase3(0, 0, 6);
-        PT(rppanda::LerpPosInterval) lerp2 = new rppanda::LerpPosInterval(params);
-
-        PT(rppanda::Sequence) seq = new rppanda::Sequence({ lerp1, lerp2 });
-        seq->loop();
-    }
-
-    {
-        NodePath np = model.find("**/MBFrontBack");
-        const LVecBase3& np_pos = np.get_pos() - LVecBase3(0, 0, 2);
-
-        rppanda::LerpPosInterval::Parameters params;
-        params.nodepath = np;
-        params.duration = 0.15;
-        params.pos = np_pos + LVecBase3(0, 6, 0);
-        params.start_pos = np_pos;
-        params.blend_type = blend_type;
-        PT(rppanda::LerpPosInterval) lerp1 = new rppanda::LerpPosInterval(params);
-
-        params.pos = np_pos;
-        params.start_pos = np_pos + LVecBase3(0, 6, 0);
-        PT(rppanda::LerpPosInterval) lerp2 = new rppanda::LerpPosInterval(params);
-
-        PT(rppanda::Sequence) seq = new rppanda::Sequence({ lerp1, lerp2 });
-        seq->loop();
-    }
-
-    {
-        NodePath np = model.find("**/MBScale");
-
-        rppanda::LerpScaleInterval::Parameters params;
-        params.nodepath = np;
-        params.duration = 0.15;
-        params.scale = LVecBase3(1.5);
-        params.start_scale = LVecBase3(1);
-        params.blend_type = blend_type;
-        PT(rppanda::LerpScaleInterval) lerp1 = new rppanda::LerpScaleInterval(params);
-
-        params.scale = LVecBase3(1);
-        params.start_scale = LVecBase3(1.5);
-        PT(rppanda::LerpScaleInterval) lerp2 = new rppanda::LerpScaleInterval(params);
-
-        PT(rppanda::Sequence) seq = new rppanda::Sequence({ lerp1, lerp2 });
-        seq->loop();
-    }
+    np = model.find("**/MBScale");
+    PT(rppanda::LerpScaleInterval) lerp_scale_begin = new rppanda::LerpScaleInterval(
+        np, 0.15f, LVecBase3(1.5f), LVecBase3(1), {}, blend_type);
+    PT(rppanda::LerpScaleInterval) learp_scale_end = new rppanda::LerpScaleInterval(
+        np, 0.15f, LVecBase3(1), LVecBase3(1.5f), {}, blend_type);
+    PT(rppanda::Sequence) scale_seq = new rppanda::Sequence({ lerp_scale_begin, learp_scale_end });
+    scale_seq->loop();
 
     // Generate temperature lamps
     // This shows how to procedurally create lamps.In this case, we
