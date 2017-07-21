@@ -33,6 +33,7 @@
 #include <render_pipeline/rppanda/gui/direct_slider.hpp>
 #include <render_pipeline/rppanda/interval/meta_interval.hpp>
 #include <render_pipeline/rppanda/interval/lerp_interval.hpp>
+#include <render_pipeline/rpcore/mount_manager.hpp>
 
 class MusicBox: public rppanda::DirectObject
 {
@@ -68,7 +69,7 @@ public:
 
         // Loading sounds is done in a similar way to loading other things
         // Loading the main music box song
-        music_box_sound_ = base_.get_loader()->load_music("../share/render_pipeline/resources/music/musicbox.ogg");
+        music_box_sound_ = base_.get_loader()->load_music("/$$rp/resources/music-box/music/musicbox.ogg");
         music_box_sound_->set_volume(0.5f);  // Volume is a percentage from 0 to 1
                                             // 0 means loop forever, 1 (default) means
                                             // play once. 2 or higher means play that many times
@@ -96,12 +97,12 @@ public:
         // Loading the open/close effect
         // loadSFX and loadMusic are identical.They are often used for organization
         // (loadMusic is used for background music, loadSfx is used for other effects)
-        lid_sfx_ = base.get_loader()->load_sfx("../share/render_pipeline/resources/music/openclose.ogg");
+        lid_sfx_ = base.get_loader()->load_sfx("/$$rp/resources/music-box/music/openclose.ogg");
         // The open/close file has both effects in it.Fortunatly we can use intervals
         // to easily define parts of a sound file to play
 
-        lid_open_sfx_ = new rppanda::SoundInterval(lid_sfx_, false, 2.0f, {}, {}, 0.0f);
-        lid_close_sfx_ = new rppanda::SoundInterval(lid_sfx_, false, 0.0f, {}, {}, 5.0f);
+        lid_open_sfx_ = new rppanda::SoundInterval(lid_sfx_, false, 2.0f, {}, 1.0f, 0.0f);
+        lid_close_sfx_ = new rppanda::SoundInterval(lid_sfx_, false, 0.0f, {}, 1.0f, 5.0f);
 
         // For this tutorial, it seemed appropriate to have on screen controls.
         // The following code creates them.
@@ -136,7 +137,7 @@ public:
 
         // Here we load and set up the music box.It was modeled in a complex way, so
         // setting it up will be complicated
-        music_box_ = base_.get_loader()->load_model("../share/render_pipeline/resources/models/MusicBox");
+        music_box_ = base_.get_loader()->load_model("/$$rp/resources/music-box/models/MusicBox");
         music_box_.set_pos(0, 60, -9);
         music_box_.reparent_to(base_.get_render());
         // Just like the scene graph contains hierarchies of nodes, so can
@@ -233,6 +234,11 @@ private:
 
 int main(int argc, char* argv[])
 {
+    // setup directory of Render Pipeline. you can use mounted path.
+    rpcore::MountManager mount_manager;
+    mount_manager.set_base_path("../share/render_pipeline");
+    mount_manager.mount();
+
     rppanda::ShowBase base(argc, argv);
 
     MusicBox mb(base);

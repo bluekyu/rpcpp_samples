@@ -48,4 +48,8 @@ install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION "bin"
     LIBRARY DESTINATION "lib"
     ARCHIVE DESTINATION "lib")
+
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/"
+    DESTINATION "share/render_pipeline/resources/${PROJECT_NAME}"
+)
 # ==================================================================================================

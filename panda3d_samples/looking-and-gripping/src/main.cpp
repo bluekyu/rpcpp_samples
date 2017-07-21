@@ -25,6 +25,7 @@
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 #include <render_pipeline/rppanda/gui/onscreen_text.hpp>
 #include <render_pipeline/rppanda/actor/actor.hpp>
+#include <render_pipeline/rpcore/mount_manager.hpp>
 
 // Macro-like function used to reduce the amount to code needed to create the
 // on screen instructions
@@ -68,8 +69,8 @@ public:
         get_camera().set_pos(0, -15, 2);    // Position the camera
 
         eve_ = std::make_shared<rppanda::Actor>(
-            rppanda::Actor::ModelsType{"models/eve"},
-            rppanda::Actor::AnimsType{{"walk", "models/eve_walk"}});
+            rppanda::Actor::ModelsType{"/$$rp/resources/looking-and-gripping/models/eve"},
+            rppanda::Actor::AnimsType{{"walk", "/$$rp/resources/looking-and-gripping/models/eve_walk"}});
         eve_->reparent_to(get_render());
 
         rppanda::Actor t;
@@ -90,6 +91,11 @@ private:
 
 int main(int argc, char* argv[])
 {
+    // setup directory of Render Pipeline. you can use mounted path.
+    rpcore::MountManager mount_manager;
+    mount_manager.set_base_path("../share/render_pipeline");
+    mount_manager.mount();
+
     LookingGrippingDemo demo(argc, argv);
     demo.run();
 
