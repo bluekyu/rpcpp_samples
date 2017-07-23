@@ -25,7 +25,7 @@
 /**
  * Author: Shao Zhang and Phil Saltzman
  * Models and Textures by: Shaun Budhram, Will Houng, and David Tucker
- * Last Updated: 2017-07-23
+ * Last Updated: 2015-03-13
  *
  * This tutorial will cover exposing joints and manipulating them.Specifically,
  * we will take control of the neck joint of a humanoid character and rotate that
@@ -42,6 +42,7 @@
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 #include <render_pipeline/rppanda/gui/onscreen_text.hpp>
 #include <render_pipeline/rppanda/actor/actor.hpp>
+#include <render_pipeline/rppanda/showbase/loader.hpp>
 #include <render_pipeline/rpcore/mount_manager.hpp>
 
 // A simple function to make sure a value is in a given range, -1 to 1 by
@@ -89,6 +90,13 @@ public:
         threekey_text_ = gen_label_text("[3]: Banana", 4);
         fourkey_text_ = gen_label_text("[4]: Sword", 5);
 
+        // Set up the key input
+        accept("escape", [](const Event*) { std::exit(0); });
+        accept("1", [](const Event*, void* data) { reinterpret_cast<LookingGrippingDemo*>(data)->switch_object(0); }, this);
+        accept("2", [](const Event*, void* data) { reinterpret_cast<LookingGrippingDemo*>(data)->switch_object(1); }, this);
+        accept("3", [](const Event*, void* data) { reinterpret_cast<LookingGrippingDemo*>(data)->switch_object(2); }, this);
+        accept("4", [](const Event*, void* data) { reinterpret_cast<LookingGrippingDemo*>(data)->switch_object(3); }, this);
+
         disable_mouse();
         get_camera().set_pos(0, -15, 2);    // Position the camera
 
@@ -101,12 +109,63 @@ public:
         // This must be done before any animations are played
         eve_neck_ = eve_->control_joint(NodePath(), "modelRoot", "Neck");
 
-
+        // We now play an animation.An animation must be played, or at least posed
+        // for the nodepath we just got from controlJoint to actually effect the
+        // model
+        //self.eve.actorInterval("walk", playRate=2).loop()
 
         // Now we add a task that will take care of turning the head
         add_task(turn_head, this, "trun_head");
+
+        // Now we will expose the joint the hand joint.ExposeJoint allows us to
+        // get the position of a joint while it is animating.This is different than
+        // controlJonit which stops that joint from animating but lets us move it.
+        // This is particularly usefull for putting an object(like a weapon) in an
+        // actor's hand
+        right_hand_ = eve_->expose_joint(NodePath(), "modelRoot", "RightHand");
+
+        // This is a table with models, positions, rotations, and scales of objects to
+        // be attached to our exposed joint.These are stock models and so they needed
+        // to be repositioned to look right.
+        std::vector<std::tuple<std::string, LVecBase3f, LVecBase3f, float>> positions = {
+            {"/$$rp/resources/panda3d/models/teapot", {0, -.66f, -.95f}, {90, 0, 90}, .4f},
+            {"/$$rp/resources/looking-and-gripping/models/candycane", {.15f, -.99f, -.22f}, {90, 0, 90}, 1},
+            {"/$$rp/resources/looking-and-gripping/models/banana", {.08f, -.1f, .09f}, {0, -90, 0}, 1.75f},
+            {"/$$rp/resources/looking-and-gripping/models/sword", {.11f, .19f, .06f}, {0, 0, 90}, 1}
+        };
+
+        for (const auto& row: positions)
+        {
+            NodePath np = get_loader()->load_model(std::get<0>(row));
+            np.set_pos(std::get<1>(row));
+            np.set_hpr(std::get<2>(row));
+            np.set_scale(std::get<3>(row));
+
+            // Reparent the model to the exposed joint.That way when the joint moves,
+            // the model we just loaded will move with it.
+            np.reparent_to(right_hand_);
+            models_.push_back(np);
+        }
+
+        switch_object(0);   // Make object 0 the first shown
+        setup_lights();     // Put in some default lighting
     }
 
+    /**
+     * This is what we use to change which object it being held.It just hides all of
+     * the objects and then unhides the one that was selected
+     */
+    void switch_object(int i)
+    {
+        for (auto& np: models_)
+            np.hide();
+        models_[i].show();
+    }
+
+    /**
+     * This task gets the position of mouse each frame, and rotates the neck based
+     * on it.
+     */
     static AsyncTask::DoneStatus turn_head(GenericAsyncTask* task, void* user_data)
     {
         // Check to make sure the mouse is readable
@@ -127,6 +186,11 @@ public:
         return AsyncTask::DoneStatus::DS_cont;
     }
 
+    void setup_lights(void)
+    {
+
+    }
+
 private:
     rppanda::OnscreenText title_;
     rppanda::OnscreenText esckey_text_;
@@ -137,6 +201,8 @@ private:
 
     PT(rppanda::Actor) eve_;
     NodePath eve_neck_;
+    NodePath right_hand_;
+    std::vector<NodePath> models_;
 };
 
 int main(int argc, char* argv[])

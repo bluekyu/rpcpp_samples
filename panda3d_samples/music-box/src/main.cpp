@@ -22,6 +22,14 @@
  * SOFTWARE.
  */
 
+/**
+ * Author: Shao Zhang, Phil Saltzman, and Elan Ruskin
+ * Last Updated: 2015-03-13
+ *
+ * This tutorial shows how to load, play, and manipulate sounds
+ * and sound intervals in a panda project.
+ */
+
 #include <pointLight.h>
 #include <ambientLight.h>
 #include <pgSliderBar.h>
