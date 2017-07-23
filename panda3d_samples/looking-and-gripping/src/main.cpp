@@ -36,6 +36,8 @@
  * hand even if the hand is moving through an animation.
  */
 
+#include <ambientLight.h>
+#include <directionalLight.h>
 #include <asyncTaskManager.h>
 #include <mouseWatcher.h>
 
@@ -188,7 +190,13 @@ public:
 
     void setup_lights(void)
     {
-
+        PT(AmbientLight) ambient_light = new AmbientLight("ambientLight");
+        ambient_light->set_color(LColor(0.4f, 0.4f, 0.35f, 1.0f));
+        PT(DirectionalLight) directional_light = new DirectionalLight("directionalLight");
+        directional_light->set_direction(LVector3(0, 8, -2.5));
+        directional_light->set_color(LColor(0.9, 0.8, 0.9, 1));
+        get_render().set_light(get_render().attach_new_node(directional_light));
+        get_render().set_light(get_render().attach_new_node(ambient_light));
     }
 
 private:
