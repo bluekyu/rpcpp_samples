@@ -22,14 +22,38 @@
  * SOFTWARE.
  */
 
+/**
+ * Author: Shao Zhang and Phil Saltzman
+ * Models and Textures by: Shaun Budhram, Will Houng, and David Tucker
+ * Last Updated: 2017-07-23
+ *
+ * This tutorial will cover exposing joints and manipulating them.Specifically,
+ * we will take control of the neck joint of a humanoid character and rotate that
+ * joint to always face the mouse cursor.This will in turn make the head of the
+ * character "look" at the mouse cursor.We will also expose the hand joint and
+ * use it as a point to "attach" objects that the character can hold.By
+ * parenting an object to a hand joint, the object will stay in the character's
+ * hand even if the hand is moving through an animation.
+ */
+
+#include <asyncTaskManager.h>
+#include <mouseWatcher.h>
+
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 #include <render_pipeline/rppanda/gui/onscreen_text.hpp>
 #include <render_pipeline/rppanda/actor/actor.hpp>
 #include <render_pipeline/rpcore/mount_manager.hpp>
 
+// A simple function to make sure a value is in a given range, -1 to 1 by
+// default
+inline float clamp(float i, float mn=-1, float mx=1)
+{
+    return (std::min)((std::max)(i, mn), mx);
+}
+
 // Macro-like function used to reduce the amount to code needed to create the
 // on screen instructions
-rppanda::OnscreenText gen_label_text(const std::string& text, int i)
+inline rppanda::OnscreenText gen_label_text(const std::string& text, int i)
 {
     rppanda::OnscreenText::Parameters params;
     params.text = text;
@@ -68,14 +92,39 @@ public:
         disable_mouse();
         get_camera().set_pos(0, -15, 2);    // Position the camera
 
-        eve_ = std::make_shared<rppanda::Actor>(
+        eve_ = new rppanda::Actor(
             rppanda::Actor::ModelsType{"/$$rp/resources/looking-and-gripping/models/eve"},
             rppanda::Actor::AnimsType{{"walk", "/$$rp/resources/looking-and-gripping/models/eve_walk"}});
         eve_->reparent_to(get_render());
 
-        rppanda::Actor t;
-        
-        t = std::move(*eve_);
+        // Now we use controlJoint to get a NodePath that's in control of her neck
+        // This must be done before any animations are played
+        eve_neck_ = eve_->control_joint(NodePath(), "modelRoot", "Neck");
+
+
+
+        // Now we add a task that will take care of turning the head
+        add_task(turn_head, this, "trun_head");
+    }
+
+    static AsyncTask::DoneStatus turn_head(GenericAsyncTask* task, void* user_data)
+    {
+        // Check to make sure the mouse is readable
+        LookingGrippingDemo* self = reinterpret_cast<LookingGrippingDemo*>(user_data);
+        if (self->get_mouse_watcher_node()->has_mouse())
+        {
+            // get the mouse position as a LVector2.The values for each axis are from -1 to
+            // 1. The top-left is(-1, -1), the bottom right is(1, 1)
+            const auto& mpos = self->get_mouse_watcher_node()->get_mouse();
+            // Here we multiply the values to get the amount of degrees to turn
+            // Restrain is used to make sure the values returned by getMouse are in the
+            // valid range.If this particular model were to turn more than this,
+            // significant tearing would be visable
+            self->eve_neck_.set_p(clamp(mpos.get_x()) * 50);
+            self->eve_neck_.set_h(clamp(mpos.get_y()) * 20);
+        }
+
+        return AsyncTask::DoneStatus::DS_cont;
     }
 
 private:
@@ -86,7 +135,8 @@ private:
     rppanda::OnscreenText threekey_text_;
     rppanda::OnscreenText fourkey_text_;
 
-    std::shared_ptr<rppanda::Actor> eve_;
+    PT(rppanda::Actor) eve_;
+    NodePath eve_neck_;
 };
 
 int main(int argc, char* argv[])

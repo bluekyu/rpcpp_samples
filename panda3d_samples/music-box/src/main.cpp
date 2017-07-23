@@ -38,12 +38,12 @@
 class MusicBox: public rppanda::DirectObject
 {
 public:
-    MusicBox(rppanda::ShowBase& base): base_(base)
+    MusicBox(rppanda::ShowBase* base): base_(base)
     {
         // Our standard title and instructions text
         rppanda::OnscreenText::Parameters title_params;
         title_params.text = "Panda3D: Tutorial - Music Box";
-        title_params.parent = base_.get_aspect_2d().find("a2d_bottom_center");
+        title_params.parent = base_->get_aspect_2d().find("a2d_bottom_center");
         title_params.pos = LVecBase2(0, 0.08f);
         title_params.scale = 0.08f;
         title_params.fg = LColor(1, 1, 1, 1);
@@ -52,7 +52,7 @@ public:
 
         rppanda::OnscreenText::Parameters escape_text_params;
         escape_text_params.text = "ESC: Quit";
-        escape_text_params.parent = base_.get_aspect_2d().find("a2d_top_left");
+        escape_text_params.parent = base_->get_aspect_2d().find("a2d_top_left");
         escape_text_params.fg = LColor(1, 1, 1, 1);
         escape_text_params.pos = LVecBase2(0.06, -0.1f);
         escape_text_params.align = TextProperties::A_left;
@@ -65,11 +65,11 @@ public:
         });
 
         // Fix the camera position
-        base_.disable_mouse();
+        base_->disable_mouse();
 
         // Loading sounds is done in a similar way to loading other things
         // Loading the main music box song
-        music_box_sound_ = base_.get_loader()->load_music("/$$rp/resources/music-box/music/musicbox.ogg");
+        music_box_sound_ = base_->get_loader()->load_music("/$$rp/resources/music-box/music/musicbox.ogg");
         music_box_sound_->set_volume(0.5f);  // Volume is a percentage from 0 to 1
                                             // 0 means loop forever, 1 (default) means
                                             // play once. 2 or higher means play that many times
@@ -78,16 +78,16 @@ public:
         // Set up a simple light.
         plight_ = new PointLight("light");
         plight_->set_color(LColor(0.7, 0.7, 0.5, 1));
-        NodePath light_path = base_.get_render().attach_new_node(plight_);
+        NodePath light_path = base_->get_render().attach_new_node(plight_);
         light_path.set_pos(0, 0, 20);
-        base_.get_render().set_light(light_path);
+        base_->get_render().set_light(light_path);
 
         alight_ = new AmbientLight("ambient");
         alight_->set_color(LColor(0.3, 0.3, 0.4, 1));
-        base_.get_render().set_light(base_.get_render().attach_new_node(alight_));
+        base_->get_render().set_light(base_->get_render().attach_new_node(alight_));
 
         // Enable per-pixel lighting
-        base_.get_render().set_shader_auto();
+        base_->get_render().set_shader_auto();
 
         // Sound objects do not have a pause function, just play and stop.So we will
         // Use this variable to keep track of where the sound is at when it was stoped
@@ -97,7 +97,7 @@ public:
         // Loading the open/close effect
         // loadSFX and loadMusic are identical.They are often used for organization
         // (loadMusic is used for background music, loadSfx is used for other effects)
-        lid_sfx_ = base.get_loader()->load_sfx("/$$rp/resources/music-box/music/openclose.ogg");
+        lid_sfx_ = base_->get_loader()->load_sfx("/$$rp/resources/music-box/music/openclose.ogg");
         // The open/close file has both effects in it.Fortunatly we can use intervals
         // to easily define parts of a sound file to play
 
@@ -137,9 +137,9 @@ public:
 
         // Here we load and set up the music box.It was modeled in a complex way, so
         // setting it up will be complicated
-        music_box_ = base_.get_loader()->load_model("/$$rp/resources/music-box/models/MusicBox");
+        music_box_ = base_->get_loader()->load_model("/$$rp/resources/music-box/models/MusicBox");
         music_box_.set_pos(0, 60, -9);
-        music_box_.reparent_to(base_.get_render());
+        music_box_.reparent_to(base_->get_render());
         // Just like the scene graph contains hierarchies of nodes, so can
         // models.You can get the NodePath for the node using the find
         // function, and then you can animate the model by moving its parts
@@ -210,7 +210,7 @@ public:
     }
 
 private:
-    rppanda::ShowBase& base_;
+    rppanda::ShowBase* base_;
     rppanda::OnscreenText title_;
     rppanda::OnscreenText escape_text_;
     PT(AudioSound) music_box_sound_;
@@ -239,10 +239,10 @@ int main(int argc, char* argv[])
     mount_manager.set_base_path("../share/render_pipeline");
     mount_manager.mount();
 
-    rppanda::ShowBase base(argc, argv);
+    PT(rppanda::ShowBase) base = new rppanda::ShowBase(argc, argv);
 
     MusicBox mb(base);
-    base.run();
+    base->run();
 
     return 0;
 }
