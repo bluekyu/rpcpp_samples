@@ -121,7 +121,7 @@ public:
         slider_options->scale = 0.8f;
         slider_options->value = 0.5f;
         slider_options->command = std::bind(&MusicBox::set_music_box_volume, this, std::placeholders::_1);
-        slider_ = std::make_shared<rppanda::DirectSlider>(NodePath(), slider_options);
+        slider_ = new rppanda::DirectSlider(NodePath(), slider_options);
 
         // A button that calls self.toggleMusicBox when pressed
         auto button_options = std::make_shared<rppanda::DirectButton::Options>();
@@ -130,7 +130,7 @@ public:
         button_options->scale = 0.1f;
         button_options->pad = LVecBase2(0.2f, 0.2f);
         button_options->command = std::bind(&MusicBox::toggle_music_box, this, std::placeholders::_1);
-        button_ = std::make_shared<rppanda::DirectButton>(NodePath(), button_options);
+        button_ = new rppanda::DirectButton(NodePath(), button_options);
 
         // A variable to represent the state of the simulation.It starts closed
         box_open_ = false;
@@ -221,8 +221,8 @@ private:
     PT(rppanda::SoundInterval) lid_open_sfx_;
     PT(rppanda::SoundInterval) lid_close_sfx_;
     rppanda::OnscreenText slider_tex_;
-    std::shared_ptr<rppanda::DirectSlider> slider_;
-    std::shared_ptr<rppanda::DirectButton> button_;
+    PT(rppanda::DirectSlider) slider_;
+    PT(rppanda::DirectButton) button_;
     bool box_open_;
     NodePath music_box_;
     NodePath lid_;
