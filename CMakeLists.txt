@@ -16,7 +16,7 @@ if(WIN32)
 endif()
 
 # subdirectory
-set(rpcpp_samples_list "panda3d_samples" "render_pipeline_samples" "nvidia_flex"
+set(rpcpp_samples_list "panda3d_samples" "render_pipeline_samples" "nvidia_flex" "lui_demos"
     "01-Crytek-Sponza" "02-San-Miguel" "03-Shading-Models-VR"
 )
 
