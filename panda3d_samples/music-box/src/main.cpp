@@ -181,13 +181,13 @@ public:
         //panda_turn_ = panda_. hprInterval(7, (360, 0, 0))
     }
 
-    void set_music_box_volume(void*)
+    void set_music_box_volume(const std::shared_ptr<void>&)
     {
         float new_vol = slider_->get_gui_item()->get_value();
         music_box_sound_->set_volume(new_vol);
     }
 
-    void toggle_music_box(void*)
+    void toggle_music_box(const std::shared_ptr<void>&)
     {
         if (box_open_)
         {
