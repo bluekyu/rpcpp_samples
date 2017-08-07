@@ -62,7 +62,9 @@ int main(int argc, char* argv[])
 
     // Load the scene
     NodePath model = rpcore::RPLoader::load_model("../share/render_pipeline/models/06-Car/scene.bam");
+
     model.reparent_to(rpcore::Globals::render);
+    render_pipeline->prepare_scene(model);
 
     // Init movement controller
     std::shared_ptr<rpcore::MovementController> controller = std::make_shared<rpcore::MovementController>(rpcore::Globals::base);

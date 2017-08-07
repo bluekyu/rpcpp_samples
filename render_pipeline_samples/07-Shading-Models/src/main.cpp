@@ -89,6 +89,8 @@ int main(int argc, char* argv[])
     NodePath model = rpcore::RPLoader::load_model("../share/render_pipeline/models/07-Shading-Models/TestScene.bam");
     model.reparent_to(rpcore::Globals::render);
 
+    render_pipeline->prepare_scene(model);
+
     // Init movement controller
     std::shared_ptr<rpcore::MovementController> controller = std::make_shared<rpcore::MovementController>(rpcore::Globals::base);
     controller->set_initial_position(
