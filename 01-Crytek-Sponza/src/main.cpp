@@ -1,7 +1,7 @@
 /**
- * The MIT License (MIT)
+ * MIT License
  * 
- * Copyright (c) 2016, Center of human-centered interaction for coexistence.
+ * Copyright (c) 2016-2017 Center of Human-centered Interaction for Coexistence
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal

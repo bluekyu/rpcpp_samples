@@ -1,6 +1,6 @@
 # Render Pipeline C++ Samples
 
-This project is to develop samples for Render Pipeline C++ (https://github.com/bluekyu/render_pipeline_cpp).
+This project is to develop samples for [Render Pipeline C++](https://github.com/bluekyu/render_pipeline_cpp).
 
 
 
@@ -15,9 +15,10 @@ These samples are ported from samples in Panda3D (https://github.com/panda3d/pan
 
 
 ## NVIDIA FleX Examples
-These examples are ported from NVIDIA FleX demo.
+These examples are ported from NVIDIA FleX demo (https://developer.nvidia.com/flex)
+(See `nvidia_flex/NVIDIA-FLEX-LICENSE.txt` file)
 
-See nvidia_flex/NVIDIA-FLEX-LICENSE.txt file.
+This examples require `rpflex` plugin in https://github.com/bluekyu/rpcpp_plugins
 
 
 
@@ -32,7 +33,7 @@ See [Building Render Pipeline C++](https://github.com/bluekyu/render_pipeline_cp
 ## Related Projects
 - Render Pipeline C++: https://github.com/bluekyu/render_pipeline_cpp
 - Plugins for Render Pipeline C++: https://github.com/bluekyu/rpcpp_plugins
-- Panda3D for CR Software Framework: https://github.com/bluekyu/panda3d
+- Panda3D for CR Software Framework: https://github.com/bluekyu/panda3d/tree/develop
 
 
 
