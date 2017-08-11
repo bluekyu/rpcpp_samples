@@ -44,7 +44,7 @@ foreach(component ${NvFlex_COMPONENTS})
         find_library(NvFlex_LIBRARY_${_lib_name}
             NAMES ${_lib_name}_x${NvFlex_arch_suffix}
             PATHS "${NvFlex_ROOT}"
-            PATH_SUFFIXES "win${NvFlex_arch_suffix}/lib"
+            PATH_SUFFIXES "lib/win${NvFlex_arch_suffix}"
         )
         unset(_lib_name)
     endforeach()
@@ -57,7 +57,7 @@ foreach(component ${NvFlex_GPU_COMPONENTS})
             find_library(NvFlex_LIBRARY_${_lib_name}
                 NAMES ${_lib_name}_x${NvFlex_arch_suffix}
                 PATHS "${NvFlex_ROOT}"
-                PATH_SUFFIXES "win${NvFlex_arch_suffix}/lib"
+                PATH_SUFFIXES "lib/win${NvFlex_arch_suffix}"
             )
             unset(_lib_name)
         endforeach()
