@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
 
     // Enable parallax mapping on the floor
     render_pipeline->set_effect(model.find("**/FloorPlane"),
-        "effects/default.yaml",
+        "/$$rp/effects/default.yaml",
         { { "parallax_mapping", true } }, 100);
 
     rpcore::MovementController* controller =  new rpcore::MovementController(rpcore::Globals::base);

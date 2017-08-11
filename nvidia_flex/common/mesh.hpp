@@ -25,7 +25,7 @@
 #pragma once
 
 #include <render_pipeline/rpcore/util/primitives.hpp>
-#include <render_pipeline/rpcore/util/circular_points_node.hpp>
+#include <render_pipeline/rpcore/util/points_node.hpp>
 
 #include <rpflex/plugin.hpp>
 #include <rpflex/flex_buffer.hpp>
@@ -113,7 +113,8 @@ public:
         for (int k=0, k_end=buffer.positions.size(); k < k_end; ++k)
             positions.push_back(buffer.positions[k].get_xyz());
 
-        particles_node_ = std::make_shared<rpcore::CircularPointsNode>("particles", positions, flex_parmas.radius, "", GeomEnums::UH_dynamic);
+        particles_node_ = std::make_shared<rpcore::PointsNode>("particles", positions, flex_parmas.radius, GeomEnums::UH_dynamic);
+        particles_node_->set_circular_point();
         particles_node_->get_nodepath().reparent_to(rpcore::Globals::render);
     }
 
@@ -130,11 +131,11 @@ public:
         particles_node_->upload_positions();
     }
 
-    const std::shared_ptr<rpcore::CircularPointsNode>& get_particles_node(void) const
+    const std::shared_ptr<rpcore::PointsNode>& get_particles_node(void) const
     {
         return particles_node_;
     }
 
 private:
-    std::shared_ptr<rpcore::CircularPointsNode> particles_node_;
+    std::shared_ptr<rpcore::PointsNode> particles_node_;
 };
