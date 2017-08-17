@@ -131,7 +131,7 @@ public:
         particles_node_->upload_positions();
     }
 
-    const std::shared_ptr<rpcore::PointsNode>& get_particles_node(void) const
+    const std::shared_ptr<rpcore::PointsNode>& get_particles_node() const
     {
         return particles_node_;
     }

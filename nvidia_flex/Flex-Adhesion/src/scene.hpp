@@ -108,7 +108,7 @@ public:
             entity->update(rpflex_plugin);
     }
 
-    void toggle_emit(void)
+    void toggle_emit()
     {
         is_emit = !is_emit;
     }

@@ -28,11 +28,11 @@
 SampleStage::RequireType SampleStage::required_inputs;
 SampleStage::RequireType SampleStage::required_pipes;
 
-void SampleStage::create(void)
+void SampleStage::create()
 {
 }
 
-std::string SampleStage::get_plugin_id(void) const
+std::string SampleStage::get_plugin_id() const
 {
     return RPPLUGIN_ID_STRING;
 }

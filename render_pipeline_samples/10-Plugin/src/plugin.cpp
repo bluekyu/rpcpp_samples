@@ -47,12 +47,12 @@ Plugin::Plugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, R
 {
 }
 
-Plugin::RequrieType& Plugin::get_required_plugins(void) const
+Plugin::RequrieType& Plugin::get_required_plugins() const
 {
     return impl_->require_plugins_;
 }
 
-void Plugin::on_stage_setup(void)
+void Plugin::on_stage_setup()
 {
     impl_->stage_ = std::make_shared<SampleStage>(pipeline_);
     add_stage(impl_->stage_);

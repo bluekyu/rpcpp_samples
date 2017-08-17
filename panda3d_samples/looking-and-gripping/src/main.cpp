@@ -197,7 +197,7 @@ public:
         return AsyncTask::DoneStatus::DS_cont;
     }
 
-    void setup_lights(void)
+    void setup_lights()
     {
         PT(AmbientLight) ambient_light = new AmbientLight("ambientLight");
         ambient_light->set_color(LColor(0.4f, 0.4f, 0.35f, 1.0f));
