@@ -1,5 +1,7 @@
 # Render Pipeline C++ Samples
 
+[![Windows build status](https://ci.appveyor.com/api/projects/status/0mvcnnnbwlh0ch2j/branch/master?svg=true)](https://ci.appveyor.com/project/bluekyu/rpcpp-samples/branch/master)
+
 This project is to develop samples for [Render Pipeline C++](https://github.com/bluekyu/render_pipeline_cpp).
 
 
