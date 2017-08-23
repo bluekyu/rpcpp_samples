@@ -24,7 +24,7 @@ init:
     python --version
 
 # clone directory
-clone_folder: c:\projects\rpcpp_plugins
+clone_folder: c:\projects\rpcpp_samples
 
 # environment variables
 environment:
@@ -38,7 +38,7 @@ cache:
 # scripts that run after cloning repository
 install:
     - git clone --depth 1 https://github.com/bluekyu/render_pipeline_cpp_ci.git c:\projects\render_pipeline_cpp_ci
-    - mklink /J c:\projects\render_pipeline_cpp_ci\rpcpp_plugins C:\projects\rpcpp_plugins
+    - mklink /J c:\projects\render_pipeline_cpp_ci\rpcpp_samples C:\projects\rpcpp_samples
 
 #---------------------------------#
 #       build configuration       #
@@ -52,4 +52,4 @@ build_script:
 - cmd: >-
     cd c:\projects\render_pipeline_cpp_ci
 
-    python build.py rpcpp_plugins --cmake-generator "Visual Studio 15 2017 Win64" --install-prefix="C:/projects/_install"
+    python build.py rpcpp_samples --cmake-generator "Visual Studio 15 2017 Win64" --install-prefix="C:/projects/_install"
