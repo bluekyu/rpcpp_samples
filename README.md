@@ -20,7 +20,7 @@ These samples are ported from samples in Panda3D (https://github.com/panda3d/pan
 These examples are ported from NVIDIA FleX demo (https://developer.nvidia.com/flex)
 (See `nvidia_flex/NVIDIA-FLEX-LICENSE.txt` file)
 
-This examples require `rpflex` plugin in https://github.com/bluekyu/rpcpp_plugins
+These examples require `rpflex` plugin in https://github.com/bluekyu/rpcpp_plugins
 
 
 
