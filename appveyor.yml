@@ -1,0 +1,55 @@
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+# version format
+version: '{branch}-{build}'
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+# Build worker image (VM template)
+image: Visual Studio 2017
+
+# scripts that are called at very beginning, before repo cloning
+init:
+- cmd: >-
+    git --version
+
+    cmake --version
+
+    set PATH=C:\Python36-x64;%PATH%
+
+    python --version
+
+# clone directory
+clone_folder: c:\projects\rpcpp_plugins
+
+# environment variables
+environment:
+  CMAKE_PREFIX_PATH: C:\projects\_install
+  BOOST_ROOT: C:\Libraries\boost_1_64_0
+
+# build cache to preserve files/folders between builds
+cache:
+    - C:\projects\_install
+
+# scripts that run after cloning repository
+install:
+    - git clone --depth 1 https://github.com/bluekyu/render_pipeline_cpp_ci.git c:\projects\render_pipeline_cpp_ci
+    - mklink /J c:\projects\render_pipeline_cpp_ci\rpcpp_plugins C:\projects\rpcpp_plugins
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+platform: x64
+
+# to run your custom scripts instead of automatic MSBuild
+build_script:
+- cmd: >-
+    cd c:\projects\render_pipeline_cpp_ci
+
+    python build.py rpcpp_plugins --cmake-generator "Visual Studio 15 2017 Win64" --install-prefix="C:/projects/_install"
