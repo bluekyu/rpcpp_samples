@@ -1,6 +1,6 @@
 # Render Pipeline C++ Samples
 
-[![Windows build status](https://ci.appveyor.com/api/projects/status/0mvcnnnbwlh0ch2j/branch/master?svg=true)](https://ci.appveyor.com/project/bluekyu/rpcpp-samples/branch/master)
+[![Windows build status](https://ci.appveyor.com/api/projects/status/efs56usknquscufm/branch/master?svg=true)](https://ci.appveyor.com/project/bluekyu/render-pipeline-cpp-ci/branch/master)
 
 This project is to develop samples for [Render Pipeline C++](https://github.com/bluekyu/render_pipeline_cpp).
 
@@ -33,9 +33,11 @@ See [Building Render Pipeline C++](https://github.com/bluekyu/render_pipeline_cp
 
 
 ## Related Projects
+- (patched) Panda3D: https://github.com/bluekyu/panda3d
 - Render Pipeline C++: https://github.com/bluekyu/render_pipeline_cpp
 - Plugins for Render Pipeline C++: https://github.com/bluekyu/rpcpp_plugins
 - Panda3D for CR Software Framework: https://github.com/bluekyu/panda3d/tree/develop
+- CI for Render Pipeline C++: https://github.com/bluekyu/render_pipeline_cpp_ci
 
 
 
