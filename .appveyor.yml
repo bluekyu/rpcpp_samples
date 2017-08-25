@@ -1,0 +1,81 @@
+#---------------------------------#
+#      general configuration      #
+#---------------------------------#
+
+# version format
+version: '{branch}-{build}'
+
+#---------------------------------#
+#    environment configuration    #
+#---------------------------------#
+
+# Build worker image (VM template)
+image: Visual Studio 2017
+
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+platform: x64
+
+# clone directory
+clone_folder: c:\projects\rpcpp_samples
+
+# scripts that are called at very beginning, before repo cloning
+init:
+- ps: >-
+    if (Test-Path env:TRIGGER_NAME) {
+      Update-AppveyorBuild -Message "Build from $env:TRIGGER_COMMIT in $env:TRIGGER_NAME"
+    }
+
+    else {
+      Set-AppveyorBuildVariable -Name 'TRIGGER_NAME' -Value "$env:APPVEYOR_PROJECT_NAME"
+      Set-AppveyorBuildVariable -Name 'TRIGGER_COMMIT' -Value "$env:APPVEYOR_REPO_COMMIT".substring(0, 8)
+    }
+
+    git --version
+
+    python --version
+
+    cmake --version
+
+# environment variables
+environment:
+  CMAKE_PREFIX_PATH: C:\projects\_install;C:\projects\_cache;
+  BOOST_ROOT: C:\Libraries\boost_1_64_0
+  FREETYPE_DIR: C:\projects\_install\panda3d-thirdparty\win-libs-vc14-x64\freetype
+  PATH: C:\Python36-x64;%PATH%
+
+# scripts that run after cloning repository
+install:
+- cmd: >-
+    git clone --depth 1 "https://github.com/bluekyu/render_pipeline_cpp_ci.git" c:\projects\render_pipeline_cpp_ci
+
+    mklink /J c:\projects\render_pipeline_cpp_ci\rpcpp_samples C:\projects\rpcpp_samples
+
+# build cache to preserve files/folders between builds
+cache:
+    - C:\projects\_cache
+
+#---------------------------------#
+#       build configuration       #
+#---------------------------------#
+
+# to run your custom scripts instead of automatic MSBuild
+build_script:
+- cmd: >-
+    cd c:\projects\render_pipeline_cpp_ci
+
+    python build.py rpcpp_samples --cmake-generator "Visual Studio 15 2017 Win64" --install-prefix "C:/projects/_install" --cache-prefix "C:/projects/_cache" --artifacts-prefix "C:/projects/rpcpp_samples/_artifacts"
+
+#---------------------------------#
+#       tests configuration       #
+#---------------------------------#
+
+# to disable automatic tests
+test: off
+
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
+
+artifacts:
+- path: _artifacts
+  name: rpcpp_samples
