@@ -19,7 +19,7 @@ platform: x64
 clone_depth: 1
 
 # clone directory
-clone_folder: c:\projects\rpcpp_plugins
+clone_folder: c:\projects\rpcpp_samples
 
 # scripts that are called at very beginning, before repo cloning
 init:
@@ -46,7 +46,7 @@ install:
 - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/render-pipeline-cpp/artifacts/render_pipeline_cpp.zip?branch=master'
 - ps: 7z x render_pipeline_cpp.zip -orender_pipeline_cpp
 - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/rpcpp-plugins/artifacts/rpcpp_plugins.zip?branch=master'
-- ps: 7z x rpcpp_plugins.zip -orpcpp_plugins
+- ps: 7z x rpcpp_plugins.zip -orender_pipeline_cpp
 - ps: popd
 
 # build cache to preserve files/folders between builds
