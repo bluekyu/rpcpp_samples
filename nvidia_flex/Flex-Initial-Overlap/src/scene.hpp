@@ -37,7 +37,7 @@
 
 #include "mesh.hpp"
 
-class Scene: public rpflex::InstanceInterface
+class Scene : public rpflex::InstanceInterface
 {
 public:
     void initialize(rpflex::Plugin& rpflex_plugin) final

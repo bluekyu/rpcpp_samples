@@ -27,7 +27,7 @@
 
 #include <render_pipeline/rpcore/render_stage.hpp>
 
-class SampleStage: public rpcore::RenderStage
+class SampleStage : public rpcore::RenderStage
 {
 public:
     SampleStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "SampleStage") {}

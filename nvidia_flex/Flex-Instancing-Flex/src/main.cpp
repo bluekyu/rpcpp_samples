@@ -44,7 +44,7 @@
 #include <rpflex/instance_interface.hpp>
 #include <rpflex/flex_buffer.hpp>
 
-class ParticlesInstance: public rpflex::InstanceInterface
+class ParticlesInstance : public rpflex::InstanceInterface
 {
 public:
     ParticlesInstance(const std::shared_ptr<rpcore::InstancingNode>& instanced_node): instanced_node_(instanced_node) {}

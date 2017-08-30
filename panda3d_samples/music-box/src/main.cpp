@@ -43,7 +43,7 @@
 #include <render_pipeline/rppanda/interval/lerp_interval.hpp>
 #include <render_pipeline/rpcore/mount_manager.hpp>
 
-class MusicBox: public rppanda::DirectObject
+class MusicBox : public rppanda::DirectObject
 {
 public:
     MusicBox(rppanda::ShowBase* base): base_(base)

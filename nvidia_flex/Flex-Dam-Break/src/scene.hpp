@@ -34,7 +34,7 @@
 #include "mesh.hpp"
 #include "helpers.hpp"
 
-class Scene: public rpflex::InstanceInterface
+class Scene : public rpflex::InstanceInterface
 {
 public:
     Scene(float radius): radius_(radius)

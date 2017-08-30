@@ -69,7 +69,7 @@ inline rppanda::OnscreenText gen_label_text(const std::string& text, int i)
     return rppanda::OnscreenText(params);
 }
 
-class LookingGrippingDemo: public rppanda::ShowBase
+class LookingGrippingDemo : public rppanda::ShowBase
 {
 public:
     LookingGrippingDemo(int& argc, char**& argv): ShowBase(argc, argv)

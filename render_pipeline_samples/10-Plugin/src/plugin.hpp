@@ -27,7 +27,7 @@
 
 #include <render_pipeline/rpcore/pluginbase/base_plugin.hpp>
 
-class Plugin: public rpcore::BasePlugin
+class Plugin : public rpcore::BasePlugin
 {
 public:
     Plugin(rpcore::RenderPipeline& pipeline);

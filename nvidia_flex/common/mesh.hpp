@@ -37,7 +37,7 @@ public:
     virtual void update(rpflex::Plugin& rpflex_plugin) = 0;
 };
 
-class FlexShapeEntity: public FlexEntity
+class FlexShapeEntity : public FlexEntity
 {
 public:
     FlexShapeEntity(rpflex::Plugin& rpflex_plugin, const std::shared_ptr<rpflex::RPFlexShape>& flex_shape): flex_shape_(flex_shape)
@@ -100,7 +100,7 @@ private:
     std::shared_ptr<rpflex::RPFlexShape> flex_shape_;
 };
 
-class FlexParticlesEntity: public FlexEntity
+class FlexParticlesEntity : public FlexEntity
 {
 public:
     FlexParticlesEntity(rpflex::Plugin& rpflex_plugin)
