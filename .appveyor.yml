@@ -10,10 +10,8 @@ version: '{branch}-{build}'
 #---------------------------------#
 
 # Build worker image (VM template)
-image: Visual Studio 2017
-
-# build platform, i.e. x86, x64, Any CPU. This setting is optional.
-platform: x64
+image:
+- Visual Studio 2017
 
 # set clone depth
 clone_depth: 1
@@ -52,11 +50,21 @@ install:
 
 # build cache to preserve files/folders between builds
 cache:
-    - C:\projects\_cache
+- C:\projects\_cache
 
 #---------------------------------#
 #       build configuration       #
 #---------------------------------#
+
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+platform: x64
+
+# build Configuration, i.e. Debug, Release, etc.
+configuration:
+- Release
+
+build:
+    parallel: true                  # enable MSBuild parallel builds
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
@@ -69,12 +77,12 @@ build_script:
     -Drpcpp_samples_BUILD_panda3d_samples:BOOL=ON
     -Drpcpp_samples_BUILD_render_pipeline_samples:BOOL=ON
     ..
-- cmake --build . --config "Release" --target INSTALL
+- cmake --build . --config %CONFIGURATION% --target INSTALL
 - cmd: >-
     cmake -G "%CMAKE_GENERATOR%" -Wno-dev
     -DCMAKE_INSTALL_PREFIX="C:/projects/_install/render_pipeline_cpp"
     ..
-- cmake --build . --config "Release" --target INSTALL
+- cmake --build . --config %CONFIGURATION% --target INSTALL
 - ps: popd
 
 after_build:
