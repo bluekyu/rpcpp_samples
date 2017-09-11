@@ -37,7 +37,7 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE render_pipeline
+    PRIVATE render_pipeline Boost::filesystem
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "rpcpp_samples/panda3d_samples")

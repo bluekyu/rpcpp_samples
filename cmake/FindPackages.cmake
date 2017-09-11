@@ -26,7 +26,7 @@ function(_find_boost required_component)
     endif()
 endfunction()
 
-_find_boost("")
+_find_boost("filesystem")
 
 if(NOT TARGET panda3d::panda3d)
     # find panda3d

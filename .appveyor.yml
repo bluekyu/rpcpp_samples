@@ -70,18 +70,16 @@ build:
 build_script:
 - ps: (mkdir _build) -and (pushd _build)
 - cmd: >-
-    cmake -G "%CMAKE_GENERATOR%" -Wno-dev
+    cmake -G "%CMAKE_GENERATOR%" -Wno-dev ..
     -DCMAKE_INSTALL_PREFIX="C:/projects/_install/rpcpp_samples"
     -DBoost_USE_STATIC_LIBS:BOOL=ON
     -Dpanda3d_ROOT:PATH="C:/projects/_install/panda3d"
     -Drpcpp_samples_BUILD_panda3d_samples:BOOL=ON
     -Drpcpp_samples_BUILD_render_pipeline_samples:BOOL=ON
-    ..
 - cmake --build . --config %CONFIGURATION% --target INSTALL
 - cmd: >-
-    cmake -G "%CMAKE_GENERATOR%" -Wno-dev
+    cmake -G "%CMAKE_GENERATOR%" -Wno-dev ..
     -DCMAKE_INSTALL_PREFIX="C:/projects/_install/render_pipeline_cpp"
-    ..
 - cmake --build . --config %CONFIGURATION% --target INSTALL
 - ps: popd
 
