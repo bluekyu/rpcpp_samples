@@ -8,6 +8,7 @@ project(13-Shading-Models-VR)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
 # === project specific packages ===
+render_pipeline_find_plugins("openvr")
 # ==================================================================================================
 
 # === sources ======================================================================================
@@ -36,7 +37,7 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE render_pipeline::render_pipeline
+    PRIVATE render_pipeline::render_pipeline rpplugins::openvr
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "rpcpp_samples")

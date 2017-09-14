@@ -33,6 +33,9 @@
 #include <render_pipeline/rpcore/pluginbase/day_manager.hpp>
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/util/movement_controller.hpp>
+#include <render_pipeline/rpcore/pluginbase/manager.hpp>
+
+#include <openvr_plugin.hpp>
 
 int main(int argc, char* argv[])
 {
@@ -69,6 +72,13 @@ int main(int argc, char* argv[])
         LVecBase3f(0.0f),
         LVecBase3f(0.0f, 0.0f, 0.0f));
     controller->setup();
+
+    // screenshot key
+    render_pipeline->get_showbase()->accept("p", [](const Event*, void* data) {
+        rpcore::RenderPipeline* render_pipeline = reinterpret_cast<rpcore::RenderPipeline*>(data);
+        const auto& openvr_plugin = std::dynamic_pointer_cast<rpplugins::OpenVRPlugin>(render_pipeline->get_plugin_mgr()->get_instance("openvr"));
+        openvr_plugin->take_stereo_screenshots("screenshot_preview", "screenshot_stereo");
+    }, render_pipeline);
 
     render_pipeline->run();
 
