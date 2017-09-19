@@ -117,7 +117,7 @@ public:
         //self.eve.actorInterval("walk", playRate=2).loop()
 
         // Now we add a task that will take care of turning the head
-        add_task(turn_head, this, "trun_head");
+        add_task(std::bind(&LookingGrippingDemo::turn_head, this, std::placeholders::_1), "trun_head");
 
         // Now we will expose the joint the hand joint.ExposeJoint allows us to
         // get the position of a joint while it is animating.This is different than
@@ -177,21 +177,20 @@ public:
      * This task gets the position of mouse each frame, and rotates the neck based
      * on it.
      */
-    static AsyncTask::DoneStatus turn_head(GenericAsyncTask* task, void* user_data)
+    AsyncTask::DoneStatus turn_head(rppanda::FunctionalTask* task)
     {
         // Check to make sure the mouse is readable
-        LookingGrippingDemo* self = reinterpret_cast<LookingGrippingDemo*>(user_data);
-        if (self->get_mouse_watcher_node()->has_mouse())
+        if (get_mouse_watcher_node()->has_mouse())
         {
             // get the mouse position as a LVector2.The values for each axis are from -1 to
             // 1. The top-left is(-1, -1), the bottom right is(1, 1)
-            const auto& mpos = self->get_mouse_watcher_node()->get_mouse();
+            const auto& mpos = get_mouse_watcher_node()->get_mouse();
             // Here we multiply the values to get the amount of degrees to turn
             // Restrain is used to make sure the values returned by getMouse are in the
             // valid range.If this particular model were to turn more than this,
             // significant tearing would be visable
-            self->eve_neck_.set_p(clamp(mpos.get_x()) * 50);
-            self->eve_neck_.set_h(clamp(mpos.get_y()) * 20);
+            eve_neck_.set_p(clamp(mpos.get_x()) * 50);
+            eve_neck_.set_h(clamp(mpos.get_y()) * 20);
         }
 
         return AsyncTask::DoneStatus::DS_cont;

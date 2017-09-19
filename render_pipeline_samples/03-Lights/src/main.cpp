@@ -31,7 +31,6 @@
 #include <nodePathCollection.h>
 #include <spotlight.h>
 #include <material.h>
-#include <genericAsyncTask.h>
 
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 #include <render_pipeline/rppanda/interval/lerp_interval.hpp>
@@ -51,7 +50,7 @@ float lamp_radius = 10;
 std::vector<PT(rpcore::RPSpotLight)> lights;
 
 /** Update method. */
-AsyncTask::DoneStatus update(GenericAsyncTask *task, void *user_data)
+AsyncTask::DoneStatus update(rppanda::FunctionalTask* task)
 {
     double frame_time = rpcore::Globals::clock->get_frame_time();
 
@@ -191,7 +190,7 @@ int main(int argc, char* argv[])
         LVecBase3f(23.8, 33.4, 10.8));
     controller->setup();
 
-    rpcore::Globals::base->add_task(update, nullptr, "update");
+    rpcore::Globals::base->add_task(std::bind(&update, std::placeholders::_1), "update");
 
     render_pipeline->run();
 
