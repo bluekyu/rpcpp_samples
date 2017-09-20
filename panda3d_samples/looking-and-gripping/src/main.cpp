@@ -94,10 +94,10 @@ public:
 
         // Set up the key input
         accept("escape", [](const Event*) { std::exit(0); });
-        accept("1", [](const Event*, void* data) { reinterpret_cast<LookingGrippingDemo*>(data)->switch_object(0); }, this);
-        accept("2", [](const Event*, void* data) { reinterpret_cast<LookingGrippingDemo*>(data)->switch_object(1); }, this);
-        accept("3", [](const Event*, void* data) { reinterpret_cast<LookingGrippingDemo*>(data)->switch_object(2); }, this);
-        accept("4", [](const Event*, void* data) { reinterpret_cast<LookingGrippingDemo*>(data)->switch_object(3); }, this);
+        accept("1", [this](const Event*) { switch_object(0); });
+        accept("2", [this](const Event*) { switch_object(1); });
+        accept("3", [this](const Event*) { switch_object(2); });
+        accept("4", [this](const Event*) { switch_object(3); });
 
         disable_mouse();
         get_camera().set_pos(0, -15, 2);    // Position the camera

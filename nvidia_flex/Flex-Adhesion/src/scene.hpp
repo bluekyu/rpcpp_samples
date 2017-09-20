@@ -89,9 +89,7 @@ public:
         particles_entity_->get_particles_node()->set_active_point_count(rpflex_plugin.get_flex_buffer().active_indices.size());
 
         // emitter
-        rpcore::Globals::base->accept("e", [](const Event* ev, void* data) {
-            reinterpret_cast<Scene*>(data)->toggle_emit();
-        }, this);
+        rpcore::Globals::base->accept("e", [this](const Event*) { toggle_emit(); });
     }
 
     void sync_flex(rpflex::Plugin& rpflex_plugin) final

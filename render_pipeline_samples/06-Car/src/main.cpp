@@ -33,9 +33,8 @@
 #include <render_pipeline/rpcore/util/movement_controller.hpp>
 #include <render_pipeline/rpcore/loader.hpp>
 
-void tour(const Event* ev, void* user_data)
+void tour(const std::unique_ptr<rpcore::MovementController>& mc)
 {
-    rpcore::MovementController* mc = reinterpret_cast<rpcore::MovementController*>(user_data);
     rpcore::MovementController::MotionPathType mopath ={
         { LVecBase3(-10.8645000458, 9.76458263397, 2.13306283951), LVecBase3(-133.556228638, -4.23447799683, 0.0) },
         { LVecBase3(-10.6538448334, -5.98406457901, 1.68028640747), LVecBase3(-59.3999938965, -3.32706642151, 0.0) },
@@ -68,13 +67,13 @@ int main(int argc, char* argv[])
     render_pipeline->prepare_scene(model);
 
     // Init movement controller
-    std::shared_ptr<rpcore::MovementController> controller = std::make_shared<rpcore::MovementController>(rpcore::Globals::base);
+    auto controller = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
     controller->set_initial_position(
         LVecBase3f(-7.5f, -5.3f, 1.8f),
         LVecBase3f(-5.9f, -4.0f, 1.6f));
     controller->setup();
 
-    rpcore::Globals::base->accept("l", tour, controller.get());
+    rpcore::Globals::base->accept("l", [&](const Event*) { tour(controller); });
 
     render_pipeline->run();
 

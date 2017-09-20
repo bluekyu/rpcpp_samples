@@ -26,6 +26,7 @@
 #include <load_prc_file.h>
 
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
+#include <render_pipeline/rppanda/showbase/messenger.hpp>
 #include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/mount_manager.hpp>
 #include <render_pipeline/rpcore/pluginbase/day_manager.hpp>
@@ -33,17 +34,14 @@
 #include <render_pipeline/rpcore/util/movement_controller.hpp>
 #include <render_pipeline/rpcore/loader.hpp>
 
-void reload_shaders(const Event* ev, void* user_data)
+void reload_shaders(rpcore::RenderPipeline* rp)
 {
-    rpcore::RenderPipeline* rp = reinterpret_cast<rpcore::RenderPipeline*>(user_data);
-
     rp->reload_shaders();
     rp->prepare_scene(rpcore::Globals::render);
 }
 
-void tour(const Event* ev, void* user_data)
+void tour(const std::shared_ptr<rpcore::MovementController>& mc)
 {
-    rpcore::MovementController* mc = reinterpret_cast<rpcore::MovementController*>(user_data);
     rpcore::MovementController::MotionPathType mopath ={
         { LVecBase3(3.97601628304, -15.5422525406, 1.73230814934), LVecBase3(49.2462043762, -11.7619161606, 0.0) },
         { LVecBase3(4.37102460861, -6.52981519699, 2.84148645401), LVecBase3(138.54864502, -15.7908058167, 0.0) },
@@ -99,8 +97,8 @@ int main(int argc, char* argv[])
         LVecBase3f(4.7f, -16.7f, 3.4f));
     controller->setup();
 
-    rpcore::Globals::base->accept("l", tour, controller.get());
-    rpcore::Globals::base->accept("r", reload_shaders, render_pipeline);
+    rpcore::Globals::base->accept("l", [&](const Event*) { tour(controller); });
+    rpcore::Globals::base->accept("r", [&](const Event*) { reload_shaders(render_pipeline); });
 
     render_pipeline->run();
 

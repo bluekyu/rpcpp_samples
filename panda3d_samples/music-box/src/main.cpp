@@ -68,9 +68,7 @@ public:
         escape_text_ = rppanda::OnscreenText(escape_text_params);
 
         // Set up the key input
-        accept("escape", [](const Event*) {
-            std::exit(0);
-        });
+        accept("escape", [](const Event*) { std::exit(0); });
 
         // Fix the camera position
         base_->disable_mouse();
