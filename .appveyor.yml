@@ -29,6 +29,7 @@ init:
         Set-AppveyorBuildVariable -Name 'TRIGGER_COMMIT' -Value "$env:APPVEYOR_REPO_COMMIT".substring(0, 8)
     }
 - git --version
+- python --version
 - cmake --version
 
 # environment variables
@@ -36,21 +37,26 @@ environment:
     CMAKE_PREFIX_PATH: C:\projects\_install;C:\projects\_cache;
     CMAKE_GENERATOR: Visual Studio 15 2017 Win64
     BOOST_ROOT: C:\Libraries\boost_1_64_0
+    PATH: C:\Python36-x64;%PATH%
+
+# this is how to allow failing jobs in the matrix
+matrix:
+    fast_finish: true   # set this flag to immediately finish build once one of the jobs fails.
 
 # scripts that run after cloning repository
 install:
 - ps: (mkdir C:\projects\_install) -and (pushd C:\projects\_install)
 - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.7z?branch=develop'
 - 7z x -y panda3d.7z > nul
-- ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/render-pipeline-cpp/artifacts/render_pipeline_cpp.7z?branch=master'
+- ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/render-pipeline-cpp/artifacts/render_pipeline_cpp.7z?branch=master&job=Configuration%3A+' + "$env:CONFIGURATION")
 - 7z x -y render_pipeline_cpp.7z > nul
-- ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/rpcpp-plugins/artifacts/rpcpp_plugins.7z?branch=master'
+- ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/rpcpp-plugins/artifacts/rpcpp_plugins.7z?branch=master&job=Configuration%3A+' + "$env:CONFIGURATION")
 - 7z x -y rpcpp_plugins.7z > nul
 - ps: popd
 
 # build cache to preserve files/folders between builds
 cache:
-- C:\projects\_cache
+- C:\projects\_cache -> .appveyor.yml
 
 #---------------------------------#
 #       build configuration       #
@@ -62,6 +68,7 @@ platform: x64
 # build Configuration, i.e. Debug, Release, etc.
 configuration:
 - Release
+- RelWithDebInfo
 
 build:
     parallel: true                  # enable MSBuild parallel builds
@@ -72,15 +79,14 @@ build_script:
 - cmd: >-
     cmake -G "%CMAKE_GENERATOR%" -Wno-dev ..
     -DCMAKE_INSTALL_PREFIX="C:/projects/_install/rpcpp_samples"
-    -DBoost_USE_STATIC_LIBS:BOOL=ON
     -Dpanda3d_ROOT:PATH="C:/projects/_install/panda3d"
     -Drpcpp_samples_BUILD_panda3d_samples:BOOL=ON
     -Drpcpp_samples_BUILD_render_pipeline_samples:BOOL=ON
-- cmake --build . --config %CONFIGURATION% --target INSTALL
+- cmake --build . --config %CONFIGURATION% --target install
 - cmd: >-
     cmake -G "%CMAKE_GENERATOR%" -Wno-dev ..
     -DCMAKE_INSTALL_PREFIX="C:/projects/_install/render_pipeline_cpp"
-- cmake --build . --config %CONFIGURATION% --target INSTALL
+- cmake --build . --config %CONFIGURATION% --target install
 - ps: popd
 
 after_build:
