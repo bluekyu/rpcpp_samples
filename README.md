@@ -1,8 +1,16 @@
 # Render Pipeline C++ Samples
 
-[![Build status](https://ci.appveyor.com/api/projects/status/3chdlviqgf9uhudk/branch/master?svg=true)](https://ci.appveyor.com/project/bluekyu/rpcpp-samples/branch/master)
-
 This project is to develop samples for [Render Pipeline C++](https://github.com/bluekyu/render_pipeline_cpp).
+
+#### Build Status
+| OS       | Build Status             | Latest Build                                                |
+| :------: | :----------------------: | :---------------------------------------------------------: |
+| Windows  | [![win-badge]][win-link] | vc14 ([Release][win-release], [RelWithDebInfo][win-reldeb]) |
+
+[win-badge]: https://ci.appveyor.com/api/projects/status/3chdlviqgf9uhudk/branch/master?svg=true "AppVeyor build status"
+[win-link]: https://ci.appveyor.com/project/bluekyu/rpcpp-samples/branch/master "AppVeyor build link"
+[win-release]: https://ci.appveyor.com/api/projects/bluekyu/rpcpp-samples/artifacts/rpcpp_samples.7z?branch=master&job=Configuration%3A+Release "Download latest build (Release)"
+[win-reldeb]: https://ci.appveyor.com/api/projects/bluekyu/rpcpp-samples/artifacts/rpcpp_samples.7z?branch=master&job=Configuration%3A+RelWithDebInfo "Download latest build (RelWithDebInfo)"
 
 
 
