@@ -224,11 +224,16 @@ private:
 int main(int argc, char* argv[])
 {
     // setup directory of Render Pipeline. you can use mounted path.
-    rpcore::MountManager mount_manager;
-    mount_manager.mount();
+    auto mount_manager = std::make_unique<rpcore::MountManager>();
+    mount_manager->mount();
 
-    LookingGrippingDemo demo(argc, argv);
-    demo.run();
+    {
+        LookingGrippingDemo demo(argc, argv);
+        demo.run();
+    }
+
+    // release explicitly
+    mount_manager.reset();
 
     return 0;
 }

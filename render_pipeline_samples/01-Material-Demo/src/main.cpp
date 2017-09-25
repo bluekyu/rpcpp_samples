@@ -40,33 +40,38 @@ int main(int argc, char* argv[])
         "window-title Render Pipeline - Material Sample");
 
     // configure panda3d in program.
-    rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline(argc, argv);
-    render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
-    render_pipeline->create();
+    auto render_pipeline = std::make_unique<rpcore::RenderPipeline>(argc, argv);
 
-    // Set time of day
-    render_pipeline->get_daytime_mgr()->set_time("19:17");
+    {
+        render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
+        render_pipeline->create();
 
-    // Load the scene
-    NodePath model = rpcore::RPLoader::load_model("/$$rp/models/01-Material-Demo/TestScene.bam");
-    model.reparent_to(rpcore::Globals::render);
-    render_pipeline->prepare_scene(rpcore::Globals::render);
+        // Set time of day
+        render_pipeline->get_daytime_mgr()->set_time("19:17");
 
-    // Enable parallax mapping on the floor
-    render_pipeline->set_effect(model.find("**/FloorPlane"),
-        "/$$rp/effects/default.yaml",
-        { { "parallax_mapping", true } }, 100);
+        // Load the scene
+        NodePath model = rpcore::RPLoader::load_model("/$$rp/models/01-Material-Demo/TestScene.bam");
+        model.reparent_to(rpcore::Globals::render);
+        render_pipeline->prepare_scene(rpcore::Globals::render);
 
-    rpcore::MovementController* controller =  new rpcore::MovementController(rpcore::Globals::base);
-    controller->set_initial_position_hpr(
-        LVecBase3f(-17.2912578583, -13.290019989, 6.88211250305),
-        LVecBase3f(-39.7285499573, -14.6770210266, 0.0));
-    controller->setup();
+        // Enable parallax mapping on the floor
+        render_pipeline->set_effect(model.find("**/FloorPlane"),
+            "/$$rp/effects/default.yaml",
+            { { "parallax_mapping", true } }, 100);
 
-    render_pipeline->run();
+        auto controller = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
+        controller->set_initial_position_hpr(
+            LVecBase3f(-17.2912578583, -13.290019989, 6.88211250305),
+            LVecBase3f(-39.7285499573, -14.6770210266, 0.0));
+        controller->setup();
 
-    delete controller;
-    delete render_pipeline;
+        render_pipeline->run();
+
+        // release resources out of scope
+    }
+
+    // release explicitly
+    render_pipeline.reset();
 
     return 0;
 }

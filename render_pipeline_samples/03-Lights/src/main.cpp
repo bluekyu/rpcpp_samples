@@ -73,128 +73,133 @@ int main(int argc, char* argv[])
     // ------ Begin of render pipeline code ------
 
     // configure panda3d in program.
-    rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline(argc, argv);
-    render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
-    render_pipeline->create();
+    auto render_pipeline = std::make_unique<rpcore::RenderPipeline>(argc, argv);
 
-    // ------ End of render pipeline code, thats it! ------
-
-    // Set time of day
-    render_pipeline->get_daytime_mgr()->set_time("5:20");
-
-    // Load the scene
-    NodePath model = rpcore::RPLoader::load_model("../share/render_pipeline/models/03-Lights/Scene.bam");
-    model.reparent_to(rpcore::Globals::render);
-
-    // Animate balls, this is for testing the motion blur
-    CLerpInterval::BlendType blend_type = CLerpInterval::BT_no_blend;
-
-    NodePath np = model.find("**/MBRotate");
-    PT(rppanda::LerpHprInterval) lerp = new rppanda::LerpHprInterval(
-        np, 1.5f, LVecBase3(360, 360, 0), LVecBase3(0, 0, 0), {}, {}, blend_type);
-    lerp->loop();
-
-    np = model.find("**/MBUpDown");
-    LVecBase3 np_pos = np.get_pos() - LVecBase3(0, 0, 2);
-    PT(rppanda::LerpPosInterval) lerp_updown_begin = new rppanda::LerpPosInterval(
-        np, 0.15f, np_pos + LVecBase3(0, 0, 6), np_pos, {}, blend_type);
-    PT(rppanda::LerpPosInterval) lerp_updown_end = new rppanda::LerpPosInterval(
-        np, 0.15f, np_pos, np_pos + LVecBase3(0, 0, 6), {}, blend_type);
-    PT(rppanda::Sequence) updown_seq = new rppanda::Sequence({ lerp_updown_begin, lerp_updown_end });
-    updown_seq->loop();
-
-    np = model.find("**/MBFrontBack");
-    np_pos = np.get_pos() - LVecBase3(0, 0, 2);
-    PT(rppanda::LerpPosInterval) lerp_fronback_begin = new rppanda::LerpPosInterval(
-        np, 0.15f, np_pos + LVecBase3(0, 6, 0), np_pos, {}, blend_type);
-    PT(rppanda::LerpPosInterval) lerp_frontback_end = new rppanda::LerpPosInterval(
-        np, 0.15f, np_pos, np_pos + LVecBase3(0, 6, 0), {}, blend_type);
-    PT(rppanda::Sequence) front_backseq = new rppanda::Sequence({ lerp_fronback_begin, lerp_frontback_end });
-    front_backseq->loop();
-
-    np = model.find("**/MBScale");
-    PT(rppanda::LerpScaleInterval) lerp_scale_begin = new rppanda::LerpScaleInterval(
-        np, 0.15f, LVecBase3(1.5f), LVecBase3(1), {}, blend_type);
-    PT(rppanda::LerpScaleInterval) learp_scale_end = new rppanda::LerpScaleInterval(
-        np, 0.15f, LVecBase3(1), LVecBase3(1.5f), {}, blend_type);
-    PT(rppanda::Sequence) scale_seq = new rppanda::Sequence({ lerp_scale_begin, learp_scale_end });
-    scale_seq->loop();
-
-    // Generate temperature lamps
-    // This shows how to procedurally create lamps.In this case, we
-    // base the lights positions on empties created in blender.
-    auto light_compare = [](NodePath lhs, NodePath rhs) {
-        const std::regex token("LampLum");
-
-        const std::string lhs_name = lhs.get_name();
-        const std::string rhs_name = rhs.get_name();
-        const std::string lhs_key = std::vector<std::string>(std::sregex_token_iterator(lhs_name.begin(), lhs_name.end(), token, -1), std::sregex_token_iterator()).back();
-        const std::string rhs_key = std::vector<std::string>(std::sregex_token_iterator(rhs_name.begin(), rhs_name.end(), token, -1), std::sregex_token_iterator()).back();
-
-        return std::stoi(lhs_key) < std::stoi(rhs_key);
-    };
-
-    std::vector<NodePath> lumlamps;
-    auto npc = model.find_all_matches("**/LampLum*");
-    for (int k=0, k_end=npc.get_num_paths(); k < k_end; ++k)
-        lumlamps.push_back(npc.get_path(k));
-
-    std::sort(lumlamps.begin(), lumlamps.end(), light_compare);
-
-    std::random_device rd;
-    std::mt19937 reg(rd());
-    for (size_t k=0, k_end=lumlamps.size(); k < k_end; ++k)
     {
-        NodePath lumlamp = lumlamps[k];
+        render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
+        render_pipeline->create();
 
-        static const size_t l = std::string("LampLum").length();
-        float lum = std::stof(lumlamp.get_name().substr(l));
+        // ------ End of render pipeline code, thats it! ------
 
-        PT(rpcore::RPSpotLight) light = new rpcore::RPSpotLight;
-        light->set_direction(0, -1.5f, -1.0f);
-        light->set_fov(lamp_fov);
-        light->set_color_from_temperature(lum * 1000.0f);
-        light->set_energy(half_energy);
-        light->set_pos(lumlamp.get_pos(rpcore::Globals::render));
-        light->set_radius(lamp_radius);
-        light->set_casts_shadows(false);
-        light->set_shadow_map_resolution(256);
-        render_pipeline->add_light(light);
+        // Set time of day
+        render_pipeline->get_daytime_mgr()->set_time("5:20");
 
-        // Put Pandas on the edges
-        if (k < 2 || k >= k_end - 2)
+        // Load the scene
+        NodePath model = rpcore::RPLoader::load_model("../share/render_pipeline/models/03-Lights/Scene.bam");
+        model.reparent_to(rpcore::Globals::render);
+
+        // Animate balls, this is for testing the motion blur
+        CLerpInterval::BlendType blend_type = CLerpInterval::BT_no_blend;
+
+        NodePath np = model.find("**/MBRotate");
+        PT(rppanda::LerpHprInterval) lerp = new rppanda::LerpHprInterval(
+            np, 1.5f, LVecBase3(360, 360, 0), LVecBase3(0, 0, 0), {}, {}, blend_type);
+        lerp->loop();
+
+        np = model.find("**/MBUpDown");
+        LVecBase3 np_pos = np.get_pos() - LVecBase3(0, 0, 2);
+        PT(rppanda::LerpPosInterval) lerp_updown_begin = new rppanda::LerpPosInterval(
+            np, 0.15f, np_pos + LVecBase3(0, 0, 6), np_pos, {}, blend_type);
+        PT(rppanda::LerpPosInterval) lerp_updown_end = new rppanda::LerpPosInterval(
+            np, 0.15f, np_pos, np_pos + LVecBase3(0, 0, 6), {}, blend_type);
+        PT(rppanda::Sequence) updown_seq = new rppanda::Sequence({ lerp_updown_begin, lerp_updown_end });
+        updown_seq->loop();
+
+        np = model.find("**/MBFrontBack");
+        np_pos = np.get_pos() - LVecBase3(0, 0, 2);
+        PT(rppanda::LerpPosInterval) lerp_fronback_begin = new rppanda::LerpPosInterval(
+            np, 0.15f, np_pos + LVecBase3(0, 6, 0), np_pos, {}, blend_type);
+        PT(rppanda::LerpPosInterval) lerp_frontback_end = new rppanda::LerpPosInterval(
+            np, 0.15f, np_pos, np_pos + LVecBase3(0, 6, 0), {}, blend_type);
+        PT(rppanda::Sequence) front_backseq = new rppanda::Sequence({ lerp_fronback_begin, lerp_frontback_end });
+        front_backseq->loop();
+
+        np = model.find("**/MBScale");
+        PT(rppanda::LerpScaleInterval) lerp_scale_begin = new rppanda::LerpScaleInterval(
+            np, 0.15f, LVecBase3(1.5f), LVecBase3(1), {}, blend_type);
+        PT(rppanda::LerpScaleInterval) learp_scale_end = new rppanda::LerpScaleInterval(
+            np, 0.15f, LVecBase3(1), LVecBase3(1.5f), {}, blend_type);
+        PT(rppanda::Sequence) scale_seq = new rppanda::Sequence({ lerp_scale_begin, learp_scale_end });
+        scale_seq->loop();
+
+        // Generate temperature lamps
+        // This shows how to procedurally create lamps.In this case, we
+        // base the lights positions on empties created in blender.
+        auto light_compare = [](NodePath lhs, NodePath rhs) {
+            const std::regex token("LampLum");
+
+            const std::string lhs_name = lhs.get_name();
+            const std::string rhs_name = rhs.get_name();
+            const std::string lhs_key = std::vector<std::string>(std::sregex_token_iterator(lhs_name.begin(), lhs_name.end(), token, -1), std::sregex_token_iterator()).back();
+            const std::string rhs_key = std::vector<std::string>(std::sregex_token_iterator(rhs_name.begin(), rhs_name.end(), token, -1), std::sregex_token_iterator()).back();
+
+            return std::stoi(lhs_key) < std::stoi(rhs_key);
+        };
+
+        std::vector<NodePath> lumlamps;
+        auto npc = model.find_all_matches("**/LampLum*");
+        for (int k=0, k_end=npc.get_num_paths(); k < k_end; ++k)
+            lumlamps.push_back(npc.get_path(k));
+
+        std::sort(lumlamps.begin(), lumlamps.end(), light_compare);
+
+        std::random_device rd;
+        std::mt19937 reg(rd());
+        for (size_t k=0, k_end=lumlamps.size(); k < k_end; ++k)
         {
-            NodePath panda = rpcore::RPLoader::load_model("/$$rp/models/03-Lights/panda");
-            panda.reparent_to(rpcore::Globals::render);
-            PT(Material) panda_mat = new Material("default");
-            panda_mat->set_emission(0);
-            panda.set_material(panda_mat);
-            panda.set_pos(light->get_pos());
-            panda.set_z(0.65);
+            NodePath lumlamp = lumlamps[k];
 
-            std::uniform_int_distribution<int> uni(-60, 60);
-            panda.set_h(180 + uni(reg));
-            panda.set_scale(0.2);
-            panda.set_y(panda.get_y() - 3.0);
+            static const size_t l = std::string("LampLum").length();
+            float lum = std::stof(lumlamp.get_name().substr(l));
+
+            PT(rpcore::RPSpotLight) light = new rpcore::RPSpotLight;
+            light->set_direction(0, -1.5f, -1.0f);
+            light->set_fov(lamp_fov);
+            light->set_color_from_temperature(lum * 1000.0f);
+            light->set_energy(half_energy);
+            light->set_pos(lumlamp.get_pos(rpcore::Globals::render));
+            light->set_radius(lamp_radius);
+            light->set_casts_shadows(false);
+            light->set_shadow_map_resolution(256);
+            render_pipeline->add_light(light);
+
+            // Put Pandas on the edges
+            if (k < 2 || k >= k_end - 2)
+            {
+                NodePath panda = rpcore::RPLoader::load_model("/$$rp/models/03-Lights/panda");
+                panda.reparent_to(rpcore::Globals::render);
+                PT(Material) panda_mat = new Material("default");
+                panda_mat->set_emission(0);
+                panda.set_material(panda_mat);
+                panda.set_pos(light->get_pos());
+                panda.set_z(0.65);
+
+                std::uniform_int_distribution<int> uni(-60, 60);
+                panda.set_h(180 + uni(reg));
+                panda.set_scale(0.2);
+                panda.set_y(panda.get_y() - 3.0);
+            }
+
+            lights.push_back(light);
         }
 
-        lights.push_back(light);
+        render_pipeline->prepare_scene(rpcore::Globals::render);
+
+        auto controller = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
+        controller->set_initial_position(
+            LVecBase3f(23.9, 42.5, 13.4),
+            LVecBase3f(23.8, 33.4, 10.8));
+        controller->setup();
+
+        rpcore::Globals::base->add_task(std::bind(&update, std::placeholders::_1), "update");
+
+        render_pipeline->run();
+
+        // release resources out of scope
     }
 
-    render_pipeline->prepare_scene(rpcore::Globals::render);
-
-    rpcore::MovementController* controller =  new rpcore::MovementController(rpcore::Globals::base);
-    controller->set_initial_position(
-        LVecBase3f(23.9, 42.5, 13.4),
-        LVecBase3f(23.8, 33.4, 10.8));
-    controller->setup();
-
-    rpcore::Globals::base->add_task(std::bind(&update, std::placeholders::_1), "update");
-
-    render_pipeline->run();
-
-    delete controller;
-    delete render_pipeline;
+    // release explicitly
+    render_pipeline.reset();
 
     return 0;
 }

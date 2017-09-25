@@ -33,7 +33,7 @@
 #include <render_pipeline/rpcore/util/movement_controller.hpp>
 #include <render_pipeline/rpcore/loader.hpp>
 
-void tour(const std::unique_ptr<rpcore::MovementController>& mc)
+void tour(rpcore::MovementController* mc)
 {
     rpcore::MovementController::MotionPathType mopath ={
         { LVecBase3(-10.8645000458, 9.76458263397, 2.13306283951), LVecBase3(-133.556228638, -4.23447799683, 0.0) },
@@ -53,30 +53,36 @@ int main(int argc, char* argv[])
         "window-title Render Pipeline - Car Demo");
 
     // configure panda3d in program.
-    rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline(argc, argv);
-    render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
-    render_pipeline->create();
+    auto render_pipeline = std::make_unique<rpcore::RenderPipeline>(argc, argv);
 
-    render_pipeline->get_daytime_mgr()->set_time("20:08");
+    {
+        render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
+        render_pipeline->create();
 
-    // Load the scene
-    NodePath model = rpcore::RPLoader::load_model("/$$rp/models/06-Car/scene.bam");
+        render_pipeline->get_daytime_mgr()->set_time("20:08");
 
-    model.reparent_to(rpcore::Globals::render);
-    render_pipeline->prepare_scene(model);
+        // Load the scene
+        NodePath model = rpcore::RPLoader::load_model("/$$rp/models/06-Car/scene.bam");
 
-    // Init movement controller
-    auto controller = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
-    controller->set_initial_position(
-        LVecBase3f(-7.5f, -5.3f, 1.8f),
-        LVecBase3f(-5.9f, -4.0f, 1.6f));
-    controller->setup();
+        model.reparent_to(rpcore::Globals::render);
+        render_pipeline->prepare_scene(model);
 
-    rpcore::Globals::base->accept("l", [&](const Event*) { tour(controller); });
+        // Init movement controller
+        auto controller = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
+        controller->set_initial_position(
+            LVecBase3f(-7.5f, -5.3f, 1.8f),
+            LVecBase3f(-5.9f, -4.0f, 1.6f));
+        controller->setup();
 
-    render_pipeline->run();
+        rpcore::Globals::base->accept("l", [&](const Event*) { tour(controller.get()); });
 
-    delete render_pipeline;
+        render_pipeline->run();
+
+        // release resources out of scope
+    }
+
+    // release explicitly
+    render_pipeline.reset();
 
     return 0;
 }

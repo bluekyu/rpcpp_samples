@@ -41,7 +41,7 @@ void reload_shaders(rpcore::RenderPipeline* rp)
     rp->prepare_scene(rpcore::Globals::render);
 }
 
-void tour(const std::shared_ptr<rpcore::MovementController>& mc)
+void tour(rpcore::MovementController* mc)
 {
     rpcore::MovementController::MotionPathType mopath ={
         { LVecBase3(3.97601628304, -15.5422525406, 1.73230814934), LVecBase3(49.2462043762, -11.7619161606, 0.0) },
@@ -77,32 +77,38 @@ int main(int argc, char* argv[])
         "window-title Render Pipeline - Shading Models Demo");
 
     // configure panda3d in program.
-    rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline(argc, argv);
-    render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
-    render_pipeline->create();
+    auto render_pipeline = std::make_unique<rpcore::RenderPipeline>(argc, argv);
 
-    // Set time of day
-    render_pipeline->get_daytime_mgr()->set_time(0.769f);
+    {
+        render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
+        render_pipeline->create();
 
-    // Load the scene
-    NodePath model = rpcore::RPLoader::load_model("/$$rp/models/07-Shading-Models/TestScene.bam");
-    model.reparent_to(rpcore::Globals::render);
+        // Set time of day
+        render_pipeline->get_daytime_mgr()->set_time(0.769f);
 
-    render_pipeline->prepare_scene(model);
+        // Load the scene
+        NodePath model = rpcore::RPLoader::load_model("/$$rp/models/07-Shading-Models/TestScene.bam");
+        model.reparent_to(rpcore::Globals::render);
 
-    // Init movement controller
-    std::shared_ptr<rpcore::MovementController> controller = std::make_shared<rpcore::MovementController>(rpcore::Globals::base);
-    controller->set_initial_position(
-        LVecBase3f(6.6f, -18.8f, 4.5f),
-        LVecBase3f(4.7f, -16.7f, 3.4f));
-    controller->setup();
+        render_pipeline->prepare_scene(model);
 
-    rpcore::Globals::base->accept("l", [&](const Event*) { tour(controller); });
-    rpcore::Globals::base->accept("r", [&](const Event*) { reload_shaders(render_pipeline); });
+        // Init movement controller
+        auto controller = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
+        controller->set_initial_position(
+            LVecBase3f(6.6f, -18.8f, 4.5f),
+            LVecBase3f(4.7f, -16.7f, 3.4f));
+        controller->setup();
 
-    render_pipeline->run();
+        rpcore::Globals::base->accept("l", [&](const Event*) { tour(controller.get()); });
+        rpcore::Globals::base->accept("r", [&](const Event*) { reload_shaders(render_pipeline.get()); });
 
-    delete render_pipeline;
+        render_pipeline->run();
+
+        // release resources out of scope
+    }
+
+    // release explicitly
+    render_pipeline.reset();
 
     return 0;
 }

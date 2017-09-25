@@ -241,13 +241,19 @@ private:
 int main(int argc, char* argv[])
 {
     // setup directory of Render Pipeline. you can use mounted path.
-    rpcore::MountManager mount_manager;
-    mount_manager.mount();
+    auto mount_manager = std::make_unique<rpcore::MountManager>();
+    mount_manager->mount();
 
     PT(rppanda::ShowBase) base = new rppanda::ShowBase(argc, argv);
 
-    MusicBox mb(base);
-    base->run();
+    {
+        MusicBox mb(base);
+        base->run();
+    }
+
+    // release explicitly
+    base.clear();
+    mount_manager.reset();
 
     return 0;
 }

@@ -34,13 +34,15 @@
 int main(int argc, char* argv[])
 {
     // configure panda3d in program.
-    rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline(argc, argv);
-    render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
-    render_pipeline->create();
+    auto render_pipeline = std::make_unique<rpcore::RenderPipeline>(argc, argv);
 
-    render_pipeline->run();
+    {
+        render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
+        render_pipeline->create();
+        render_pipeline->run();
+    }
 
-    delete render_pipeline;
+    render_pipeline.reset();
 
     return 0;
 }
