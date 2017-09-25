@@ -74,7 +74,6 @@ int main(int argc, char* argv[])
 
     // configure panda3d in program.
     rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline(argc, argv);
-    render_pipeline->get_mount_mgr()->set_base_path("../share/render_pipeline");
     render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
     render_pipeline->create();
 
@@ -165,7 +164,7 @@ int main(int argc, char* argv[])
         // Put Pandas on the edges
         if (k < 2 || k >= k_end - 2)
         {
-            NodePath panda = rpcore::RPLoader::load_model("../share/render_pipeline/models/03-Lights/panda");
+            NodePath panda = rpcore::RPLoader::load_model("/$$rp/models/03-Lights/panda");
             panda.reparent_to(rpcore::Globals::render);
             PT(Material) panda_mat = new Material("default");
             panda_mat->set_emission(0);

@@ -43,7 +43,6 @@ int main(int argc, char* argv[])
 
     // configure panda3d in program.
     rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline(argc, argv);
-    render_pipeline->get_mount_mgr()->set_base_path("../share/render_pipeline");
     render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
     render_pipeline->create();
 
@@ -51,7 +50,7 @@ int main(int argc, char* argv[])
     render_pipeline->get_daytime_mgr()->set_time("19:17");
 
     // Load the scene
-    NodePath model = rpcore::RPLoader::load_model("../share/render_pipeline/models/11-Instancing/Scene.bam");
+    NodePath model = rpcore::RPLoader::load_model("/$$rp/models/11-Instancing/Scene.bam");
     model.reparent_to(rpcore::Globals::render);
 
     // Find the prefab object, we are going to in instance this object

@@ -225,7 +225,6 @@ int main(int argc, char* argv[])
 {
     // setup directory of Render Pipeline. you can use mounted path.
     rpcore::MountManager mount_manager;
-    mount_manager.set_base_path("../share/render_pipeline");
     mount_manager.mount();
 
     LookingGrippingDemo demo(argc, argv);

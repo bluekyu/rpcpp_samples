@@ -54,7 +54,6 @@ int main(int argc, char* argv[])
 
     // configure panda3d in program.
     rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline(argc, argv);
-    render_pipeline->get_mount_mgr()->set_base_path("../share/render_pipeline");
     render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/rpflex");
     render_pipeline->create();
 
