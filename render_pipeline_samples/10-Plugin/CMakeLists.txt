@@ -61,7 +61,7 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE render_pipeline::render_pipeline
+    PUBLIC render_pipeline::render_pipeline
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -82,7 +82,7 @@ target_include_directories(${RPPLUGIN_ID}
 )
 
 target_link_libraries(${RPPLUGIN_ID}
-    INTERFACE render_pipeline
+    INTERFACE render_pipeline::render_pipeline
 )
 
 # configure package
