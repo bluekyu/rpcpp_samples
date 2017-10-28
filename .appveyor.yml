@@ -96,7 +96,6 @@ after_build:
 #       tests configuration       #
 #---------------------------------#
 
-# to disable automatic tests
 test: off
 
 #---------------------------------#
@@ -105,3 +104,9 @@ test: off
 
 artifacts:
 - path: rpcpp_samples.7z
+
+#---------------------------------#
+#     deployment configuration    #
+#---------------------------------#
+
+deploy: off

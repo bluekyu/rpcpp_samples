@@ -179,6 +179,8 @@ public:
         //panda_turn_ = panda_. hprInterval(7, (360, 0, 0))
     }
 
+    ALLOC_DELETED_CHAIN(MusicBox);
+
     void set_music_box_volume(const std::shared_ptr<void>&)
     {
         float new_vol = slider_->get_gui_item()->get_value();

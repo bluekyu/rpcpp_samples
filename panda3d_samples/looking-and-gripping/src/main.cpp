@@ -162,6 +162,8 @@ public:
         setup_lights();     // Put in some default lighting
     }
 
+    ALLOC_DELETED_CHAIN(LookingGrippingDemo);
+
     /**
      * This is what we use to change which object it being held.It just hides all of
      * the objects and then unhides the one that was selected
