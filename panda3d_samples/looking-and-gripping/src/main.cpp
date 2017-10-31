@@ -44,6 +44,7 @@
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 #include <render_pipeline/rppanda/gui/onscreen_text.hpp>
 #include <render_pipeline/rppanda/actor/actor.hpp>
+#include <render_pipeline/rppanda/interval/actor_interval.hpp>
 #include <render_pipeline/rppanda/showbase/loader.hpp>
 #include <render_pipeline/rpcore/mount_manager.hpp>
 
@@ -114,7 +115,7 @@ public:
         // We now play an animation.An animation must be played, or at least posed
         // for the nodepath we just got from controlJoint to actually effect the
         // model
-        //self.eve.actorInterval("walk", playRate=2).loop()
+        eve_->actor_interval({"walk"}, false, false, {}, {}, {}, {}, {}, 2)->loop();
 
         // Now we add a task that will take care of turning the head
         add_task(std::bind(&LookingGrippingDemo::turn_head, this, std::placeholders::_1), "trun_head");
