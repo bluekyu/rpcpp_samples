@@ -177,6 +177,11 @@ public:
 
         // The interval for turning the panda
         //panda_turn_ = panda_. hprInterval(7, (360, 0, 0))
+        panda_turn_ = new rppanda::LerpHprInterval(panda_, 7.0f, LVecBase3(360, 0, 0));
+        // Do a quick loop and pause to set it as a looping interval so it can be
+        // started with resume and loop properly
+        panda_turn_->loop();
+        panda_turn_->pause();
     }
 
     ALLOC_DELETED_CHAIN(MusicBox);
@@ -194,6 +199,7 @@ public:
             lid_open_->pause();
 
             lid_close_->start();    // Start the close box interval
+            panda_turn_->pause();
 
             // Save the current time of the music
             music_time_ = music_box_sound_->get_time();
@@ -205,6 +211,7 @@ public:
             lid_close_->pause();
 
             lid_open_->start();    // Start the close box interval
+            panda_turn_->resume();
 
             // Reset the time of the music so it starts where it left off
             music_box_sound_->set_time(music_time_);
@@ -238,6 +245,7 @@ private:
     NodePath hinge_node_;
     PT(rppanda::Parallel) lid_close_;
     PT(rppanda::Parallel) lid_open_;
+    PT(rppanda::LerpHprInterval) panda_turn_;
 };
 
 int main(int argc, char* argv[])
