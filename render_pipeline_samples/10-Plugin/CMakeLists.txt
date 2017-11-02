@@ -7,6 +7,8 @@ get_filename_component(RPPLUGIN_ID ${CMAKE_CURRENT_LIST_DIR} NAME)
 project(rpplugin_${RPPLUGIN_ID})
 
 # === configure ====================================================================================
+include(debugging-information)
+
 # check installing directory
 if(render_pipeline_INSTALL_DIR)
     get_filename_component(_render_pipeline_INSTALL_DIR ${render_pipeline_INSTALL_DIR} ABSOLUTE)
@@ -70,6 +72,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     RELWITHDEBINFO_POSTFIX ${render_pipeline_RELWITHDEBINFO_POSTFIX}
     VERSION ${PROJECT_VERSION}
 )
+
+configure_debugging_information(${PROJECT_NAME})
 # ==================================================================================================
 
 # === target =======================================================================================
@@ -126,15 +130,5 @@ install(FILES ${PACKAGE_CONFIG_FILE} ${PACKAGE_VERSION_CONFIG_FILE} DESTINATION 
 install(FILES ${${PROJECT_NAME}_MACRO_CMAKE_FILE} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR} OPTIONAL)
 install(EXPORT ${TARGET_EXPORT_NAME} NAMESPACE ${TARGET_NAMESPACE} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
 
-if(MSVC)
-    install(FILES "${PROJECT_BINARY_DIR}/Debug/${PROJECT_NAME}${render_pipeline_DEBUG_POSTFIX}.pdb"
-        DESTINATION ${RPPLUGIN_INSTALL_DIR}
-        CONFIGURATIONS Debug
-    )
-
-    install(FILES "${PROJECT_BINARY_DIR}/RelWithDebInfo/${PROJECT_NAME}${render_pipeline_RELWITHDEBINFO_POSTFIX}.pdb"
-        DESTINATION ${RPPLUGIN_INSTALL_DIR}
-        CONFIGURATIONS RelWithDebInfo
-    )
-endif()
+install_debugging_information(${PROJECT_NAME} "${RPPLUGIN_INSTALL_DIR}")
 # ==================================================================================================
