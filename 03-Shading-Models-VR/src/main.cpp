@@ -85,7 +85,7 @@ int main(int argc, char* argv[])
         render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/vr");
         render_pipeline->create();
 
-        if (!render_pipeline->get_setting<bool>("pipeline.stereo_mode"))
+        if (!render_pipeline->is_stereo_mode())
         {
             render_pipeline->error("Not stereoscopic mode!");
             render_pipeline->error("Enable stereo_mdoe in pipeline.yaml");
