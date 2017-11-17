@@ -2,7 +2,7 @@
 # Date  : 2017-05-12
 
 cmake_minimum_required(VERSION 3.6)
-project(13-Shading-Models-VR)
+project(Shading-Models-VR)
 
 # === configure ====================================================================================
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
@@ -42,7 +42,7 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE render_pipeline::render_pipeline rpplugins::openvr
 )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "rpcpp_samples")
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "rpcpp_samples/rpcpp_samples")
 # ==================================================================================================
 
 # === install ======================================================================================
@@ -50,4 +50,6 @@ install(TARGETS ${PROJECT_NAME}
     RUNTIME DESTINATION "bin"
     LIBRARY DESTINATION "lib"
     ARCHIVE DESTINATION "lib")
+
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/config/" DESTINATION "etc/rpsamples/vr")
 # ==================================================================================================

@@ -16,8 +16,8 @@ if(WIN32)
 endif()
 
 # subdirectory
-set(rpcpp_samples_list "panda3d_samples" "render_pipeline_samples" "nvidia_flex"
-    "01-Crytek-Sponza" "02-San-Miguel" "03-Shading-Models-VR"
+set(rpcpp_samples_list "panda3d_samples" "render_pipeline_samples" "nvidia_flex" "rpcpp_samples"
+    "01-Crytek-Sponza" "02-San-Miguel"
 )
 
 foreach(sample_id ${rpcpp_samples_list})
