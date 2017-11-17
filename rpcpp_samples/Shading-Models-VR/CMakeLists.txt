@@ -1,8 +1,10 @@
 # Author: Younguk Kim (bluekyu)
 # Date  : 2017-05-12
 
-cmake_minimum_required(VERSION 3.6)
-project(Shading-Models-VR)
+cmake_minimum_required(VERSION 3.9)
+project(Shading-Models-VR
+    DESCRIPTION "VR version of Shading Models sample"
+)
 
 # === configure ====================================================================================
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
