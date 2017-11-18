@@ -53,6 +53,7 @@ install:
 - ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/rpcpp-plugins/artifacts/rpcpp_plugins.7z?branch=master&job=Configuration%3A+' + "$env:CONFIGURATION")
 - 7z x -y rpcpp_plugins.7z > nul
 - cmd: xcopy /E .\rpcpp_plugins .\render_pipeline_cpp
+- git clone -q --depth 1 --branch v1.0.9 https://github.com/ValveSoftware/openvr.git
 - ps: popd
 
 # build cache to preserve files/folders between builds
@@ -81,6 +82,7 @@ build_script:
     cmake -G "%CMAKE_GENERATOR%" -Wno-dev ..
     -DCMAKE_INSTALL_PREFIX="C:/projects/_install/rpcpp_samples"
     -Dpanda3d_ROOT:PATH="C:/projects/_install/panda3d"
+    -DOpenVR_ROOT:PATH="C:/projects/_install/openvr"
     -Drpcpp_samples_BUILD_panda3d_samples:BOOL=ON
     -Drpcpp_samples_BUILD_render_pipeline_samples:BOOL=ON
     -Drpcpp_samples_BUILD_rpcpp_samples:BOOL=ON

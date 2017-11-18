@@ -10,6 +10,12 @@ project(Shading-Models-VR
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
 # === project specific packages ===
+if(NOT TARGET OpenVR::OpenVR)
+    # find OpenVR
+    set(OpenVR_ROOT "" CACHE PATH "Hint for finding OpenVR root directory")
+    find_package(OpenVR REQUIRED)
+endif()
+
 render_pipeline_find_plugins("openvr")
 # ==================================================================================================
 
