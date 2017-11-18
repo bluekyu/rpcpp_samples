@@ -52,6 +52,7 @@ install:
 - 7z x -y render_pipeline_cpp.7z > nul
 - ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/rpcpp-plugins/artifacts/rpcpp_plugins.7z?branch=master&job=Configuration%3A+' + "$env:CONFIGURATION")
 - 7z x -y rpcpp_plugins.7z > nul
+- cmd: xcopy /E .\rpcpp_plugins .\render_pipeline_cpp
 - ps: popd
 
 # build cache to preserve files/folders between builds
