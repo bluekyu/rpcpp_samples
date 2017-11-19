@@ -171,7 +171,7 @@ public:
      */
     void switch_object(int i)
     {
-        for (auto& np: models_)
+        for (auto&& np: models_)
             np.hide();
         models_[i].show();
     }

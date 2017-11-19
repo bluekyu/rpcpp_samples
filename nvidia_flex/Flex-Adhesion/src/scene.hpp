@@ -102,7 +102,7 @@ public:
             particles_entity_->get_particles_node()->set_active_point_count(buffer.active_indices.size());
         }
 
-        for (auto& entity: entities_)
+        for (auto&& entity: entities_)
             entity->update(rpflex_plugin);
     }
 

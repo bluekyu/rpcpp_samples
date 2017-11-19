@@ -59,14 +59,14 @@ public:
 
         entities_.push_back(std::make_shared<FlexParticlesEntity>(rpflex_plugin));
 
-        for (auto& entity: entities_)
+        for (auto&& entity: entities_)
             entity->update(rpflex_plugin);
     }
 
     void sync_flex(rpflex::Plugin& rpflex_plugin) final
     {
         auto& buffer = rpflex_plugin.get_flex_buffer();
-        for (auto& entity: entities_)
+        for (auto&& entity: entities_)
             entity->update(rpflex_plugin);
     }
 
