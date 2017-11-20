@@ -46,7 +46,12 @@ matrix:
 # scripts that run after cloning repository
 install:
 - ps: (mkdir C:\projects\_install) -and (pushd C:\projects\_install)
-- ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.7z?branch=develop'
+- ps: >-
+    if ($env:CONFIGURATION -eq "Debug") {
+        Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.7z?branch=develop&job=Configuration%3A+Debug'
+    } else {
+        Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.7z?branch=develop&job=Configuration%3A+Release'
+    }
 - 7z x -y panda3d.7z > nul
 - ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/render-pipeline-cpp/artifacts/render_pipeline_cpp.7z?branch=master&job=Configuration%3A+' + "$env:CONFIGURATION")
 - 7z x -y render_pipeline_cpp.7z > nul
@@ -69,8 +74,9 @@ platform: x64
 
 # build Configuration, i.e. Debug, Release, etc.
 configuration:
-- Release
+- Debug
 - RelWithDebInfo
+- Release
 
 build:
     parallel: true                  # enable MSBuild parallel builds
