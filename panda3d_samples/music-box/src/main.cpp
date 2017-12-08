@@ -49,23 +49,17 @@ public:
     MusicBox(rppanda::ShowBase* base): base_(base)
     {
         // Our standard title and instructions text
-        rppanda::OnscreenText::Parameters title_params;
-        title_params.text = "Panda3D: Tutorial - Music Box";
-        title_params.parent = base_->get_aspect_2d().find("a2d_bottom_center");
-        title_params.pos = LVecBase2(0, 0.08f);
-        title_params.scale = 0.08f;
-        title_params.fg = LColor(1, 1, 1, 1);
-        title_params.shadow = LColor(0, 0, 0, 0.5f);
-        title_ = rppanda::OnscreenText(title_params);
+        title_ = rppanda::OnscreenText(
+            "Panda3D: Tutorial - Music Box", rppanda::OnscreenText::Default::style, LVecBase2(0, 0.08f), 0,
+            LVecBase2(0.08f), LColor(1, 1, 1, 1), {},
+            LColor(0, 0, 0, 0.5f), rppanda::OnscreenText::Default::shadow_offset, {},
+            {}, {}, {}, false, {}, base_->get_aspect_2d().find("a2d_bottom_center"));
 
-        rppanda::OnscreenText::Parameters escape_text_params;
-        escape_text_params.text = "ESC: Quit";
-        escape_text_params.parent = base_->get_aspect_2d().find("a2d_top_left");
-        escape_text_params.fg = LColor(1, 1, 1, 1);
-        escape_text_params.pos = LVecBase2(0.06, -0.1f);
-        escape_text_params.align = TextProperties::A_left;
-        escape_text_params.scale = 0.05f;
-        escape_text_ = rppanda::OnscreenText(escape_text_params);
+        escape_text_ = rppanda::OnscreenText(
+            "ESC: Quit", rppanda::OnscreenText::Default::style, LVecBase2(0.06, -0.1f), 0,
+            LVecBase2(0.05f), LColor(1, 1, 1, 1), {},
+            {}, rppanda::OnscreenText::Default::shadow_offset, {},
+            TextProperties::A_left, {}, {}, false, {}, base_->get_aspect_2d().find("a2d_top_left"));
 
         // Set up the key input
         accept("escape", [](const Event*) { std::exit(0); });
@@ -113,13 +107,10 @@ public:
         // For this tutorial, it seemed appropriate to have on screen controls.
         // The following code creates them.
         // This is a label for a slider
-        rppanda::OnscreenText::Parameters slider_tex_params;
-        slider_tex_params.text = "Volume";
-        slider_tex_params.pos = LVecBase2(-0.1f, 0.87f);
-        slider_tex_params.scale = 0.07f;
-        slider_tex_params.fg = LColor(1, 1, 1, 1);
-        slider_tex_params.shadow = LColor(0, 0, 0, 1);
-        slider_tex_ = rppanda::OnscreenText(slider_tex_params);
+        slider_tex_ = rppanda::OnscreenText(
+            "Volume", rppanda::OnscreenText::Default::style, LVecBase2(-0.1f, 0.87f), 0,
+            LVecBase2(0.07f), LColor(1, 1, 1, 1), {}, LColor(0, 0, 0, 1),
+            rppanda::OnscreenText::Default::shadow_offset);
 
         // The slider itself.It calls self.setMusicBoxVolume when changed
         auto slider_options = std::make_shared<rppanda::DirectSlider::Options>();

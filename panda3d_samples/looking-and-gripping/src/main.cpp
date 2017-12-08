@@ -59,15 +59,12 @@ inline float clamp(float i, float mn=-1, float mx=1)
 // on screen instructions
 inline rppanda::OnscreenText gen_label_text(const std::string& text, int i)
 {
-    rppanda::OnscreenText::Parameters params;
-    params.text = text;
-    params.fg = LColor(1, 1, 1, 1);
-    params.parent = rppanda::ShowBase::get_global_ptr()->get_aspect_2d().find("a2d_top_left");
-    params.align = TextProperties::A_left;
-    params.pos = LVecBase2(0.06f, -0.08f * i);
-    params.shadow = LColor(0, 0, 0, 0.5f);
-    params.scale = 0.06f;
-    return rppanda::OnscreenText(params);
+    return rppanda::OnscreenText(
+        text, rppanda::OnscreenText::Default::style, LVecBase2(0.06f, -0.08f * i), 0,
+        LVecBase2(0.06f), LColor(1, 1, 1, 1), {},
+        LColor(0, 0, 0, 0.5f), rppanda::OnscreenText::Default::shadow_offset, {},
+        TextProperties::A_left, {}, {}, false,
+        {}, rppanda::ShowBase::get_global_ptr()->get_aspect_2d().find("a2d_top_left"));
 }
 
 class LookingGrippingDemo : public rppanda::ShowBase
@@ -76,15 +73,11 @@ public:
     LookingGrippingDemo(int& argc, char**& argv): ShowBase(argc, argv)
     {
         // This code puts the standard title and instruction text on screen
-        rppanda::OnscreenText::Parameters params;
-        params.text = "Panda3D: Tutorial - Joint Manipulation";
-        params.fg = LColor(1, 1, 1, 1);
-        params.parent = rppanda::ShowBase::get_global_ptr()->get_aspect_2d().find("a2d_bottom_right");
-        params.align = TextProperties::A_right;
-        params.pos = LVecBase2(-0.1f, 0.1f);
-        params.shadow = LColor(0, 0, 0, 0.5f);
-        params.scale = 0.08f;
-        title_ = rppanda::OnscreenText(params);
+        title_ = rppanda::OnscreenText(
+            "Panda3D: Tutorial - Joint Manipulation", rppanda::OnscreenText::Default::style, LVecBase2(-0.1f, 0.1f), 0,
+            LVecBase2(0.08f), LColor(1, 1, 1, 1), {},
+            LColor(0, 0, 0, 0.5f), rppanda::OnscreenText::Default::shadow_offset, {},
+            TextProperties::A_right, {}, {}, false, {}, rppanda::ShowBase::get_global_ptr()->get_aspect_2d().find("a2d_bottom_right"));
 
         // Set up key input
         esckey_text_ = gen_label_text("ESC: Quit", 1);
