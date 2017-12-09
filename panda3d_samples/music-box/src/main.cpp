@@ -82,9 +82,9 @@ public:
         light_path.set_pos(0, 0, 20);
         base_->get_render().set_light(light_path);
 
-        alight_ = new AmbientLight("ambient");
-        alight_->set_color(LColor(0.3, 0.3, 0.4, 1));
-        base_->get_render().set_light(base_->get_render().attach_new_node(alight_));
+        PT(AmbientLight) alight = new AmbientLight("ambient");
+        alight->set_color(LColor(0.3, 0.3, 0.4, 1));
+        base_->get_render().set_light(base_->get_render().attach_new_node(alight));
 
         // Enable per-pixel lighting
         base_->get_render().set_shader_auto();
@@ -221,7 +221,6 @@ private:
     rppanda::OnscreenText escape_text_;
     PT(AudioSound) music_box_sound_;
     PT(PointLight) plight_;
-    PT(AmbientLight) alight_;
     float music_time_;
     PT(AudioSound) lid_sfx_;
     PT(rppanda::SoundInterval) lid_open_sfx_;

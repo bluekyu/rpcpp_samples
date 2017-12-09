@@ -99,6 +99,8 @@ int main(int argc, char* argv[])
         NodePath model = rpcore::RPLoader::load_model("/$$rp/models/07-Shading-Models/TestScene.bam");
         model.reparent_to(rpcore::Globals::render);
 
+        render_pipeline->prepare_scene(model);
+
         // Init movement controller
         auto controller = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
         controller->set_initial_position_hpr(
