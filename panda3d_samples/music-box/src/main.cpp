@@ -117,7 +117,7 @@ public:
         slider_options->pos = LVecBase3(-0.1f, 0.0f, 0.75f);
         slider_options->scale = 0.8f;
         slider_options->value = 0.5f;
-        slider_options->command = std::bind(&MusicBox::set_music_box_volume, this, std::placeholders::_1);
+        slider_options->command = std::bind(&MusicBox::set_music_box_volume, this);
         slider_ = new rppanda::DirectSlider(NodePath(), slider_options);
 
         // A button that calls self.toggleMusicBox when pressed
@@ -126,7 +126,7 @@ public:
         button_options->text = { "Open" };
         button_options->scale = 0.1f;
         button_options->pad = LVecBase2(0.2f, 0.2f);
-        button_options->command = std::bind(&MusicBox::toggle_music_box, this, std::placeholders::_1);
+        button_options->command = std::bind(&MusicBox::toggle_music_box, this);
         button_ = new rppanda::DirectButton(NodePath(), button_options);
 
         // A variable to represent the state of the simulation.It starts closed
@@ -177,13 +177,13 @@ public:
 
     ALLOC_DELETED_CHAIN(MusicBox);
 
-    void set_music_box_volume(const std::shared_ptr<void>&)
+    void set_music_box_volume()
     {
         float new_vol = slider_->get_gui_item()->get_value();
         music_box_sound_->set_volume(new_vol);
     }
 
-    void toggle_music_box(const std::shared_ptr<void>&)
+    void toggle_music_box()
     {
         if (box_open_)
         {
