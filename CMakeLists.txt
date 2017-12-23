@@ -29,3 +29,10 @@ foreach(sample_id ${rpcpp_samples_list})
     endif()
 endforeach()
 # ==================================================================================================
+
+# === install ======================================================================================
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/models"
+    DESTINATION "share/render_pipeline/resources/models"
+)
+install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/etc/" DESTINATION "etc")
+# ==================================================================================================

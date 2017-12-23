@@ -29,7 +29,6 @@
 
 #include <load_prc_file.h>
 #include <nodePathCollection.h>
-#include <spotlight.h>
 #include <material.h>
 
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
