@@ -10,10 +10,6 @@ if(NOT TARGET NvFlex::CUDA)
     find_package(NvFlex REQUIRED)
 endif()
 
-if(NOT TARGET fmt-header-only)
-    find_package(fmt REQUIRED)
-endif()
-
 render_pipeline_find_plugins("rpflex")
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Flex-Adhesion")
