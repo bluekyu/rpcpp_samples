@@ -34,7 +34,7 @@ init:
 
 # environment variables
 environment:
-    CMAKE_PREFIX_PATH: C:\projects\_install;C:\projects\_cache;
+    CMAKE_PREFIX_PATH: C:\projects\_install;
     CMAKE_GENERATOR: Visual Studio 15 2017 Win64
     BOOST_ROOT: C:\Libraries\boost_1_64_0
     PATH: C:\Python36-x64;%PATH%
@@ -58,12 +58,10 @@ install:
 - ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/rpcpp-plugins/artifacts/rpcpp_plugins.7z?branch=master&job=Configuration%3A+' + "$env:CONFIGURATION")
 - 7z x -y rpcpp_plugins.7z > nul
 - cmd: xcopy /E .\rpcpp_plugins .\render_pipeline_cpp
-- git clone -q --depth 1 --branch v1.0.9 https://github.com/ValveSoftware/openvr.git
+- ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/cpp-packages/artifacts/install/spdlog.7z?branch=master&job=Configuration%3A+' + "$env:CONFIGURATION")
+- 7z x -y spdlog.7z > nul
+- git clone -q --depth 1 --branch v1.0.11 https://github.com/ValveSoftware/openvr.git
 - ps: popd
-
-# build cache to preserve files/folders between builds
-cache:
-- C:\projects\_cache -> .appveyor.yml
 
 #---------------------------------#
 #       build configuration       #
