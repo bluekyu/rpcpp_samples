@@ -5,8 +5,9 @@ cmake_minimum_required(VERSION 3.9)
 project(panda3d_samples)
 
 # === configure ====================================================================================
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/looking-and-gripping")
-add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/music-box")
+add_subdirectory("empty-wo-rpcpp")
+add_subdirectory("looking-and-gripping")
+add_subdirectory("music-box")
 # ==================================================================================================
 
 # === install ======================================================================================
