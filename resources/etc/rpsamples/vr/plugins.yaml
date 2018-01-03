@@ -208,6 +208,3 @@ overrides:
         grid_ws_size: 100.0
         diffuse_cone_steps: 32
         specular_cone_steps: 150
-
-    openvr:
-        openvr_sdk_path: /r/home/bluekyu/Projects/github/openvr
