@@ -1,6 +1,6 @@
 # Panda3D Samples
 
-These samples are ported from samples in Panda3D (https://github.com/panda3d/panda3d).
+These samples are **ported** from samples in Panda3D (https://github.com/panda3d/panda3d).
 
 ## Looking and Gripping
 This tutorial will cover exposing joints and manipulating them. Specifically,
