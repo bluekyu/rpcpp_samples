@@ -114,7 +114,7 @@ public:
             positions.push_back(buffer.positions[k].get_xyz());
 
         particles_node_ = std::make_shared<rpcore::PointsNode>("particles", positions, flex_parmas.radius, GeomEnums::UH_dynamic);
-        particles_node_->set_circular_point();
+        particles_node_->set_sphere_point_effect();
         particles_node_->get_nodepath().reparent_to(rpcore::Globals::render);
     }
 
