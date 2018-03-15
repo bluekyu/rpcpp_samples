@@ -23,10 +23,7 @@ clone_folder: c:\projects\rpcpp_samples
 init:
 - ps: >-
     if (Test-Path env:TRIGGER_NAME) {
-        Update-AppveyorBuild -Message "Build from $env:TRIGGER_COMMIT in $env:TRIGGER_NAME"
-    } else {
-        Set-AppveyorBuildVariable -Name 'TRIGGER_NAME' -Value "$env:APPVEYOR_PROJECT_NAME"
-        Set-AppveyorBuildVariable -Name 'TRIGGER_COMMIT' -Value "$env:APPVEYOR_REPO_COMMIT".substring(0, 8)
+        Update-AppveyorBuild -Message "Build by $env:TRIGGER_BUILD_VERSION in $env:TRIGGER_NAME"
     }
 - git --version
 - python --version
