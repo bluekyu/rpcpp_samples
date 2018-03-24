@@ -76,7 +76,7 @@ void ParticlesInstance::sync_flex(rpflex::Plugin& rpflex_plugin)
     // read back
     auto& transforms = instanced_node_->modify_transforms();
 
-    auto& t = transforms.begin();
+    auto t = transforms.begin();
 
     for (int k = 0, k_end = transforms.size(); k < k_end; ++k)
     {
@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
             return 1;
         }
 
-        auto& flex_plugin = std::dynamic_pointer_cast<rpflex::Plugin>(render_pipeline->get_plugin_mgr()->get_instance("rpflex"));
+        auto flex_plugin = dynamic_cast<rpflex::Plugin*>(render_pipeline->get_plugin_mgr()->get_instance("rpflex"));
 
         NodePath particle = rpcore::create_sphere("particle", 6, 6);
         particle.set_scale(0.1);

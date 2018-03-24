@@ -55,9 +55,9 @@ int main(int argc, char* argv[])
         render_pipeline->prepare_scene(rpcore::Globals::render);
 
         // Enable parallax mapping on the floor
-        render_pipeline->set_effect(model.find("**/FloorPlane"),
-            "/$$rp/effects/default.yaml",
-            { { "parallax_mapping", true } }, 100);
+        //render_pipeline->set_effect(model.find("**/FloorPlane"),
+        //    "/$$rp/effects/default.yaml",
+        //    { { "parallax_mapping", true } }, 100);
 
         auto controller = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
         controller->set_initial_position_hpr(
