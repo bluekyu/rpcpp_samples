@@ -165,7 +165,7 @@ int main(int argc, char* argv[])
             // Put Pandas on the edges
             if (k < 2 || k >= k_end - 2)
             {
-                NodePath panda = rpcore::RPLoader::load_model("/$$rp/models/03-Lights/panda");
+                NodePath panda = rpcore::RPLoader::load_model("panda");
                 panda.reparent_to(rpcore::Globals::render);
                 PT(Material) panda_mat = new Material("default");
                 panda_mat->set_emission(0);
