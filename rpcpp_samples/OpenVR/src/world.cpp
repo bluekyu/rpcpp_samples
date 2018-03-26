@@ -73,7 +73,7 @@ World::World(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
     if (area)
     {
         auto floor = rpcore::create_plane("floor");
-        floor.set_scale(LVecBase3(area.get(), 1));
+        floor.set_scale(LVecBase3(area.value(), 1));
         floor.reparent_to(openvr_devices);
     }
 
@@ -116,6 +116,9 @@ AsyncTask::DoneStatus World::update()
     // process controller state
     for (uint i = 0, i_end = vr::k_unMaxTrackedDeviceCount; i < i_end; ++i)
     {
+        if (openvr_plugin_->get_tracked_device_class(i) != vr::ETrackedDeviceClass::TrackedDeviceClass_Controller)
+            continue;
+
         vr::VRControllerState_t state;
         if (vr_system->GetControllerState(i, &state, sizeof(vr::VRControllerState_t)))
         {
