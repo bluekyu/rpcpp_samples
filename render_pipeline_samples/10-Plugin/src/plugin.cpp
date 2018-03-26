@@ -31,29 +31,20 @@
 
 RENDER_PIPELINE_PLUGIN_CREATOR(Plugin)
 
-class Plugin::Impl
-{
-public:
-    static RequrieType require_plugins_;
-
-    std::shared_ptr<SampleStage> stage_;
-};
-
-Plugin::RequrieType Plugin::Impl::require_plugins_;
+Plugin::RequrieType Plugin::require_plugins_;
 
 // ************************************************************************************************
 
-Plugin::Plugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPPLUGIN_ID_STRING), impl_(std::make_unique<Impl>())
+Plugin::Plugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPPLUGIN_ID_STRING)
 {
 }
 
 Plugin::RequrieType& Plugin::get_required_plugins() const
 {
-    return impl_->require_plugins_;
+    return require_plugins_;
 }
 
 void Plugin::on_stage_setup()
 {
-    impl_->stage_ = std::make_shared<SampleStage>(pipeline_);
-    add_stage(impl_->stage_);
+    add_stage(std::make_unique<SampleStage>(pipeline_));
 }
