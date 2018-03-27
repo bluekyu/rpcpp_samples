@@ -45,10 +45,10 @@ set(plugin_sources
 )
 add_library(${PROJECT_NAME} MODULE ${plugin_sources})
 
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_auto_type)
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251
-        $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/permissive- /utf-8 /std:c++14>
+        $<$<VERSION_GREATER:${MSVC_VERSION},1800>:/utf-8>
+        $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/permissive->
     )
     set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELWITHDEBINFO    " /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
     set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELEASE           " /INCREMENTAL:NO /OPT:REF /OPT:ICF ")

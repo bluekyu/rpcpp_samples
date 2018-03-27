@@ -2,7 +2,7 @@
 # Date  : 2017-05-12
 
 cmake_minimum_required(VERSION 3.9)
-project(rpcpp_samples
+project(rpcpp_samples_project
     DESCRIPTION "Samples of Render Pipeline C++"
 )
 
@@ -18,8 +18,12 @@ if(WIN32)
 endif()
 
 # subdirectory
-set(rpcpp_samples_list "panda3d_samples" "render_pipeline_samples" "nvidia_flex" "rpcpp_samples"
-    "01-Crytek-Sponza" "02-San-Miguel"
+set(rpcpp_samples_list
+    "nvidia_flex"
+    "panda3d_samples"
+    "render_pipeline_samples"
+    "rpcpp_samples"
+    "snippets"
 )
 
 foreach(sample_id ${rpcpp_samples_list})
