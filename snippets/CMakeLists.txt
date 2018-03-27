@@ -13,7 +13,7 @@ set(rpcpp_snippets_list
 )
 
 foreach(snippet_id ${rpcpp_snippets_list})
-    option(rpcpp_snippets_BUILD_${snippet_id} "Enable to build '${snippet_id}'" OFF)
+    option(rpcpp_snippets_BUILD_${snippet_id} "Enable to build '${snippet_id}'" ON)
     if(rpcpp_snippets_BUILD_${snippet_id})
         add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/${snippet_id}")
     endif()
