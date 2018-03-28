@@ -10,6 +10,7 @@ project(rpcpp_snippets
 set(rpcpp_snippets_list
     "GUIs"
     "primitives"
+    "texture_and_material"
 )
 
 foreach(snippet_id ${rpcpp_snippets_list})
