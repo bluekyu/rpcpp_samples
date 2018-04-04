@@ -87,7 +87,7 @@ public:
         fourkey_text_ = gen_label_text("[4]: Sword", 5);
 
         // Set up the key input
-        accept("escape", [](const Event*) { std::exit(0); });
+        accept("escape", [this](const Event*) { user_exit(); });
         accept("1", [this](const Event*) { switch_object(0); });
         accept("2", [this](const Event*) { switch_object(1); });
         accept("3", [this](const Event*) { switch_object(2); });

@@ -62,7 +62,7 @@ public:
             TextProperties::A_left, {}, {}, false, {}, base_->get_aspect_2d().find("a2d_top_left"));
 
         // Set up the key input
-        accept("escape", [](const Event*) { std::exit(0); });
+        accept("escape", [this](const Event*) { base_->user_exit(); });
 
         // Fix the camera position
         base_->disable_mouse();
