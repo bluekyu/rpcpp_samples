@@ -32,6 +32,7 @@
 #include <render_pipeline/rppanda/actor/actor.hpp>
 #include <render_pipeline/rppanda/gui/onscreen_text.hpp>
 #include <render_pipeline/rpcore/render_pipeline.hpp>
+#include <render_pipeline/rpcore/native/tag_state_manager.h>
 #include <render_pipeline/rpcore/mount_manager.hpp>
 #include <render_pipeline/rpcore/pluginbase/day_manager.hpp>
 #include <render_pipeline/rpcore/globals.hpp>
@@ -58,6 +59,8 @@ public:
         inst_o_ = add_instructions(0.12f, "O : stop/start the Walk Cycle");
         inst_t_ = add_instructions(0.18f, "T : stop/start the Teapot");
         inst_x_ = add_instructions(0.24f, "K / L: change daytime");
+        inst_n_ = add_instructions(0.30f, "N: toggle shadow of the Panda");
+        inst_m_ = add_instructions(0.36f, "M: toggle shadow of the Teapot");
 
         // Load the scene.
 
@@ -114,14 +117,16 @@ public:
 
         accept("k", [this](auto) { change_daytime(false); });
         accept("l", [this](auto) { change_daytime(true); });
-        accept("p", [this](auto){ toggle_interval(panda_movement_); });
-        accept("t", [this](auto){ toggle_interval(teapot_movement_); });
-        accept("o", [this](auto){ toggle_interval(panda_walk_); });
+        accept("p", [this](auto) { toggle_interval(panda_movement_); });
+        accept("t", [this](auto) { toggle_interval(teapot_movement_); });
+        accept("o", [this](auto) { toggle_interval(panda_walk_); });
+        accept("n", [this](auto) { toggle_shadow(panda_axis_); });
+        accept("m", [this](auto) { toggle_shadow(teapot_); });
     }
 
     ALLOC_DELETED_CHAIN(World);
 
-    void toggle_interval(CInterval* ival)
+    void toggle_interval(CInterval* ival) const
     {
         if (ival->is_playing())
             ival->pause();
@@ -129,10 +134,19 @@ public:
             ival->resume();
     }
 
-    void change_daytime(bool increase)
+    void change_daytime(bool increase) const
     {
         auto daytime_mgr = pipeline_->get_daytime_mgr();
         daytime_mgr->set_time(daytime_mgr->get_time() + (increase ? 0.005f : -0.005f));
+    }
+
+    void toggle_shadow(NodePath np) const
+    {
+        const auto shadow_mask = pipeline_->get_tag_mgr()->get_mask("shadow");
+        if (np.is_hidden(shadow_mask))
+            np.show(shadow_mask);
+        else
+            np.hide(shadow_mask);
     }
 
 private:
@@ -143,6 +157,8 @@ private:
     rppanda::OnscreenText inst_o_;
     rppanda::OnscreenText inst_t_;
     rppanda::OnscreenText inst_x_;
+    rppanda::OnscreenText inst_n_;
+    rppanda::OnscreenText inst_m_;
 
     NodePath panda_axis_;
     PT(rppanda::Actor) panda_model_;
