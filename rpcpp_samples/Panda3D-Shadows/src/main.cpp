@@ -30,6 +30,7 @@
 #include <render_pipeline/rppanda/interval/actor_interval.hpp>
 #include <render_pipeline/rppanda/interval/lerp_interval.hpp>
 #include <render_pipeline/rppanda/actor/actor.hpp>
+#include <render_pipeline/rppanda/gui/onscreen_text.hpp>
 #include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/mount_manager.hpp>
 #include <render_pipeline/rpcore/pluginbase/day_manager.hpp>
@@ -37,11 +38,27 @@
 #include <render_pipeline/rpcore/util/movement_controller.hpp>
 #include <render_pipeline/rpcore/util/rpmaterial.hpp>
 
-class World
+// Function to put instructions on the screen.
+rppanda::OnscreenText add_instructions(float pos, const std::string& msg)
+{
+    return rppanda::OnscreenText(msg, rppanda::OnscreenText::Style::plain,
+        LVecBase2f(0.08f, -pos - 0.54f), 0.0f, LVecBase2(0.05f), LColor{1, 1, 1, 1}, {},
+        LColor{0, 0, 0, 1}, rppanda::OnscreenText::Default::shadow_offset,
+        {}, TextNode::Alignment::A_left, {}, {}, false, nullptr, rpcore::Globals::base->get_aspect_2d().find("a2d_top_left"));
+}
+
+class World : public rppanda::DirectObject
 {
 public:
     World(rpcore::RenderPipeline* pipeline) : pipeline_(pipeline)
     {
+        base_ = pipeline_->get_showbase();
+
+        inst_p_ = add_instructions(0.06f, "P : stop/start the Panda Rotation");
+        inst_o_ = add_instructions(0.12f, "O : stop/start the Walk Cycle");
+        inst_t_ = add_instructions(0.18f, "T : stop/start the Teapot");
+        inst_x_ = add_instructions(0.24f, "K / L: change daytime");
+
         // Load the scene.
 
         rpcore::RPMaterial basic_mat;
@@ -49,7 +66,7 @@ public:
         basic_mat.set_roughness(1);
         basic_mat.set_specular_ior(1);
 
-        auto floor_tex = pipeline_->get_showbase()->get_loader()->load_texture("maps/envir-ground.jpg");
+        auto floor_tex = base_->get_loader()->load_texture("maps/envir-ground.jpg");
         floor_tex->set_format(Texture::Format::F_srgb);
         auto cm = CardMaker("");
         cm.set_frame(-2, 2, -2, 2);
@@ -86,16 +103,46 @@ public:
         panda_movement_ = new rppanda::LerpHprInterval(panda_axis_, 20.0, LPoint3(-360, 0, 0), LPoint3(0, 0, 0));
         panda_movement_->loop();
 
-        teapot_ = pipeline_->get_showbase()->get_loader()->load_model("teapot");
+        teapot_ = base_->get_loader()->load_model("teapot");
         teapot_.set_material(basic_mat.get_material());
         teapot_.reparent_to(rpcore::Globals::render);
         teapot_.set_pos(0, -20, 10);
         teapot_movement_ = new rppanda::LerpHprInterval(teapot_, 50, LPoint3(0, 360, 360));
         teapot_movement_->loop();
+
+        accept("escape", [this](auto) { base_->user_exit(); });
+
+        accept("k", [this](auto) { change_daytime(false); });
+        accept("l", [this](auto) { change_daytime(true); });
+        accept("p", [this](auto){ toggle_interval(panda_movement_); });
+        accept("t", [this](auto){ toggle_interval(teapot_movement_); });
+        accept("o", [this](auto){ toggle_interval(panda_walk_); });
+    }
+
+    ALLOC_DELETED_CHAIN(World);
+
+    void toggle_interval(CInterval* ival)
+    {
+        if (ival->is_playing())
+            ival->pause();
+        else
+            ival->resume();
+    }
+
+    void change_daytime(bool increase)
+    {
+        auto daytime_mgr = pipeline_->get_daytime_mgr();
+        daytime_mgr->set_time(daytime_mgr->get_time() + (increase ? 0.005f : -0.005f));
     }
 
 private:
     rpcore::RenderPipeline* pipeline_;
+    rppanda::ShowBase* base_;
+
+    rppanda::OnscreenText inst_p_;
+    rppanda::OnscreenText inst_o_;
+    rppanda::OnscreenText inst_t_;
+    rppanda::OnscreenText inst_x_;
 
     NodePath panda_axis_;
     PT(rppanda::Actor) panda_model_;
