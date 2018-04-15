@@ -34,6 +34,7 @@ if(MSVC)
     set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELWITHDEBINFO    " /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
     set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELEASE           " /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
 else()
+    target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
 endif()
 
