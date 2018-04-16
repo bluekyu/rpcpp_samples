@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.9)
 project(panda3d_samples)
 
 # === configure ====================================================================================
+add_subdirectory("chorusline")
 add_subdirectory("empty-wo-rpcpp")
 add_subdirectory("looking-and-gripping")
 add_subdirectory("music-box")
