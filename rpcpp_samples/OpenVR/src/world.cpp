@@ -45,7 +45,7 @@ World::World(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
     // Set time of day
     pipeline_.get_daytime_mgr()->set_time(0.569f);
 
-    openvr_plugin_ = dynamic_cast<rpplugins::OpenVRPlugin*>(pipeline_.get_plugin_mgr()->get_instance("openvr"));
+    openvr_plugin_ = static_cast<rpplugins::OpenVRPlugin*>(pipeline_.get_plugin_mgr()->get_instance("openvr")->downcast());
 
     // axis on origin
     NodePath axis_model = rpcore::RPLoader::load_model("/$$rp/resources/models/zup-axis.bam");

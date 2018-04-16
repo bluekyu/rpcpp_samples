@@ -110,7 +110,7 @@ int main(int argc, char* argv[])
 
         // screenshot key
         rpcore::Globals::base->accept("p", [&](const Event*) {
-            auto openvr_plugin = dynamic_cast<rpplugins::OpenVRPlugin*>(render_pipeline->get_plugin_mgr()->get_instance("openvr"));
+            auto openvr_plugin = static_cast<rpplugins::OpenVRPlugin*>(render_pipeline->get_plugin_mgr()->get_instance("openvr")->downcast());
             openvr_plugin->take_stereo_screenshots("screenshot_preview", "screenshot_stereo");
         });
 
