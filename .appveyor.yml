@@ -55,7 +55,7 @@ install:
 - ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/rpcpp-plugins/artifacts/rpcpp_plugins.7z?branch=master&job=Configuration%3A+' + "$env:CONFIGURATION")
 - 7z x -y rpcpp_plugins.7z > nul
 - cmd: xcopy /E .\rpcpp_plugins .\render_pipeline_cpp
-- ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/cpp-packages/artifacts/install/spdlog.7z?branch=master&job=Configuration%3A+' + "$env:CONFIGURATION")
+- ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/cpp-packages/artifacts/install/spdlog.7z?branch=master&job=Image%3A+Visual+Studio+2017%3B+Configuration%3A+' + "$env:CONFIGURATION")
 - 7z x -y spdlog.7z > nul
 - git clone -q --depth 1 --branch v1.0.14 https://github.com/ValveSoftware/openvr.git
 - ps: popd
