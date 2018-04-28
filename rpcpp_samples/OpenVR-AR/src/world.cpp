@@ -34,10 +34,17 @@
 #include <render_pipeline/rppanda/showbase/loader.hpp>
 #include <render_pipeline/rpcore/pluginbase/manager.hpp>
 #include <render_pipeline/rpcore/util/movement_controller.hpp>
+#include <render_pipeline/rpcore/stage_manager.hpp>
 
 #include <openvr_plugin.hpp>
+#include <openvr_camera_interface.hpp>
+
+#include <rpplugins/ar_render/plugin.hpp>
+#include <rpplugins/ar_render/ar_composite_stage.hpp>
 
 #include <spdlog/fmt/ostr.h>
+
+#define MR_MODE 0
 
 World::World(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
 {
@@ -68,18 +75,13 @@ World::World(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
         label.get_np().set_pos(0.0f, 0.0f, 0.1f);
     }
 
-    auto area = openvr_plugin_->get_play_area_size();
-    if (area)
-    {
-        auto floor = rpcore::create_plane("floor");
-        floor.set_scale(LVecBase3(area.value(), 1));
-        floor.reparent_to(openvr_devices);
-    }
-
     setup_event();
 }
 
-World::~World() = default;
+World::~World()
+{
+    remove_all_tasks();
+}
 
 void World::setup_event()
 {
@@ -94,8 +96,116 @@ void World::setup_event()
     accept("p", [this](const Event*) {
         openvr_plugin_->take_stereo_screenshots("screenshot_preview", "screenshot_stereo");
     });
+
+    accept("l", [this](auto) {
+        toggle_streaming_action();
+    });
 }
 
 void World::start()
 {
+    if (!openvr_plugin_->has_tracked_camera())
+    {
+        rpcore::RPObject::global_error("Application", "No tracked camera!");
+        return;
+    }
+
+    openvr_camera_ = openvr_plugin_->get_tracked_camera();
+
+    PT(Camera) ar_camera_ = openvr_camera_->create_camera_node();
+    const auto real_object_mask = DrawMask::bit(20);
+    ar_camera_->set_camera_mask(real_object_mask);
+
+    rpcore::Globals::render.hide(real_object_mask);
+
+    auto openvr_node_group = openvr_plugin_->get_device_node_group();
+    ar_camera_np_ = openvr_node_group.attach_new_node(ar_camera_);
+
+    uint32_t width;
+    uint32_t height;
+    uint32_t buffer_size;
+    openvr_camera_->get_frame_size(width, height, buffer_size);
+    framebuffer_.resize(buffer_size);
+
+    ar_camera_texture_ = Texture::make_texture();
+    // color is sRGBA
+    ar_camera_texture_->setup_2d_texture(width, height, Texture::ComponentType::T_unsigned_byte, Texture::Format::F_srgb_alpha);
+    ar_camera_texture_->set_wrap_u(SamplerState::WrapMode::WM_clamp);
+    ar_camera_texture_->set_wrap_v(SamplerState::WrapMode::WM_clamp);
+    ar_camera_texture_->set_magfilter(SamplerState::FilterType::FT_linear);
+    ar_camera_texture_->set_minfilter(SamplerState::FilterType::FT_linear_mipmap_linear);
+
+    PTA_uchar ram_image = ar_camera_texture_->make_ram_image();
+    memset(ram_image.p(), 0xFF, width * height * 4);
+
+    auto ar_plugin = static_cast<rpplugins::ARRenderPlugin*>(pipeline_.get_plugin_mgr()->get_instance("ar_render")->downcast());
+    ar_plugin->set_ar_camera(ar_camera_np_);
+    ar_plugin->set_ar_camera_color_texture(ar_camera_texture_, false, true);
+
+#if MR_MODE
+    openvr_node_group.show_through(real_object_mask);
+
+    auto ar_composite_stage = dynamic_cast<rpplugins::ARCompositeStage*>(pipeline_.get_stage_mgr()->get_stage("ARCompositeStage"));
+    ar_composite_stage->remove_occlusion(true);
+    //ar_composite_stage->render_only_valid_ar_depth(true);
+#endif
+}
+
+void World::toggle_streaming_action()
+{
+    static const std::string task_name = "World::upload_texture";
+
+    if (is_streamed_)
+    {
+        rpcore::Globals::base->remove_task(task_name);
+        openvr_camera_->release_video_streaming_service();
+        is_streamed_ = false;
+    }
+    else
+    {
+        is_streamed_ = openvr_camera_->acquire_video_streaming_service();
+        last_task_time_ = 0;
+        rpcore::Globals::base->add_task(std::bind(&World::upload_texture, this, std::placeholders::_1), task_name);
+    }
+}
+
+AsyncTask::DoneStatus World::upload_texture(rppanda::FunctionalTask* task)
+{
+    auto elapsed_time = task->get_elapsed_time();
+    if ((elapsed_time - last_task_time_) < (16.0 / 1000.0))
+        return AsyncTask::DS_cont;
+
+    last_task_time_ = elapsed_time;
+
+    vr::CameraVideoStreamFrameHeader_t header;
+    openvr_camera_->get_frame_header(header);
+
+    static uint32_t last_frame_sequence = 0;
+
+    // frame hasn't changed yet, nothing to do
+    if (header.nFrameSequence == last_frame_sequence)
+        return AsyncTask::DS_cont;
+
+    // Frame has changed, do the more expensive frame buffer copy
+    auto err = openvr_camera_->get_framebuffer(header, framebuffer_);
+    if (err != vr::VRTrackedCameraError_None)
+        return AsyncTask::DS_cont;
+
+    PTA_uchar ram_image = ar_camera_texture_->modify_ram_image();
+    std::copy(framebuffer_.begin(), framebuffer_.end(), ram_image.p());
+
+    const auto& pose = header.standingTrackedDevicePose;
+    if (pose.bPoseIsValid)
+    {
+        static const LMatrix4f z_to_y = LMatrix4f::convert_mat(CS_zup_right, CS_yup_right);
+        static const LMatrix4f y_to_z = LMatrix4f::convert_mat(CS_yup_right, CS_zup_right);
+
+        ar_camera_np_.set_mat(z_to_y *
+            rpplugins::OpenVRPlugin::convert_matrix(pose.mDeviceToAbsoluteTracking) *
+            y_to_z);
+    }
+
+    last_frame_sequence = header.nFrameSequence;
+
+    return AsyncTask::DS_cont;
 }

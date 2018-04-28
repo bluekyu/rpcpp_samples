@@ -19,7 +19,7 @@ if (NOT TARGET spdlog::spdlog)
     find_package(spdlog)
 endif()
 
-render_pipeline_find_plugins("openvr")
+render_pipeline_find_plugins("openvr;ar_render")
 # ==================================================================================================
 
 # === sources ======================================================================================
@@ -54,7 +54,8 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE render_pipeline::render_pipeline rpplugins::openvr spdlog::spdlog
+    PRIVATE render_pipeline::render_pipeline spdlog::spdlog
+    rpplugins::openvr rpplugins::ar_render
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "rpcpp_samples/rpcpp_samples")
