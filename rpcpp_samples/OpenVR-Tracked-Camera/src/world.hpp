@@ -25,7 +25,6 @@
 #pragma once
 
 #include <nodePath.h>
-#include <texture.h>
 
 #include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rppanda/showbase/direct_object.hpp>
@@ -47,8 +46,6 @@ public:
 
     ALLOC_DELETED_CHAIN(World);
 
-    void start();
-
     void toggle_streaming_action();
 
 private:
@@ -57,16 +54,16 @@ private:
     // this is not optimized.
     AsyncTask::DoneStatus upload_texture(rppanda::FunctionalTask* task);
 
+    void setup_gl_texture();
+
     rpcore::RenderPipeline& pipeline_;
     std::unique_ptr<rpcore::MovementController> controller_;
     rpplugins::OpenVRPlugin* openvr_plugin_;
-
     rpplugins::OpenVRCameraInterface* openvr_camera_;
-    NodePath ar_camera_np_;
 
     bool is_streamed_ = false;
+    NodePath preview_plane_;
     std::vector<uint8_t> framebuffer_;
-    PT(Texture) ar_camera_texture_;
 
     double last_task_time_ = 0.0f;
 };

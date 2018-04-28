@@ -1,18 +1,18 @@
 /**
  * MIT License
- *
+ * 
  * Copyright (c) 2018 Center of Human-centered Interaction for Coexistence
- *
+ * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- *
+ * 
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- *
+ * 
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,51 +22,41 @@
  * SOFTWARE.
  */
 
-#pragma once
+#include <load_prc_file.h>
 
-#include <nodePath.h>
-#include <texture.h>
+#include <render_pipeline/rpcore/mount_manager.hpp>
+#include <render_pipeline/rpcore/pluginbase/manager.hpp>
 
-#include <render_pipeline/rpcore/render_pipeline.hpp>
-#include <render_pipeline/rppanda/showbase/direct_object.hpp>
+#include "world.hpp"
 
-namespace rpcore {
-class MovementController;
-}
-
-namespace rpplugins {
-class OpenVRPlugin;
-class OpenVRCameraInterface;
-}
-
-class World : public rppanda::DirectObject
+int main(int argc, char* argv[])
 {
-public:
-    World(rpcore::RenderPipeline& pipeline);
-    virtual ~World();
+    // Setup window size, title and so on
+    load_prc_file_data("",
+        "sync-video false\n"
+        "window-title Render Pipeline - OpenVR Tracked Camera Demo");
 
-    ALLOC_DELETED_CHAIN(World);
+    // configure panda3d in program.
+    auto render_pipeline = std::make_unique<rpcore::RenderPipeline>(argc, argv);
 
-    void start();
+    {
+        render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/vr");
+        render_pipeline->create();
 
-    void toggle_streaming_action();
+        if (!render_pipeline->get_plugin_mgr()->is_plugin_enabled("openvr"))
+        {
+            render_pipeline->error("openvr plugin is not enabled!");
+            render_pipeline->error("Enable openvr in plugins.yaml");
+            return 0;
+        }
 
-private:
-    void setup_event();
+        World world(*render_pipeline);
 
-    // this is not optimized.
-    AsyncTask::DoneStatus upload_texture(rppanda::FunctionalTask* task);
+        render_pipeline->run();
+    }
 
-    rpcore::RenderPipeline& pipeline_;
-    std::unique_ptr<rpcore::MovementController> controller_;
-    rpplugins::OpenVRPlugin* openvr_plugin_;
+    // release explicitly
+    render_pipeline.reset();
 
-    rpplugins::OpenVRCameraInterface* openvr_camera_;
-    NodePath ar_camera_np_;
-
-    bool is_streamed_ = false;
-    std::vector<uint8_t> framebuffer_;
-    PT(Texture) ar_camera_texture_;
-
-    double last_task_time_ = 0.0f;
-};
+    return 0;
+}
