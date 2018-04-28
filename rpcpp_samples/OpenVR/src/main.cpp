@@ -24,14 +24,8 @@
 
 #include <load_prc_file.h>
 
-#include <render_pipeline/rppanda/showbase/showbase.hpp>
-#include <render_pipeline/rppanda/showbase/messenger.hpp>
 #include <render_pipeline/rpcore/mount_manager.hpp>
-#include <render_pipeline/rpcore/globals.hpp>
-#include <render_pipeline/rpcore/loader.hpp>
 #include <render_pipeline/rpcore/pluginbase/manager.hpp>
-
-#include <openvr_plugin.hpp>
 
 #include "world.hpp"
 
@@ -40,7 +34,7 @@ int main(int argc, char* argv[])
     // Setup window size, title and so on
     load_prc_file_data("",
         "sync-video false\n"
-        "window-title Render Pipeline - Shading Models VR Demo");
+        "window-title Render Pipeline - OpenVR Demo");
 
     // configure panda3d in program.
     auto render_pipeline = std::make_unique<rpcore::RenderPipeline>(argc, argv);
@@ -51,7 +45,7 @@ int main(int argc, char* argv[])
 
         if (!render_pipeline->get_plugin_mgr()->is_plugin_enabled("openvr"))
         {
-            render_pipeline->error("OpenVR is not enabled!");
+            render_pipeline->error("openvr plugin is not enabled!");
             render_pipeline->error("Enable openvr in plugins.yaml");
             return 0;
         }

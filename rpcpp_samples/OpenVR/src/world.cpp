@@ -31,7 +31,6 @@
 #include <render_pipeline/rpcore/util/primitives.hpp>
 #include <render_pipeline/rpcore/util/rpgeomnode.hpp>
 #include <render_pipeline/rpcore/util/rptextnode.hpp>
-#include <render_pipeline/rpcore/util/instancing_node.hpp>
 #include <render_pipeline/rppanda/showbase/loader.hpp>
 #include <render_pipeline/rpcore/pluginbase/manager.hpp>
 #include <render_pipeline/rpcore/util/movement_controller.hpp>
@@ -79,6 +78,8 @@ World::World(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
 
     setup_event();
 }
+
+World::~World() = default;
 
 void World::setup_event()
 {
