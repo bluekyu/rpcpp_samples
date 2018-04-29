@@ -30,15 +30,16 @@
 class SampleStage : public rpcore::RenderStage
 {
 public:
-    SampleStage(rpcore::RenderPipeline& pipeline): RenderStage(pipeline, "SampleStage") {}
+    SampleStage(rpcore::RenderPipeline& pipeline);
+    virtual ~SampleStage();
 
-    virtual RequireType& get_required_inputs() const { return required_inputs; }
-    virtual RequireType& get_required_pipes() const { return required_pipes; }
+    RequireType& get_required_inputs() const override { return required_inputs; }
+    RequireType& get_required_pipes() const override { return required_pipes; }
 
-    virtual void create() override;
+    void create() override;
 
 private:
-    virtual std::string get_plugin_id() const;
+    std::string get_plugin_id() const override;
 
     static RequireType required_inputs;
     static RequireType required_pipes;

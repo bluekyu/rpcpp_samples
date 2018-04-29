@@ -28,6 +28,12 @@
 SampleStage::RequireType SampleStage::required_inputs;
 SampleStage::RequireType SampleStage::required_pipes;
 
+SampleStage::SampleStage(rpcore::RenderPipeline& pipeline) : RenderStage(pipeline, "SampleStage")
+{
+}
+
+SampleStage::~SampleStage() = default;
+
 void SampleStage::create()
 {
 }

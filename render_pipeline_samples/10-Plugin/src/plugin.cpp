@@ -40,6 +40,8 @@ Plugin::Plugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, R
 {
 }
 
+Plugin::~Plugin() = default;
+
 Plugin::RequrieType& Plugin::get_required_plugins() const
 {
     return require_plugins_;
