@@ -4,6 +4,7 @@
 cmake_minimum_required(VERSION 3.9)
 project(empty-wo-rpcpp
     DESCRIPTION "Empty example without Render Pipeline C++"
+    LANGUAGES CXX
 )
 
 # === configure ====================================================================================

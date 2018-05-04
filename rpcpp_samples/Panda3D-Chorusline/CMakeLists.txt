@@ -3,6 +3,7 @@
 cmake_minimum_required(VERSION 3.9)
 project(Panda3D-Chorusline
     DESCRIPTION "Chorusline sample in Panda3D"
+    LANGUAGES CXX
 )
 
 # === configure ====================================================================================

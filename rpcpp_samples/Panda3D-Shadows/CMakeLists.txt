@@ -1,9 +1,9 @@
 # Author: Younguk Kim (bluekyu)
-# Date  : 2017-05-12
 
 cmake_minimum_required(VERSION 3.9)
 project(Panda3D-Shadows
     DESCRIPTION "Shadows sample in Panda3D"
+    LANGUAGES CXX
 )
 
 # === configure ====================================================================================

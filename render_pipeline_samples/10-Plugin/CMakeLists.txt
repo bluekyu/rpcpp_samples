@@ -1,10 +1,13 @@
 # Author: Younguk Kim (bluekyu)
-# Date  : 2017-05-12
 
 cmake_minimum_required(VERSION 3.9)
 
 get_filename_component(RPPLUGIN_ID ${CMAKE_CURRENT_LIST_DIR} NAME)
-project(rpplugin_${RPPLUGIN_ID})
+project(rpplugin_${RPPLUGIN_ID}
+    VERSION 0.1.0
+    DESCRIPTION "Sample plugin for Render Pipeline C++"
+    LANGUAGES CXX
+)
 
 # === configure ====================================================================================
 include(debugging-information)
@@ -24,11 +27,6 @@ endif()
 
 set(RPPLUGIN_INSTALL_DIR "${render_pipeline_PLUGIN_DIR}/${RPPLUGIN_ID}")
 set(RPPLUGIN_CONFIG_IN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/rpplugin-config.cmake.in")
-
-set(PROJECT_VERSION_MAJOR "0")
-set(PROJECT_VERSION_MINOR "1")
-set(PROJECT_VERSION_PATCH "0")
-set(PROJECT_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
 
 # === project specific packages ===
 
@@ -102,7 +100,7 @@ set(PACKAGE_CMAKE_INSTALL_DIR "${RPPLUGIN_INSTALL_DIR}/cmake")
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(${PACKAGE_VERSION_CONFIG_FILE}
     VERSION ${PROJECT_VERSION}
-    COMPATIBILITY SameMajorVersion
+    COMPATIBILITY SameMinorVersion
 )
 configure_package_config_file(${RPPLUGIN_CONFIG_IN_FILE}
     ${PACKAGE_CONFIG_FILE}

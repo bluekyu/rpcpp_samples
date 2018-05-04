@@ -3,6 +3,7 @@
 cmake_minimum_required(VERSION 3.9)
 project(chorusline
     DESCRIPTION "Instancing in Panda3D"
+    LANGUAGES CXX
 )
 
 # === configure ====================================================================================

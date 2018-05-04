@@ -3,6 +3,7 @@
 cmake_minimum_required(VERSION 3.9)
 project(OpenVR-AR
     DESCRIPTION "OpenVR-AR sample"
+    LANGUAGES CXX
 )
 
 # === configure ====================================================================================

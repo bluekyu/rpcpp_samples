@@ -1,8 +1,9 @@
 # Author: Younguk Kim (bluekyu)
-# Date  : 2017-05-12
 
 cmake_minimum_required(VERSION 3.9)
-project(Flex-Adhesion)
+project(Flex-Adhesion
+    LANGUAGES CXX
+)
 
 # === configure ====================================================================================
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping

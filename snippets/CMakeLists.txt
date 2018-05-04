@@ -3,6 +3,7 @@
 cmake_minimum_required(VERSION 3.9)
 project(rpcpp_snippets
     DESCRIPTION "Snippets of Render Pipeline C++"
+    LANGUAGES NONE
 )
 
 # === configure ====================================================================================

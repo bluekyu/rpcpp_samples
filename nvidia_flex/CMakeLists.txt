@@ -1,8 +1,9 @@
 # Author: Younguk Kim (bluekyu)
-# Date  : 2017-05-12
 
 cmake_minimum_required(VERSION 3.9)
-project(nvidia_flex)
+project(nvidia_flex
+    LANGUAGES CXX
+)
 
 # === configure ====================================================================================
 if(NOT TARGET NvFlex::CUDA)

@@ -4,6 +4,7 @@
 cmake_minimum_required(VERSION 3.9)
 project(looking-and-gripping
     DESCRIPTION "Load, play, and manipulate sounds in Panda3D"
+    LANGUAGES CXX
 )
 
 # === configure ====================================================================================
