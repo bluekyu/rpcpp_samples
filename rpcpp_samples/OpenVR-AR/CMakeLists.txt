@@ -10,14 +10,12 @@ project(OpenVR-AR
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
 # === project specific packages ===
+find_package(fmt REQUIRED)
+
 if(NOT TARGET OpenVR::OpenVR)
     # find OpenVR
     set(OpenVR_ROOT "" CACHE PATH "Hint for finding OpenVR root directory")
     find_package(OpenVR REQUIRED)
-endif()
-
-if (NOT TARGET spdlog::spdlog)
-    find_package(spdlog)
 endif()
 
 render_pipeline_find_plugins("openvr;ar_render")
@@ -55,7 +53,7 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE render_pipeline::render_pipeline spdlog::spdlog
+    PRIVATE render_pipeline::render_pipeline fmt::fmt-header-only
     rpplugins::openvr rpplugins::ar_render
 )
 

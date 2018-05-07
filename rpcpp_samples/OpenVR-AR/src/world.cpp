@@ -42,7 +42,7 @@
 #include <rpplugins/ar_render/plugin.hpp>
 #include <rpplugins/ar_render/ar_composite_stage.hpp>
 
-#include <spdlog/fmt/ostr.h>
+#include <fmt/ostream.h>
 
 #define MR_MODE 0
 

@@ -25,23 +25,40 @@ init:
     if (Test-Path env:TRIGGER_NAME) {
         Update-AppveyorBuild -Message "Build by $env:TRIGGER_BUILD_VERSION in $env:TRIGGER_NAME"
     }
+- ps: >-
+    if ($env:CONFIGURATION -eq "RelWithDebInfo") {
+        $env:CONFIGURATION_THIRDPARTY="Release"
+    } else {
+        $env:CONFIGURATION_THIRDPARTY="$env:CONFIGURATION"
+    }
+# upgrade vcpkg
+- ps: pushd C:\tools\vcpkg
+- git pull --quiet
+- git checkout -qf 1c49195f789b7b8d7eaeb2542730a1f72cfbefcf
+- .\bootstrap-vcpkg.bat
+- ps: popd
 - git --version
-- python --version
 - cmake --version
+- vcpkg version
 
 # environment variables
 environment:
     CMAKE_PREFIX_PATH: C:\projects\_install;
     CMAKE_GENERATOR: Visual Studio 15 2017 Win64
     BOOST_ROOT: C:\Libraries\boost_1_66_0
-    PATH: C:\Python36-x64;%PATH%
+    VCPKG_DEFAULT_TRIPLET: x64-windows
 
 # this is how to allow failing jobs in the matrix
 matrix:
     fast_finish: true   # set this flag to immediately finish build once one of the jobs fails.
 
+# build cache to preserve files/folders between builds
+cache:
+    - c:\tools\vcpkg\installed\
+
 # scripts that run after cloning repository
 install:
+- vcpkg install fmt
 - ps: (mkdir C:\projects\_install) -and (pushd C:\projects\_install)
 - ps: >-
     if ($env:CONFIGURATION -eq "Debug") {
@@ -81,6 +98,7 @@ build_script:
 - ps: (mkdir _build) -and (pushd _build)
 - cmd: >-
     cmake -G "%CMAKE_GENERATOR%" -Wno-dev ..
+    -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
     -DCMAKE_INSTALL_PREFIX="C:/projects/_install/rpcpp_samples"
     -Dpanda3d_ROOT:PATH="C:/projects/_install/panda3d"
     -DOpenVR_ROOT:PATH="C:/projects/_install/openvr"
@@ -102,6 +120,7 @@ after_build:
 #       tests configuration       #
 #---------------------------------#
 
+# to disable automatic tests
 test: off
 
 #---------------------------------#

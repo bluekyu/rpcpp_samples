@@ -37,7 +37,7 @@
 
 #include <openvr_plugin.hpp>
 
-#include <spdlog/fmt/ostr.h>
+#include <fmt/ostream.h>
 
 World::World(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
 {
