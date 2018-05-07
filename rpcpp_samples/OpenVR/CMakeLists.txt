@@ -11,6 +11,11 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
 # === project specific packages ===
 find_package(fmt REQUIRED)
+if(TARGET fmt::fmt-header-only)                 # for libfmt in ubuntu package
+    set(FMT_TARGET fmt::fmt-header-only)
+else()
+    set(FMT_TARGET fmt::fmt)
+endif()
 
 if(NOT TARGET OpenVR::OpenVR)
     # find OpenVR
@@ -53,7 +58,7 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE render_pipeline::render_pipeline rpplugins::openvr fmt::fmt-header-only
+    PRIVATE render_pipeline::render_pipeline rpplugins::openvr ${FMT_TARGET}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "rpcpp_samples/rpcpp_samples")
