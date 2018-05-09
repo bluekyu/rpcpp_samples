@@ -5,12 +5,11 @@ This project is to develop samples for [Render Pipeline C++](https://github.com/
 #### Build Status
 | OS       | Build Status             | Latest Build                                                                    |
 | :------: | :----------------------: | :-----------------------------------------------------------------------------: |
-| Windows  | [![win-badge]][win-link] | vc14 ([Debug][win-debug], [RelWithDebInfo][win-reldeb], [Release][win-release]) |
+| Windows  | [![win-badge]][win-link] | vc14 ([Debug][win-debug], [Release][win-release]) |
 
 [win-badge]: https://ci.appveyor.com/api/projects/status/3chdlviqgf9uhudk/branch/master?svg=true "AppVeyor build status"
 [win-link]: https://ci.appveyor.com/project/bluekyu/rpcpp-samples/branch/master "AppVeyor build link"
 [win-debug]: https://ci.appveyor.com/api/projects/bluekyu/rpcpp-samples/artifacts/rpcpp_samples.7z?branch=master&job=Configuration%3A+Debug "Download latest build (Debug)"
-[win-reldeb]: https://ci.appveyor.com/api/projects/bluekyu/rpcpp-samples/artifacts/rpcpp_samples.7z?branch=master&job=Configuration%3A+RelWithDebInfo "Download latest build (RelWithDebInfo)"
 [win-release]: https://ci.appveyor.com/api/projects/bluekyu/rpcpp-samples/artifacts/rpcpp_samples.7z?branch=master&job=Configuration%3A+Release "Download latest build (Release)"
 
 

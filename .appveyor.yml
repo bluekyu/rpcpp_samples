@@ -25,12 +25,6 @@ init:
     if (Test-Path env:TRIGGER_NAME) {
         Update-AppveyorBuild -Message "Build by $env:TRIGGER_BUILD_VERSION in $env:TRIGGER_NAME"
     }
-- ps: >-
-    if ($env:CONFIGURATION -eq "RelWithDebInfo") {
-        $env:CONFIGURATION_THIRDPARTY="Release"
-    } else {
-        $env:CONFIGURATION_THIRDPARTY="$env:CONFIGURATION"
-    }
 # upgrade vcpkg
 - ps: pushd C:\tools\vcpkg
 - git pull --quiet
@@ -87,7 +81,6 @@ platform: x64
 # build Configuration, i.e. Debug, Release, etc.
 configuration:
 - Debug
-- RelWithDebInfo
 - Release
 
 build:
