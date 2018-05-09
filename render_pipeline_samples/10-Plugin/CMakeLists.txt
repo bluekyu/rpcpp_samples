@@ -47,9 +47,12 @@ if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251
         $<$<VERSION_GREATER:${MSVC_VERSION},1800>:/utf-8>
         $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/permissive->
+
+        # note: windows.cmake in vcpkg
+        $<$<CONFIG:Release>:/Oi /Gy /Z7>
     )
     set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELWITHDEBINFO    " /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
-    set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELEASE           " /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
+    set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELEASE           " /DEBUG /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
 else()
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
 endif()
@@ -73,7 +76,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     VERSION ${PROJECT_VERSION}
 )
 
-configure_debugging_information(TARGET ${PROJECT_NAME})
+configure_debugging_information(TARGET ${PROJECT_NAME} CONFIGURATIONS Debug RelWithDebInfo Release)
 # ==================================================================================================
 
 # === target =======================================================================================
@@ -137,5 +140,8 @@ install(FILES ${PACKAGE_CONFIG_FILE} ${PACKAGE_VERSION_CONFIG_FILE} DESTINATION 
 install(FILES ${${PROJECT_NAME}_MACRO_CMAKE_FILE} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR} OPTIONAL)
 install(EXPORT ${TARGET_EXPORT_NAME} NAMESPACE ${TARGET_NAMESPACE} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
 
-install_debugging_information(TARGET ${PROJECT_NAME} DESTINATION "${RPPLUGIN_INSTALL_DIR}")
+install_debugging_information(TARGET ${PROJECT_NAME}
+    DESTINATION "${RPPLUGIN_INSTALL_DIR}"
+    CONFIGURATIONS Debug RelWithDebInfo Release
+)
 # ==================================================================================================
