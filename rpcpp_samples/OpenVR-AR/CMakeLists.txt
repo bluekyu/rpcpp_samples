@@ -18,8 +18,6 @@ else()
 endif()
 
 if(NOT TARGET OpenVR::OpenVR)
-    # find OpenVR
-    set(OpenVR_ROOT "" CACHE PATH "Hint for finding OpenVR root directory")
     find_package(OpenVR REQUIRED)
 endif()
 

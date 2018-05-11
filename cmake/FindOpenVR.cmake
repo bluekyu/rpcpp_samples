@@ -5,7 +5,7 @@
 # FindOpenVR.cmake
 #
 # Author: Younguk Kim (bluekyu)
-# Date  : 2017-05-19
+# Date  : 2018-05-11
 #
 # Result Variables
 # ^^^^^^^^^^^^^^^^
@@ -19,6 +19,16 @@
 #   OpenVR::OpenVR          - The OpenVR library
 
 cmake_minimum_required(VERSION 3.6)
+
+if(NOT OpenVR_ROOT)
+    # support vcpkg
+    if(EXISTS "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}")
+        set(OpenVR_ROOT "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}")
+    else()
+        set(OpenVR_ROOT "")
+    endif()
+endif()
+set(OpenVR_ROOT "${OpenVR_ROOT}" CACHE PATH "Hint for finding OpenVR root directory")
 
 set(OpenVR_PLATFORM_PREFIX "")
 if(WIN32)
@@ -46,13 +56,16 @@ endif()
 
 find_path(OpenVR_INCLUDE_DIR
     NAMES "openvr.h"
-    HINTS "${OpenVR_ROOT}/headers"
+    HINTS "${OpenVR_ROOT}"
+    PATH_SUFFIXES include headers
+    NO_DEFAULT_PATH
 )
 
 find_library(OpenVR_LIBRARY
     NAMES openvr_api
-    HINTS "${OpenVR_ROOT}/lib"
-    PATH_SUFFIXES ${OpenVR_PLATFORM_PREFIX}
+    HINTS "${OpenVR_ROOT}"
+    PATH_SUFFIXES lib "lib/${OpenVR_PLATFORM_PREFIX}"
+    NO_DEFAULT_PATH
 )
 
 # Set OpenVR_FOUND
@@ -79,5 +92,6 @@ if(OpenVR_FOUND)
     mark_as_advanced(
         OpenVR_INCLUDE_DIR
         OpenVR_LIBRARY
+        OpenVR_ROOT
     )
 endif()
