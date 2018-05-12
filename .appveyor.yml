@@ -89,6 +89,7 @@ build_script:
 - cmd: >-
     cmake -G "%CMAKE_GENERATOR%" -Wno-dev ..
     -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
+    -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
     -DCMAKE_INSTALL_PREFIX="C:/projects/_install/rpcpp_samples"
     -Dpanda3d_ROOT:PATH="C:/projects/_install/panda3d"
     -Drpcpp_samples_BUILD_panda3d_samples:BOOL=ON
