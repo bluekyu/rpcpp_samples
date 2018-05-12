@@ -12,7 +12,10 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 # check package
-include(FindPackages)
+if(NOT TARGET render_pipeline)
+    find_package(render_pipeline REQUIRED)
+endif()
+
 if(WIN32)
     include(windows_utils)
 endif()
