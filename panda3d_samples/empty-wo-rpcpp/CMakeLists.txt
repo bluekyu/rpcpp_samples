@@ -11,6 +11,7 @@ project(empty-wo-rpcpp
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
 # === project specific packages ===
+find_package(panda3d REQUIRED p3framework p3direct)
 # ==================================================================================================
 
 # === sources ======================================================================================
