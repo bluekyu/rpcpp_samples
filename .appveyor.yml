@@ -25,11 +25,11 @@ init:
     if (Test-Path env:TRIGGER_NAME) {
         Update-AppveyorBuild -Message "Build by $env:TRIGGER_BUILD_VERSION in $env:TRIGGER_NAME"
     }
-# upgrade vcpkg
+# checkout vcpkg v0.0.111
 - ps: pushd C:\tools\vcpkg
 - git pull --quiet
 - git checkout -qf 29d04b8b4005f5e2bfe61ccdc7a93d5c6c8a13d9
-- .\bootstrap-vcpkg.bat
+- .\bootstrap-vcpkg.bat | Out-Null
 - ps: popd
 - git --version
 - cmake --version
@@ -39,7 +39,7 @@ init:
 environment:
     CMAKE_PREFIX_PATH: C:\projects\_install;
     CMAKE_GENERATOR: Visual Studio 15 2017 Win64
-    BOOST_ROOT: C:\Libraries\boost_1_66_0
+    BOOST_ROOT: C:\Libraries\boost_1_67_0
     VCPKG_DEFAULT_TRIPLET: x64-windows
 
 # this is how to allow failing jobs in the matrix
@@ -48,7 +48,7 @@ matrix:
 
 # build cache to preserve files/folders between builds
 cache:
-    - c:\tools\vcpkg\installed\
+    - c:\tools\vcpkg\installed\ -> .appveyor.yml
 
 # scripts that run after cloning repository
 install:
