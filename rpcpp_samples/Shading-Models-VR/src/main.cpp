@@ -79,11 +79,11 @@ int main(int argc, char* argv[])
         "window-title Render Pipeline - Shading Models VR Demo");
 
     // configure panda3d in program.
-    auto render_pipeline = std::make_unique<rpcore::RenderPipeline>(argc, argv);
+    auto render_pipeline = std::make_unique<rpcore::RenderPipeline>();
 
     {
         render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/vr");
-        render_pipeline->create();
+        render_pipeline->create(argc, argv);
 
         if (!render_pipeline->is_stereo_mode())
         {

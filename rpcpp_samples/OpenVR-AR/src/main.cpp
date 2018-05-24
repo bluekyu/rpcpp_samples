@@ -37,11 +37,11 @@ int main(int argc, char* argv[])
         "window-title Render Pipeline - OpenVR-AR Demo");
 
     // configure panda3d in program.
-    auto render_pipeline = std::make_unique<rpcore::RenderPipeline>(argc, argv);
+    auto render_pipeline = std::make_unique<rpcore::RenderPipeline>();
 
     {
         render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/ar");
-        render_pipeline->create();
+        render_pipeline->create(argc, argv);
 
         if (!render_pipeline->get_plugin_mgr()->is_plugin_enabled("openvr"))
         {

@@ -53,9 +53,9 @@ int main(int argc, char* argv[])
         "window-title Render Pipeline - Initial Overlap");
 
     // configure panda3d in program.
-    rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline(argc, argv);
+    rpcore::RenderPipeline* render_pipeline = new rpcore::RenderPipeline();
     render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/rpflex");
-    render_pipeline->create();
+    render_pipeline->create(argc, argv);
 
     // for releasing smart pointers
     {
