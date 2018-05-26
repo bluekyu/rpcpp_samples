@@ -9,6 +9,7 @@ project(08-Terrain
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
 # === project specific packages ===
+render_pipeline_find_plugins("env_probes")
 # ==================================================================================================
 
 # === sources ======================================================================================
@@ -45,6 +46,7 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE render_pipeline::render_pipeline
+    rpplugins::env_probes
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "rpcpp_samples/render_pipeline_samples")
