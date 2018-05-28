@@ -13,7 +13,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 # check package
 if(NOT TARGET render_pipeline)
-    find_package(render_pipeline REQUIRED)
+    find_package(render_pipeline CONFIG REQUIRED)
 endif()
 
 if(WIN32)

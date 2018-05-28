@@ -10,7 +10,7 @@ project(OpenVR-AR
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
 # === project specific packages ===
-find_package(fmt REQUIRED)
+find_package(fmt CONFIG REQUIRED)
 if(TARGET fmt::fmt-header-only)                 # for libfmt in ubuntu package
     set(FMT_TARGET fmt::fmt-header-only)
 else()
