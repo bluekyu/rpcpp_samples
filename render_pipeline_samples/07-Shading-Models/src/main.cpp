@@ -25,6 +25,7 @@
  */
 
 #include <load_prc_file.h>
+#include <virtualFileSystem.h>
 
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 #include <render_pipeline/rppanda/showbase/messenger.hpp>
@@ -48,13 +49,15 @@ public:
         render_pipeline_ = std::make_unique<rpcore::RenderPipeline>();
 
         render_pipeline_->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
+        VirtualFileSystem::get_global_ptr()->mount("../share/rpcpp_samples/07-Shading-Models", "/$$app", 0);
+
         render_pipeline_->create(argc, argv, this);
 
         // Set time of day
         render_pipeline_->get_daytime_mgr()->set_time(0.769f);
 
         // Load the scene
-        NodePath model = rpcore::RPLoader::load_model("/$$rp/models/07-Shading-Models/TestScene.bam");
+        NodePath model = rpcore::RPLoader::load_model("/$$app/scene/TestScene.bam");
         model.reparent_to(rpcore::Globals::render);
 
         render_pipeline_->prepare_scene(model);

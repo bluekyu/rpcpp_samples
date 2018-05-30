@@ -61,13 +61,13 @@ void World::create_copper_sphere()
 
 
     // load copper texture and set to GeomNode
-    PT(Texture) t = rpcore::RPLoader::load_texture("/$$rp/models/01-Material-Demo/tex/CopperBasecolor.png");
+    PT(Texture) t = rpcore::RPLoader::load_texture("/$$app/scene/tex/CopperBasecolor.png");
     t->set_format(Texture::Format::F_srgb);
 
     gn.set_basecolor_texture(0, t);
-    gn.set_normal_texture(0, rpcore::RPLoader::load_texture("/$$rp/models/01-Material-Demo/tex/CopperNormal.png"));
-    gn.set_specular_texture(0, rpcore::RPLoader::load_texture("/$$rp/models/01-Material-Demo/tex/CopperSpecular.png"));
-    gn.set_roughness_texture(0, rpcore::RPLoader::load_texture("/$$rp/models/01-Material-Demo/tex/empty_roughness.png"));
+    gn.set_normal_texture(0, rpcore::RPLoader::load_texture("/$$app/scene/tex/CopperNormal.png"));
+    gn.set_specular_texture(0, rpcore::RPLoader::load_texture("/$$app/scene/tex/CopperSpecular.png"));
+    gn.set_roughness_texture(0, rpcore::RPLoader::load_texture("/$$app/scene/tex/empty_roughness.png"));
 }
 
 void World::create_aluminum_sphere()
@@ -96,13 +96,13 @@ void World::create_aluminum_sphere()
     // load aluminum texture and set to NodePath
     rpcore::RPRenderState state(sphere.get_state());
 
-    PT(Texture) t = rpcore::RPLoader::load_texture("/$$rp/models/01-Material-Demo/tex/MetalBasecolor.png");
+    PT(Texture) t = rpcore::RPLoader::load_texture("/$$app/scene/tex/MetalBasecolor.png");
     t->set_format(Texture::Format::F_srgb);
 
     state.set_basecolor_texture(t)
-         .set_normal_texture(rpcore::RPLoader::load_texture("/$$rp/models/01-Material-Demo/tex/MetalNormal.png"))
-         .set_specular_texture(rpcore::RPLoader::load_texture("/$$rp/models/01-Material-Demo/tex/MetalSpecular.png"))
-         .set_roughness_texture(rpcore::RPLoader::load_texture("/$$rp/models/01-Material-Demo/tex/empty_roughness.png"));
+         .set_normal_texture(rpcore::RPLoader::load_texture("/$$app/scene/tex/MetalNormal.png"))
+         .set_specular_texture(rpcore::RPLoader::load_texture("/$$app/scene/tex/MetalSpecular.png"))
+         .set_roughness_texture(rpcore::RPLoader::load_texture("/$$app/scene/tex/empty_roughness.png"));
 
     sphere.set_state(state.get_state());
 }

@@ -47,7 +47,7 @@ World::World(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
     openvr_plugin_ = static_cast<rpplugins::OpenVRPlugin*>(pipeline_.get_plugin_mgr()->get_instance("openvr")->downcast());
 
     // axis on origin
-    NodePath axis_model = rpcore::RPLoader::load_model("/$$rp/resources/models/zup-axis.bam");
+    NodePath axis_model = rpcore::RPLoader::load_model("/$$app/models/zup-axis.bam");
     axis_model.reparent_to(rpcore::Globals::render);
 
     auto openvr_devices = rpcore::Globals::render.find("openvr_devices");

@@ -17,6 +17,7 @@ This project is to develop samples for [Render Pipeline C++](https://github.com/
 ## Render Pipeline Samples
 These samples are ported from RenderPipeline-Samples (https://github.com/tobspr/RenderPipeline-Samples).
 
+See [render_pipeline_samples/README.md](render_pipeline_samples/README.md) for more details.
 
 
 ## Panda3D Samples

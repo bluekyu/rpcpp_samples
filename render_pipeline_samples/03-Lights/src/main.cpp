@@ -30,6 +30,7 @@
 #include <load_prc_file.h>
 #include <nodePathCollection.h>
 #include <material.h>
+#include <virtualFileSystem.h>
 
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 #include <render_pipeline/rppanda/interval/lerp_interval.hpp>
@@ -76,6 +77,8 @@ int main(int argc, char* argv[])
 
     {
         render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
+        VirtualFileSystem::get_global_ptr()->mount("../share/rpcpp_samples/03-Lights", "/$$app", 0);
+
         render_pipeline->create(argc, argv);
 
         // ------ End of render pipeline code, thats it! ------
@@ -84,7 +87,7 @@ int main(int argc, char* argv[])
         render_pipeline->get_daytime_mgr()->set_time("5:20");
 
         // Load the scene
-        NodePath model = rpcore::RPLoader::load_model("../share/render_pipeline/models/03-Lights/Scene.bam");
+        NodePath model = rpcore::RPLoader::load_model("/$$app/scene/Scene.bam");
         model.reparent_to(rpcore::Globals::render);
 
         // Animate balls, this is for testing the motion blur

@@ -26,6 +26,7 @@
 
 #include <load_prc_file.h>
 #include <shaderTerrainMesh.h>
+#include <virtualFileSystem.h>
 
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 #include <render_pipeline/rppanda/showbase/messenger.hpp>
@@ -56,6 +57,7 @@ public:
         render_pipeline_ = std::make_unique<rpcore::RenderPipeline>();
 
         render_pipeline_->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
+        VirtualFileSystem::get_global_ptr()->mount("../share/rpcpp_samples/08-Terrain", "/$$app", 0);
         render_pipeline_->create(argc, argv, this);
 
         // Set time of day
@@ -68,7 +70,7 @@ public:
 
         terrain_np_ = get_render().attach_new_node("terrain");
 
-        auto heightfield = get_loader()->load_texture("/$$rp/models/08-Terrain/heightfield.png");
+        auto heightfield = get_loader()->load_texture("/$$app/resources/heightfield.png");
 
         for (int x = 0; x < 3; ++x)
         {

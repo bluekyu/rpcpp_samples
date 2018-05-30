@@ -39,7 +39,7 @@ endforeach()
 
 # === install ======================================================================================
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/models"
-    DESTINATION "share/render_pipeline/resources/models"
+    DESTINATION "share/rpcpp_samples"
 )
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/etc/" DESTINATION "etc")
 # ==================================================================================================

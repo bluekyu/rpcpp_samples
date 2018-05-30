@@ -23,6 +23,7 @@
  */
 
 #include <load_prc_file.h>
+#include <virtualFileSystem.h>
 
 #include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/mount_manager.hpp>
@@ -44,6 +45,8 @@ int main(int argc, char* argv[])
 
     {
         render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
+        VirtualFileSystem::get_global_ptr()->mount("../share/rpcpp_samples/01-Material-Demo", "/$$app", 0);
+
         render_pipeline->create(argc, argv);
 
         // Set time of day

@@ -2,6 +2,11 @@
 
 These samples are **ported** from samples in Render Pipeline (https://github.com/tobspr/RenderPipeline-Samples).
 
+## Resources
+You can get resources from original repository (https://github.com/tobspr/RenderPipeline-Samples).
+And then, place those in `share/rpcpp_samples/[sample-name]`.
+(for example, `share/rpcpp_samples/07-Shading-Models/scene/TestScene.bam`)
+
 
 ## 00. Loading The Pipeline
 - YouTube: https://youtu.be/Fjg4Pwcuv0U

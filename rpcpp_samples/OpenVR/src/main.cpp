@@ -23,6 +23,7 @@
  */
 
 #include <load_prc_file.h>
+#include <virtualFileSystem.h>
 
 #include <render_pipeline/rpcore/mount_manager.hpp>
 #include <render_pipeline/rpcore/pluginbase/manager.hpp>
@@ -41,6 +42,8 @@ int main(int argc, char* argv[])
 
     {
         render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/vr");
+        VirtualFileSystem::get_global_ptr()->mount("../share/rpcpp_samples", "/$$app", 0);
+
         render_pipeline->create(argc, argv);
 
         if (!render_pipeline->get_plugin_mgr()->is_plugin_enabled("openvr"))

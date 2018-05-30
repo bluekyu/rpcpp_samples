@@ -25,6 +25,7 @@
 
 #include <load_prc_file.h>
 #include <nodePathCollection.h>
+#include <virtualFileSystem.h>
 
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 #include <render_pipeline/rpcore/render_pipeline.hpp>
@@ -46,13 +47,15 @@ int main(int argc, char* argv[])
 
     {
         render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
+        VirtualFileSystem::get_global_ptr()->mount("../share/rpcpp_samples/11-Instancing", "/$$app", 0);
+
         render_pipeline->create(argc, argv);
 
         // Set time of day
         render_pipeline->get_daytime_mgr()->set_time("19:17");
 
         // Load the scene
-        NodePath model = rpcore::RPLoader::load_model("/$$rp/models/11-Instancing/Scene.bam");
+        NodePath model = rpcore::RPLoader::load_model("/$$app/scene/Scene.bam");
         model.reparent_to(rpcore::Globals::render);
 
         // Find the prefab object, we are going to in instance this object

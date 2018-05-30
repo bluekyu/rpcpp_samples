@@ -23,6 +23,7 @@
  */
 
 #include <load_prc_file.h>
+#include <virtualFileSystem.h>
 
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 #include <render_pipeline/rppanda/showbase/messenger.hpp>
@@ -83,6 +84,8 @@ int main(int argc, char* argv[])
 
     {
         render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/vr");
+        VirtualFileSystem::get_global_ptr()->mount("../share/rpcpp_samples/07-Shading-Models", "/$$app", 0);
+
         render_pipeline->create(argc, argv);
 
         if (!render_pipeline->is_stereo_mode())
@@ -96,7 +99,7 @@ int main(int argc, char* argv[])
         render_pipeline->get_daytime_mgr()->set_time(0.769f);
 
         // Load the scene
-        NodePath model = rpcore::RPLoader::load_model("/$$rp/models/07-Shading-Models/TestScene.bam");
+        NodePath model = rpcore::RPLoader::load_model("/$$app/scene/TestScene.bam");
         model.reparent_to(rpcore::Globals::render);
 
         render_pipeline->prepare_scene(model);
