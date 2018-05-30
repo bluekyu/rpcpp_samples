@@ -11,10 +11,18 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
 # === project specific packages ===
 if(NOT TARGET OpenVR::OpenVR)
-    find_package(OpenVR REQUIRED)
+    find_package(OpenVR)
+    if(NOT TARGET OpenVR::OpenVR)
+        message(STATUS "\n  Failed to find 'OpenVR' package. ${PROJECT_NAME} project will be disabled.\n")
+        return()
+    endif()
 endif()
 
 render_pipeline_find_plugins("openvr")
+if(NOT TARGET rpplugins::openvr)
+    message(STATUS "  ${PROJECT_NAME} project will be disabled.\n")
+    return()
+endif()
 # ==================================================================================================
 
 # === sources ======================================================================================

@@ -12,6 +12,10 @@ if(NOT TARGET NvFlex::CUDA)
 endif()
 
 render_pipeline_find_plugins("rpflex")
+if(NOT TARGET rpplugins::rpflex)
+    message(STATUS "  ${PROJECT_NAME} projects will be disabled.\n")
+    return()
+endif()
 
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Flex-Adhesion")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Flex-Dam-Break")

@@ -17,9 +17,17 @@ else()
     set(FMT_TARGET fmt::fmt)
 endif()
 
-find_package(imgui CONFIG REQUIRED)
+find_package(imgui CONFIG)
+if(NOT TARGET imgui::imgui)
+    message(STATUS "\n  Failed to find 'imgui' package. ${PROJECT_NAME} project will be disabled.\n")
+    return()
+endif()
 
 render_pipeline_find_plugins("imgui")
+if(NOT TARGET rpplugins::imgui)
+    message(STATUS "  ${PROJECT_NAME} project will be disabled.\n")
+    return()
+endif()
 # ==================================================================================================
 
 # === sources ======================================================================================

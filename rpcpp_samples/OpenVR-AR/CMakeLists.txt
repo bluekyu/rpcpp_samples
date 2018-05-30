@@ -18,10 +18,18 @@ else()
 endif()
 
 if(NOT TARGET OpenVR::OpenVR)
-    find_package(OpenVR REQUIRED)
+    find_package(OpenVR)
+    if(NOT TARGET OpenVR::OpenVR)
+        message(STATUS "\n  Failed to find 'OpenVR' package. ${PROJECT_NAME} project will be disabled.\n")
+        return()
+    endif()
 endif()
 
 render_pipeline_find_plugins("openvr;ar_render")
+if(NOT (TARGET rpplugins::openvr AND TARGET rpplugins::ar_render))
+    message(STATUS "  ${PROJECT_NAME} project will be disabled.\n")
+    return()
+endif()
 # ==================================================================================================
 
 # === sources ======================================================================================
