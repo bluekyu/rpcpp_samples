@@ -97,8 +97,8 @@ public:
         get_camera().set_pos(0, -15, 2);    // Position the camera
 
         eve_ = new rppanda::Actor(
-            rppanda::Actor::ModelsType{"/$$rp/resources/looking-and-gripping/models/eve"},
-            rppanda::Actor::AnimsType{{"walk", "/$$rp/resources/looking-and-gripping/models/eve_walk"}});
+            rppanda::Actor::ModelsType{"models/eve"},
+            rppanda::Actor::AnimsType{{"walk", "models/eve_walk"}});
         eve_->reparent_to(get_render());
 
         // Now we use controlJoint to get a NodePath that's in control of her neck
@@ -123,21 +123,12 @@ public:
         // This is a table with models, positions, rotations, and scales of objects to
         // be attached to our exposed joint.These are stock models and so they needed
         // to be repositioned to look right.
-#if !defined(_MSC_VER) || _MSC_VER >= 1900
         std::vector<std::tuple<std::string, LVecBase3f, LVecBase3f, float>> positions = {
-            {"/$$rp/resources/panda3d/models/teapot", {0, -.66f, -.95f}, {90, 0, 90}, .4f},
-            {"/$$rp/resources/looking-and-gripping/models/candycane", {.15f, -.99f, -.22f}, {90, 0, 90}, 1},
-            {"/$$rp/resources/looking-and-gripping/models/banana", {.08f, -.1f, .09f}, {0, -90, 0}, 1.75f},
-            {"/$$rp/resources/looking-and-gripping/models/sword", {.11f, .19f, .06f}, {0, 0, 90}, 1}
+            {"teapot", {0, -.66f, -.95f}, {90, 0, 90}, .4f},
+            {"models/candycane", {.15f, -.99f, -.22f}, {90, 0, 90}, 1},
+            {"models/banana", {.08f, -.1f, .09f}, {0, -90, 0}, 1.75f},
+            {"models/sword", {.11f, .19f, .06f}, {0, 0, 90}, 1}
         };
-#else
-        std::vector<std::tuple<std::string, LVecBase3f, LVecBase3f, float>> positions = {
-            std::make_tuple<std::string, LVecBase3f, LVecBase3f, float>("/$$rp/resources/panda3d/models/teapot", {0, -.66f, -.95f}, {90, 0, 90}, .4f),
-            std::make_tuple<std::string, LVecBase3f, LVecBase3f, float>("/$$rp/resources/looking-and-gripping/models/candycane", {.15f, -.99f, -.22f}, {90, 0, 90}, 1),
-            std::make_tuple<std::string, LVecBase3f, LVecBase3f, float>("/$$rp/resources/looking-and-gripping/models/banana", {.08f, -.1f, .09f}, {0, -90, 0}, 1.75f),
-            std::make_tuple<std::string, LVecBase3f, LVecBase3f, float>("/$$rp/resources/looking-and-gripping/models/sword", {.11f, .19f, .06f}, {0, 0, 90}, 1)
-        };
-#endif
 
         for (const auto& row: positions)
         {
@@ -219,17 +210,14 @@ private:
 
 int main(int argc, char* argv[])
 {
-    // setup directory of Render Pipeline. you can use mounted path.
-    auto mount_manager = std::make_unique<rpcore::MountManager>();
-    mount_manager->mount();
+    // help to find models
+    auto& model_path = get_model_path();
+    model_path.prepend_directory("../share/rpcpp_samples/looking-and-gripping");
 
     {
         LookingGrippingDemo demo(argc, argv);
         demo.run();
     }
-
-    // release explicitly
-    mount_manager.reset();
 
     return 0;
 }

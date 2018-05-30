@@ -60,6 +60,6 @@ install(TARGETS ${PROJECT_NAME}
     ARCHIVE DESTINATION "lib")
 
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/"
-    DESTINATION "share/render_pipeline/resources/${PROJECT_NAME}"
+    DESTINATION "share/rpcpp_samples/${PROJECT_NAME}"
 )
 # ==================================================================================================
