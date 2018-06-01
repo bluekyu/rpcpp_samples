@@ -10,8 +10,6 @@
 #include <render_pipeline/rpcore/loader.hpp>
 #include <render_pipeline/rpcore/globals.hpp>
 
-#include <rpplugins/imgui/plugin.hpp>
-
 #include "main.hpp"
 
 World::World(int argc, char* argv[])
@@ -40,9 +38,14 @@ World::World(int argc, char* argv[])
     auto plugin_mgr = render_pipeline_->get_plugin_mgr();
     if (plugin_mgr->is_plugin_enabled("imgui"))
     {
-        ImGui::SetCurrentContext(static_cast<rpplugins::ImGuiPlugin*>(plugin_mgr->get_instance("imgui")->downcast())->get_context());
-
-        accept("imgui-new-frame", [this](auto) { on_imgui_new_frame(); });
+        rppanda::Messenger::get_global_instance()->send(
+            "imgui-setup-context",
+            EventParameter(new rppanda::FunctionalTask([this](rppanda::FunctionalTask* task) {
+                ImGui::SetCurrentContext(std::static_pointer_cast<ImGuiContext>(task->get_user_data()).get());
+                accept("imgui-new-frame", [this](auto) { on_imgui_new_frame(); });
+                return AsyncTask::DS_done;
+            }, "World::setup-imgui"))
+        );
     }
     else
     {

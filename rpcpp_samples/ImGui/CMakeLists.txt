@@ -22,12 +22,6 @@ if(NOT TARGET imgui::imgui)
     message(STATUS "\n  Failed to find 'imgui' package. ${PROJECT_NAME} project will be disabled.\n")
     return()
 endif()
-
-render_pipeline_find_plugins("imgui")
-if(NOT TARGET rpplugins::imgui)
-    message(STATUS "  ${PROJECT_NAME} project will be disabled.\n")
-    return()
-endif()
 # ==================================================================================================
 
 # === sources ======================================================================================
@@ -67,7 +61,6 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE render_pipeline::render_pipeline
     ${FMT_TARGET}
     imgui::imgui
-    rpplugins::imgui
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "rpcpp_samples/rpcpp_samples")
