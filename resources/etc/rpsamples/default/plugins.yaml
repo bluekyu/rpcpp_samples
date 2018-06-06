@@ -22,6 +22,8 @@ enabled:
     # - fxaa
     # - volumetrics
     # - vxgi
+    - imgui
+    - rpstat
 
 # stereo plugins
 #enabled:
