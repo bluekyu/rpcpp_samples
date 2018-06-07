@@ -10,6 +10,8 @@ project(rpplugin_${RPPLUGIN_ID}
 )
 
 # === configure ====================================================================================
+option(${PROJECT_NAME}_ENABLE_RTTI "Enable Run-Time Type Information" OFF)
+
 include(debugging-information)
 
 # check installing directory
@@ -45,16 +47,20 @@ add_library(${PROJECT_NAME} MODULE ${plugin_sources})
 
 if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251
+        $<$<NOT:$<BOOL:${${PROJECT_NAME}_ENABLE_RTTI}>>:/GR->
         $<$<VERSION_GREATER:${MSVC_VERSION},1800>:/utf-8>
         $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/permissive->
 
         # note: windows.cmake in vcpkg
         $<$<CONFIG:Release>:/Oi /Gy /Z7>
     )
+
     set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELWITHDEBINFO    " /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
     set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELEASE           " /DEBUG /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
 else()
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall
+        $<$<NOT:$<BOOL:${${PROJECT_NAME}_ENABLE_RTTI}>>:-fno-rtti>
+    )
 endif()
 
 target_compile_definitions(${PROJECT_NAME}
