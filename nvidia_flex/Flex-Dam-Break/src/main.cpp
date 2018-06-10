@@ -68,7 +68,7 @@ int main(int argc, char* argv[])
             return 1;
         }
 
-        auto flex_plugin = dynamic_cast<rpflex::Plugin*>(render_pipeline->get_plugin_mgr()->get_instance("rpflex"));
+        auto flex_plugin = static_cast<rpflex::Plugin*>(render_pipeline->get_plugin_mgr()->get_instance("rpflex")->downcast());
 
         flex_plugin->add_instance(std::make_shared<Scene>(0.05f));
 

@@ -109,7 +109,7 @@ int main(int argc, char* argv[])
             return 1;
         }
 
-        auto flex_plugin = dynamic_cast<rpflex::Plugin*>(render_pipeline->get_plugin_mgr()->get_instance("rpflex"));
+        auto flex_plugin = static_cast<rpflex::Plugin*>(render_pipeline->get_plugin_mgr()->get_instance("rpflex")->downcast());
 
         NodePath particle = rpcore::create_sphere("particle", 6, 6);
         particle.set_scale(0.1);

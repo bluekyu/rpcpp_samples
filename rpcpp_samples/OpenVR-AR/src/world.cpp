@@ -145,7 +145,7 @@ void World::start()
 #if MR_MODE
     openvr_node_group.show_through(real_object_mask);
 
-    auto ar_composite_stage = dynamic_cast<rpplugins::ARCompositeStage*>(pipeline_.get_stage_mgr()->get_stage("ARCompositeStage"));
+    auto ar_composite_stage = static_cast<rpplugins::ARCompositeStage*>(pipeline_.get_stage_mgr()->get_stage("ARCompositeStage")->downcast());
     ar_composite_stage->remove_occlusion(true);
     //ar_composite_stage->render_only_valid_ar_depth(true);
 #endif
