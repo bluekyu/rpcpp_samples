@@ -30,7 +30,6 @@
 #include "sample_stage.h"
 
 RENDER_PIPELINE_PLUGIN_CREATOR(Plugin)
-RENDER_PIPELINE_PLUGIN_DOWNCAST_IMPL(Plugin);
 
 Plugin::RequrieType Plugin::require_plugins_;
 

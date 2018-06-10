@@ -36,6 +36,8 @@ public:
     RequireType& get_required_inputs() const override { return required_inputs; }
     RequireType& get_required_pipes() const override { return required_pipes; }
 
+    RENDER_PIPELINE_STAGE_DOWNCAST();
+
     void create() override;
 
 private:
