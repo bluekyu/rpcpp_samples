@@ -58,7 +58,7 @@ AsyncTask::DoneStatus update(rppanda::FunctionalTask* task)
     for (size_t i=0, i_end=lights.size(); i < i_end; ++i)
     {
         float brightness = std::sin(0.4 * i + frame_time);
-        lights[i]->set_energy(max(0, half_energy / 2.0 + brightness * half_energy));
+        lights[i]->set_energy((std::max)(0.0f, half_energy / 2.0f + brightness * half_energy));
     }
 
     return AsyncTask::DS_cont;
