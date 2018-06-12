@@ -10,6 +10,13 @@ project(OpenVR-Tracked-Camera
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
 # === project specific packages ===
+find_package(fmt CONFIG REQUIRED)
+if(TARGET fmt::fmt-header-only)                 # for libfmt in ubuntu package
+    set(FMT_TARGET fmt::fmt-header-only)
+else()
+    set(FMT_TARGET fmt::fmt)
+endif()
+
 if(NOT TARGET OpenVR::OpenVR)
     find_package(OpenVR)
     if(NOT TARGET OpenVR::OpenVR)
@@ -28,9 +35,8 @@ endif()
 # === sources ======================================================================================
 # set input files
 set(sources_files
+    "${PROJECT_SOURCE_DIR}/src/main.hpp"
     "${PROJECT_SOURCE_DIR}/src/main.cpp"
-    "${PROJECT_SOURCE_DIR}/src/world.hpp"
-    "${PROJECT_SOURCE_DIR}/src/world.cpp"
 )
 
 # grouping
@@ -60,7 +66,7 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE render_pipeline::render_pipeline rpplugins::openvr
+    PRIVATE render_pipeline::render_pipeline rpplugins::openvr ${FMT_TARGET}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "rpcpp_samples/rpcpp_samples")

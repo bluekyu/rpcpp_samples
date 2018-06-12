@@ -22,14 +22,30 @@
  * SOFTWARE.
  */
 
+#include "main.hpp"
+
 #include <load_prc_file.h>
 
+#include <thread>
+#include <chrono>
+
+#include <fmt/ostream.h>
+
+#include <render_pipeline/rppanda/showbase/messenger.hpp>
+#include <render_pipeline/rpcore/globals.hpp>
+#include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/mount_manager.hpp>
+#include <render_pipeline/rpcore/pluginbase/day_manager.hpp>
 #include <render_pipeline/rpcore/pluginbase/manager.hpp>
+#include <render_pipeline/rpcore/util/movement_controller.hpp>
+#include <render_pipeline/rpcore/util/primitives.hpp>
+#include <render_pipeline/rpcore/util/rpgeomnode.hpp>
+#include <render_pipeline/rpcore/util/rpmaterial.hpp>
 
-#include "world.hpp"
+#include <openvr_plugin.hpp>
+#include <openvr_camera_interface.hpp>
 
-int main(int argc, char* argv[])
+MainApp::MainApp(int argc, char* argv[]) : ShowBase(), RPObject("MainApp")
 {
     // Setup window size, title and so on
     load_prc_file_data("",
@@ -37,26 +53,153 @@ int main(int argc, char* argv[])
         "window-title Render Pipeline - OpenVR Tracked Camera Demo");
 
     // configure panda3d in program.
-    auto render_pipeline = std::make_unique<rpcore::RenderPipeline>();
+    render_pipeline_ = std::make_unique<rpcore::RenderPipeline>();
 
+    render_pipeline_->get_mount_mgr()->set_config_dir("../etc/rpsamples/vr");
+
+    render_pipeline_->create(argc, argv, this);
+
+    if (!render_pipeline_->get_plugin_mgr()->is_plugin_enabled("openvr"))
     {
-        render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/vr");
-        render_pipeline->create(argc, argv);
+        render_pipeline_->error("openvr plugin is not enabled!");
+        render_pipeline_->error("Enable openvr in plugins.yaml");
 
-        if (!render_pipeline->get_plugin_mgr()->is_plugin_enabled("openvr"))
-        {
-            render_pipeline->error("openvr plugin is not enabled!");
-            render_pipeline->error("Enable openvr in plugins.yaml");
-            return 0;
-        }
-
-        World world(*render_pipeline);
-
-        render_pipeline->run();
+        std::exit(1);
     }
 
-    // release explicitly
-    render_pipeline.reset();
+    // Set time of day
+    render_pipeline_->get_daytime_mgr()->set_time(0.769f);
+
+    openvr_plugin_ = static_cast<rpplugins::OpenVRPlugin*>(render_pipeline_->get_plugin_mgr()->get_instance("openvr")->downcast());
+    if (!openvr_plugin_->has_tracked_camera())
+    {
+        rpcore::RPObject::global_error("Application", "No tracked camera!");
+        return;
+    }
+
+    openvr_camera_ = openvr_plugin_->get_tracked_camera();
+
+    info(fmt::format("Number of Camera ({}), Frame Layout ({})", openvr_camera_->get_num_cameras(), openvr_camera_->get_frame_layout()));
+
+    preview_plane_ = rpcore::create_plane("preview");
+    preview_plane_.reparent_to(rpcore::Globals::render);
+
+    // set rough materail
+    rpcore::RPGeomNode plane_geom(preview_plane_);
+    auto mat = plane_geom.get_material(0);
+    mat.set_base_color(1.0f);
+    mat.set_roughness(1.0f);
+    mat.set_specular_ior(1.0f);
+    mat.set_metallic(0.0f);
+    plane_geom.set_material(0, mat);
+
+    uint32_t width;
+    uint32_t height;
+    uint32_t buffer_size;
+    openvr_camera_->get_frame_size(width, height, buffer_size, frame_type_);
+    framebuffer_.resize(buffer_size);
+    preview_plane_.set_hpr(0, 90, 0);
+    preview_plane_.set_scale(10, 10 * height / float(width), 1);
+
+    info(fmt::format("Width ({}), Height ({}), Buffer Size ({})", width, height, buffer_size));
+
+    PT(Texture) tex = Texture::make_texture();
+    // color is sRGBA
+    tex->setup_2d_texture(width, height, Texture::ComponentType::T_unsigned_byte, Texture::Format::F_srgb_alpha);
+    PTA_uchar ram_image = tex->make_ram_image();
+    memset(ram_image.p(), 0xFF, width * height * 4);
+    preview_plane_.set_texture(tex);
+
+    // Y flip
+    preview_plane_.set_tex_scale(TextureStage::get_default(), 1.0f, -1.0f);
+
+    setup_event();
+}
+
+MainApp::~MainApp() = default;
+
+void MainApp::setup_event()
+{
+    // Init movement controller
+    controller_ = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
+    controller_->set_initial_position_hpr(
+        LVecBase3f(0.0f),
+        LVecBase3f(0.0f, 0.0f, 0.0f));
+    controller_->setup();
+
+    accept("l", [this](auto) {
+        toggle_streaming_action();
+    });
+}
+
+void MainApp::toggle_streaming_action()
+{
+    static const std::string task_name = "MainApp::upload_texture";
+
+    if (is_streamed_)
+    {
+        rpcore::Globals::base->remove_task(task_name);
+        openvr_camera_->release_video_streaming_service();
+        is_streamed_ = false;
+    }
+    else
+    {
+        is_streamed_ = openvr_camera_->acquire_video_streaming_service();
+        last_task_time_ = 0;
+        rpcore::Globals::base->add_task(std::bind(&MainApp::upload_texture, this, std::placeholders::_1), task_name);
+    }
+}
+
+AsyncTask::DoneStatus MainApp::upload_texture(rppanda::FunctionalTask* task)
+{
+    auto elapsed_time = task->get_elapsed_time();
+    if ((elapsed_time - last_task_time_) < (16.0 / 1000.0))
+        return AsyncTask::DS_cont;
+
+    last_task_time_ = elapsed_time;
+
+    vr::CameraVideoStreamFrameHeader_t header;
+    openvr_camera_->get_frame_header(header, frame_type_);
+
+    static uint32_t last_frame_sequence = 0;
+
+    // frame hasn't changed yet, nothing to do
+    if (header.nFrameSequence == last_frame_sequence)
+        return AsyncTask::DS_cont;
+
+    // Frame has changed, do the more expensive frame buffer copy
+    auto err = openvr_camera_->get_framebuffer(header, framebuffer_, frame_type_);
+    if (err != vr::VRTrackedCameraError_None)
+        return AsyncTask::DS_cont;
+
+    auto tex = preview_plane_.get_texture();
+    PTA_uchar ram_image = tex->modify_ram_image();
+
+    auto dest = ram_image.p();
+    for (size_t k = 0, k_end = framebuffer_.size(); k < k_end; k+=4)
+    {
+        // bgra = rgba
+        dest[k + 2] = framebuffer_[k + 0];
+        dest[k + 1] = framebuffer_[k + 1];
+        dest[k + 0] = framebuffer_[k + 2];
+        dest[k + 3] = framebuffer_[k + 3];
+    }
+
+    last_frame_sequence = header.nFrameSequence;
+
+    return AsyncTask::DS_cont;
+}
+
+void MainApp::setup_gl_texture()
+{
+}
+
+// ************************************************************************************************
+
+int main(int argc, char* argv[])
+{
+    PT(MainApp) app = new MainApp(argc, argv);
+    app->run();
 
     return 0;
 }

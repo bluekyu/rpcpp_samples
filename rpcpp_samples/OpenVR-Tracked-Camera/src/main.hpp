@@ -24,12 +24,13 @@
 
 #pragma once
 
-#include <nodePath.h>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
+#include <render_pipeline/rpcore/rpobject.hpp>
 
-#include <render_pipeline/rpcore/render_pipeline.hpp>
-#include <render_pipeline/rppanda/showbase/direct_object.hpp>
+#include <openvr.h>
 
 namespace rpcore {
+class RenderPipeline;
 class MovementController;
 }
 
@@ -38,32 +39,34 @@ class OpenVRPlugin;
 class OpenVRCameraInterface;
 }
 
-class World : public rppanda::DirectObject
+class MainApp : public rppanda::ShowBase, public rpcore::RPObject
 {
 public:
-    World(rpcore::RenderPipeline& pipeline);
-    virtual ~World();
+    MainApp(int argc, char* argv[]);
+    virtual ~MainApp();
 
-    ALLOC_DELETED_CHAIN(World);
+    ALLOC_DELETED_CHAIN(MainApp);
 
     void toggle_streaming_action();
 
 private:
     void setup_event();
 
+    std::unique_ptr<rpcore::RenderPipeline> render_pipeline_;
+    std::unique_ptr<rpcore::MovementController> controller_;
+
     // this is not optimized.
     AsyncTask::DoneStatus upload_texture(rppanda::FunctionalTask* task);
 
     void setup_gl_texture();
 
-    rpcore::RenderPipeline& pipeline_;
-    std::unique_ptr<rpcore::MovementController> controller_;
     rpplugins::OpenVRPlugin* openvr_plugin_;
     rpplugins::OpenVRCameraInterface* openvr_camera_;
 
     bool is_streamed_ = false;
     NodePath preview_plane_;
     std::vector<uint8_t> framebuffer_;
+    vr::EVRTrackedCameraFrameType frame_type_ = vr::VRTrackedCameraFrameType_Distorted;
 
     double last_task_time_ = 0.0f;
 };
