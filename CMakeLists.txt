@@ -1,12 +1,14 @@
 # Author: Younguk Kim (bluekyu)
 
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.10.2)
 project(rpcpp_samples_project
     DESCRIPTION "Samples of Render Pipeline C++"
     LANGUAGES CXX
 )
 
 # === configure ====================================================================================
+option(${PROJECT_NAME}_ENABLE_RTTI "Enable Run-Time Type Information" OFF)
+
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)    # Project Grouping
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)

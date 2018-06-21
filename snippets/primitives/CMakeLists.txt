@@ -1,6 +1,6 @@
 # Author: Younguk Kim (bluekyu)
 
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.10.2)
 project(primitives
     DESCRIPTION "Primitives sample"
     LANGUAGES CXX
@@ -29,9 +29,9 @@ add_executable(${PROJECT_NAME} ${sources_files})
 
 if(MSVC)
     windows_add_longpath_manifest(${PROJECT_NAME})
-    target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251
-        $<$<VERSION_GREATER:${MSVC_VERSION},1800>:/utf-8>
+    target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251 /utf-8
         $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/permissive->
+        $<$<NOT:$<BOOL:${rpcpp_samples_project_ENABLE_RTTI}>>:/GR->
 
         # note: windows.cmake in vcpkg
         $<$<CONFIG:Release>:/Oi /Gy /Z7>
@@ -39,7 +39,9 @@ if(MSVC)
     set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELWITHDEBINFO    " /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
     set_property(TARGET ${PROJECT_NAME} APPEND_STRING PROPERTY LINK_FLAGS_RELEASE           " /DEBUG /INCREMENTAL:NO /OPT:REF /OPT:ICF ")
 else()
-    target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
+    target_compile_options(${PROJECT_NAME} PRIVATE -Wall
+        $<$<NOT:$<BOOL:${rpcpp_samples_project_ENABLE_RTTI}>>:-fno-rtti>
+    )
 endif()
 
 target_include_directories(${PROJECT_NAME}
@@ -50,7 +52,7 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE render_pipeline::render_pipeline
 )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "rpcpp_snippets")
+set_target_properties(${PROJECT_NAME} PROPERTIES FOLDER "rpcpp_samples/rpcpp_snippets")
 # ==================================================================================================
 
 # === install ======================================================================================
