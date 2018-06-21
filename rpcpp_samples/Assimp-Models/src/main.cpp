@@ -93,36 +93,7 @@ void MainApp::load_models()
 
     auto hamburger_obj = loader->load_model("/$$app/Hamburger/Hamburger.obj", {}, true);
     if (hamburger_obj)
-    {
         hamburger_obj.reparent_to(rpcore::Globals::render);
-
-        auto all_mat = hamburger_obj.find_all_materials();
-        for (int k = 0, k_end = all_mat.get_num_materials(); k < k_end; ++k)
-        {
-            auto mat = all_mat.get_material(k);
-
-            if (!mat->has_roughness())
-            {
-                rpcore::RPMaterial rpmat(mat);
-
-                rpmat.set_shading_model(rpcore::RPMaterial::ShadingModel::DEFAULT_MODEL);
-
-                if (rpmat->has_diffuse())
-                    rpmat.set_base_color(rpmat->get_diffuse());
-                else
-                    rpmat.set_base_color(LColor(1));
-                rpmat.set_normal_factor(0.0f);
-                rpmat.set_roughness(1.0f);
-                rpmat.set_specular_ior(1.0f);
-                rpmat.set_metallic(0.0f);
-                rpmat.set_arbitrary0(0.0f);
-            }
-        }
-    }
-
-    auto hamburger_gltf = loader->load_model("/$$app/Hamburger/Hamburger.gltf", {}, true);
-    if (hamburger_gltf)
-        hamburger_gltf.reparent_to(rpcore::Globals::render);
 }
 
 // ************************************************************************************************
