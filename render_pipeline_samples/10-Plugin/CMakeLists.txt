@@ -1,6 +1,6 @@
 # Author: Younguk Kim (bluekyu)
 
-cmake_minimum_required(VERSION 3.9)
+cmake_minimum_required(VERSION 3.10.2)
 
 get_filename_component(RPPLUGIN_ID ${CMAKE_CURRENT_LIST_DIR} NAME)
 project(rpplugin_${RPPLUGIN_ID}
@@ -46,9 +46,8 @@ set(plugin_sources
 add_library(${PROJECT_NAME} MODULE ${plugin_sources})
 
 if(MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251
+    target_compile_options(${PROJECT_NAME} PRIVATE /MP /wd4251 /utf-8
         $<$<NOT:$<BOOL:${${PROJECT_NAME}_ENABLE_RTTI}>>:/GR->
-        $<$<VERSION_GREATER:${MSVC_VERSION},1800>:/utf-8>
         $<$<VERSION_GREATER:${MSVC_VERSION},1900>:/permissive->
 
         # note: windows.cmake in vcpkg
