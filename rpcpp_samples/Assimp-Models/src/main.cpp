@@ -63,7 +63,7 @@ MainApp::MainApp(int argc, char* argv[]) : ShowBase(), RPObject("MainApp")
     render_pipeline_ = std::make_unique<rpcore::RenderPipeline>();
 
     render_pipeline_->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
-    VirtualFileSystem::get_global_ptr()->mount("../share/rpcpp_samples/Assimp-Models", "/$$app", 0);
+    VirtualFileSystem::get_global_ptr()->mount("../share/rpcpp_samples", "/$$app", 0);
 
     render_pipeline_->create(argc, argv, this);
 
@@ -81,8 +81,8 @@ void MainApp::setup_event()
 {
     // Init movement controller
     controller_ = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
-    controller_->set_initial_position_hpr(
-        LVecBase3f(0.0f),
+    controller_->set_initial_position(
+        LVecBase3f(0.0f, -100.0f, 40.0f),
         LVecBase3f(0.0f, 0.0f, 0.0f));
     controller_->setup();
 }
@@ -91,9 +91,12 @@ void MainApp::load_models()
 {
     auto loader = get_loader();
 
-    auto hamburger_obj = loader->load_model("/$$app/Hamburger/Hamburger.obj", {}, true);
+    auto hamburger_obj = loader->load_model("/$$app/models/Hamburger/Hamburger.obj", {}, true);
     if (hamburger_obj)
+    {
         hamburger_obj.reparent_to(rpcore::Globals::render);
+        hamburger_obj.set_hpr(0, 90, 0);
+    }
 }
 
 // ************************************************************************************************
