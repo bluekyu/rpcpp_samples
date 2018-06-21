@@ -51,3 +51,6 @@ See [Building Render Pipeline C++](https://github.com/bluekyu/render_pipeline_cp
 
 ## License
 See `LICENSE.md` file.
+
+### Models
+Some models may have another license. The licenses are described in each directory.

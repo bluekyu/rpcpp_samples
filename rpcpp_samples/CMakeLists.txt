@@ -6,6 +6,7 @@ project(rpcpp_samples
 )
 
 # === configure ====================================================================================
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Assimp-Models")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/ImGui")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/OpenVR")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/OpenVR-AR")
