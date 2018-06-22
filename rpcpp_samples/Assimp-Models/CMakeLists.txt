@@ -48,9 +48,7 @@ else()
     target_compile_options(${PROJECT_NAME} PRIVATE -Wall)
 endif()
 
-target_include_directories(${PROJECT_NAME}
-    PRIVATE "${PROJECT_BINARY_DIR}" "${PROJECT_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/src"
-)
+target_include_directories(${PROJECT_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE render_pipeline::render_pipeline ${FMT_TARGET}

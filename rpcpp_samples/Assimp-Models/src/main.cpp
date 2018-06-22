@@ -26,21 +26,16 @@
 
 #include <load_prc_file.h>
 #include <virtualFileSystem.h>
-#include <load_dso.h>
-#include <materialCollection.h>
 
 #include <fmt/ostream.h>
 
-#include <render_pipeline/rppanda/showbase/messenger.hpp>
 #include <render_pipeline/rppanda/showbase/loader.hpp>
 #include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/mount_manager.hpp>
 #include <render_pipeline/rpcore/pluginbase/day_manager.hpp>
 #include <render_pipeline/rpcore/util/movement_controller.hpp>
-#include <render_pipeline/rpcore/util/rpgeomnode.hpp>
-#include <render_pipeline/rpcore/util/rpmaterial.hpp>
-#include <render_pipeline/rppanda/util/filesystem.hpp>
+#include <render_pipeline/rpcore/util/generic.hpp>
 
 MainApp::MainApp(int argc, char* argv[]) : ShowBase(), RPObject("MainApp")
 {
@@ -50,14 +45,8 @@ MainApp::MainApp(int argc, char* argv[]) : ShowBase(), RPObject("MainApp")
         "window-title Render Pipeline - Assimp-Models");
 
     // load librpassimp.so explicitly
-    void* tmp = load_dso(
-        rppanda::convert_path(rppanda::get_library_location().parent_path()),
-        Filename::dso_filename("librpassimp.so"));
-    if (tmp == nullptr)
-    {
-        std::cerr << "Failed to load librpassimp.so" << std::endl;
+    if (!rpcore::load_rpassimp())
         exit(1);
-    }
 
     // configure panda3d in program.
     render_pipeline_ = std::make_unique<rpcore::RenderPipeline>();
