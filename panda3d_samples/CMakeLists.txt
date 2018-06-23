@@ -6,6 +6,19 @@ project(panda3d_samples
 )
 
 # === configure ====================================================================================
+# warning about fixed function
+file(STRINGS "${panda3d_ROOT}/include/dtool_config.h"
+    panda3d_dtool_SUPPORT_FIXED_FUNCTION
+    REGEX "#define SUPPORT_FIXED_FUNCTION 1"
+)
+if(NOT panda3d_dtool_SUPPORT_FIXED_FUNCTION)
+    message(AUTHOR_WARNING
+        "  \n"
+        "  Current Panda3D SDK does not support fixed function.\n"
+        "  (SUPPORT_FIXED_FUNCTION is undefined)\n"
+        "  Basic Panda3D samples may be rendered incorrectly.\n")
+endif()
+
 add_subdirectory("chorusline")
 add_subdirectory("empty-wo-rpcpp")
 add_subdirectory("looking-and-gripping")
