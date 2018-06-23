@@ -2,6 +2,10 @@
 
 These samples are **ported** from samples in Panda3D (https://github.com/panda3d/panda3d).
 
+**Note that** current [custom Panda3D](https://github.com/bluekyu/panda3d) disables fixed function,
+so shading may look different from default Panda3D samples.
+
+
 ## Looking and Gripping
 This tutorial will cover exposing joints and manipulating them. Specifically,
 we will take control of the neck joint of a humanoid character and rotate that
