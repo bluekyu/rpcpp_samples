@@ -18,7 +18,7 @@ gl-debug-object-labels #f
 # ----------------- Misc Settings -----------------
 
 # Require OpenGL 4.3 at least, necessary for Intel drivers on Linux
-gl-version 4 3
+#gl-version 4 3
 
 # Disable V-Sync
 sync-video #f
