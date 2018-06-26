@@ -14,6 +14,7 @@ add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/OpenVR-Tracked-Camera")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Panda3D-Chorusline")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Panda3D-Shadows")
 add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/Shading-Models-VR")
+#add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/ViveSR")
 # ==================================================================================================
 
 # === install ======================================================================================
