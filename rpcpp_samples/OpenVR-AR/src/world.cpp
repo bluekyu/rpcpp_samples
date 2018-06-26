@@ -197,12 +197,9 @@ AsyncTask::DoneStatus World::upload_texture(rppanda::FunctionalTask* task)
     const auto& pose = header.standingTrackedDevicePose;
     if (pose.bPoseIsValid)
     {
-        static const LMatrix4f z_to_y = LMatrix4f::convert_mat(CS_zup_right, CS_yup_right);
-        static const LMatrix4f y_to_z = LMatrix4f::convert_mat(CS_yup_right, CS_zup_right);
-
-        ar_camera_np_.set_mat(z_to_y *
+        ar_camera_np_.set_mat(LMatrix4f::z_to_y_up_mat() *
             rpplugins::OpenVRPlugin::convert_matrix(pose.mDeviceToAbsoluteTracking) *
-            y_to_z);
+            LMatrix4f::y_to_z_up_mat());
     }
 
     last_frame_sequence = header.nFrameSequence;
