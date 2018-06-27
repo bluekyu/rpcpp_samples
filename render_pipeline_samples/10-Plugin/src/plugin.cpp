@@ -35,7 +35,7 @@ Plugin::RequrieType Plugin::require_plugins_;
 
 // ************************************************************************************************
 
-Plugin::Plugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPPLUGIN_ID_STRING)
+Plugin::Plugin(rpcore::RenderPipeline& pipeline): rpcore::BasePlugin(pipeline, RPPLUGINS_ID_STRING)
 {
 }
 

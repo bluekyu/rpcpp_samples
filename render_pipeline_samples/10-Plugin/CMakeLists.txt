@@ -2,8 +2,8 @@
 
 cmake_minimum_required(VERSION 3.10.2)
 
-get_filename_component(RPPLUGIN_ID ${CMAKE_CURRENT_LIST_DIR} NAME)
-project(rpplugin_${RPPLUGIN_ID}
+get_filename_component(RPPLUGINS_ID ${CMAKE_CURRENT_LIST_DIR} NAME)
+project(rpplugins_${RPPLUGINS_ID}
     VERSION 0.1.0
     DESCRIPTION "Sample plugin for Render Pipeline C++"
     LANGUAGES CXX
@@ -27,8 +27,8 @@ if(render_pipeline_INSTALL_DIR)
     unset(_CMAKE_INSTALL_PREFIX)
 endif()
 
-set(RPPLUGIN_INSTALL_DIR "${render_pipeline_PLUGIN_DIR}/${RPPLUGIN_ID}")
-set(RPPLUGIN_CONFIG_IN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/rpplugin-config.cmake.in")
+set(RPPLUGINS_INSTALL_DIR "${render_pipeline_PLUGIN_DIR}/${RPPLUGINS_ID}")
+set(RPPLUGINS_CONFIG_IN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/rpplugins-config.cmake.in")
 
 # === project specific packages ===
 
@@ -63,7 +63,7 @@ else()
 endif()
 
 target_compile_definitions(${PROJECT_NAME}
-    PRIVATE RPPLUGIN_ID_STRING="${RPPLUGIN_ID}"
+    PRIVATE RPPLUGINS_ID_STRING="${RPPLUGINS_ID}"
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -86,24 +86,24 @@ configure_debugging_information(TARGET ${PROJECT_NAME} CONFIGURATIONS Debug RelW
 
 # === target =======================================================================================
 # create plugin interface target
-add_library(${RPPLUGIN_ID} INTERFACE)
+add_library(${RPPLUGINS_ID} INTERFACE)
 
-target_include_directories(${RPPLUGIN_ID}
+target_include_directories(${RPPLUGINS_ID}
     INTERFACE $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:${RPPLUGIN_INSTALL_DIR}/include>
+    $<INSTALL_INTERFACE:${RPPLUGINS_INSTALL_DIR}/include>
 )
 
-target_link_libraries(${RPPLUGIN_ID}
+target_link_libraries(${RPPLUGINS_ID}
     INTERFACE render_pipeline::render_pipeline
 )
 
 # configure package
-set(PACKAGE_NAME "rpplugin_${RPPLUGIN_ID}")
+set(PACKAGE_NAME "rpplugins_${RPPLUGINS_ID}")
 set(TARGET_NAMESPACE "rpplugins::")
 set(PACKAGE_VERSION_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}-config-version.cmake")
 set(PACKAGE_CONFIG_FILE "${PROJECT_BINARY_DIR}/${PACKAGE_NAME}-config.cmake")
 set(TARGET_EXPORT_NAME "${PACKAGE_NAME}-targets")
-set(PACKAGE_CMAKE_INSTALL_DIR "${RPPLUGIN_INSTALL_DIR}/cmake")
+set(PACKAGE_CMAKE_INSTALL_DIR "${RPPLUGINS_INSTALL_DIR}/cmake")
 
 include(CMakePackageConfigHelpers)
 if(CMAKE_VERSION VERSION_LESS "3.11")
@@ -117,26 +117,26 @@ else()
         COMPATIBILITY SameMinorVersion
     )
 endif()
-configure_package_config_file(${RPPLUGIN_CONFIG_IN_FILE}
+configure_package_config_file(${RPPLUGINS_CONFIG_IN_FILE}
     ${PACKAGE_CONFIG_FILE}
     INSTALL_DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR}
 )
 
-add_library(${TARGET_NAMESPACE}${RPPLUGIN_ID} ALIAS ${RPPLUGIN_ID})
+add_library(${TARGET_NAMESPACE}${RPPLUGINS_ID} ALIAS ${RPPLUGINS_ID})
 # ==================================================================================================
 
 # === install ======================================================================================
-install(TARGETS ${PROJECT_NAME} DESTINATION ${RPPLUGIN_INSTALL_DIR})
-install(TARGETS ${RPPLUGIN_ID} EXPORT ${TARGET_EXPORT_NAME})
+install(TARGETS ${PROJECT_NAME} DESTINATION ${RPPLUGINS_INSTALL_DIR})
+install(TARGETS ${RPPLUGINS_ID} EXPORT ${TARGET_EXPORT_NAME})
 export(EXPORT ${TARGET_EXPORT_NAME}
     NAMESPACE ${TARGET_NAMESPACE}
     FILE "${PROJECT_BINARY_DIR}/${TARGET_EXPORT_NAME}.cmake"
 )
 
-install(FILES "${PROJECT_SOURCE_DIR}/config.yaml" DESTINATION ${RPPLUGIN_INSTALL_DIR})
+install(FILES "${PROJECT_SOURCE_DIR}/config.yaml" DESTINATION ${RPPLUGINS_INSTALL_DIR})
 foreach(directory_name "include" "resources" "shader")
     install(DIRECTORY "${PROJECT_SOURCE_DIR}/${directory_name}"
-        DESTINATION ${RPPLUGIN_INSTALL_DIR}
+        DESTINATION ${RPPLUGINS_INSTALL_DIR}
         OPTIONAL
     )
 endforeach()
@@ -146,7 +146,7 @@ install(FILES ${${PROJECT_NAME}_MACRO_CMAKE_FILE} DESTINATION ${PACKAGE_CMAKE_IN
 install(EXPORT ${TARGET_EXPORT_NAME} NAMESPACE ${TARGET_NAMESPACE} DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR})
 
 install_debugging_information(TARGET ${PROJECT_NAME}
-    DESTINATION "${RPPLUGIN_INSTALL_DIR}"
+    DESTINATION "${RPPLUGINS_INSTALL_DIR}"
     CONFIGURATIONS Debug RelWithDebInfo Release
 )
 # ==================================================================================================
