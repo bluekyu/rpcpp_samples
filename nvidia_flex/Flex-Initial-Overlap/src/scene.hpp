@@ -40,6 +40,10 @@
 class Scene : public rpflex::InstanceInterface
 {
 public:
+    Scene(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
+    {
+    }
+
     void initialize(rpflex::Plugin& rpflex_plugin) final
     {
         auto& buffer = rpflex_plugin.get_flex_buffer();
@@ -57,7 +61,7 @@ public:
         buffer.velocities.push_back(LVecBase3f(0.0f));
         buffer.phases.push_back(0);
 
-        entities_.push_back(std::make_shared<FlexParticlesEntity>(rpflex_plugin));
+        entities_.push_back(std::make_shared<FlexParticlesEntity>(pipeline_, rpflex_plugin));
 
         for (auto&& entity: entities_)
             entity->update(rpflex_plugin);
@@ -71,5 +75,7 @@ public:
     }
 
 private:
+    rpcore::RenderPipeline& pipeline_;
+
     std::vector<std::shared_ptr<FlexEntity>> entities_;
 };

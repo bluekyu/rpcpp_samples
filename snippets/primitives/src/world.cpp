@@ -57,7 +57,7 @@ void World::create_square_points()
     };
 
     rpcore::PointsNode pn("quad_points", points, 0.1f);
-    pn.set_square_point_effect();
+    pn.set_square_point_effect(*pipeline_);
     pn.upload_positions();
 
     pn.get_nodepath().reparent_to(rpcore::Globals::render);
@@ -74,7 +74,7 @@ void World::create_disk_points()
     };
 
     rpcore::PointsNode pn("disk_points", points, 0.1f);
-    pn.set_disk_point_effect();
+    pn.set_disk_point_effect(*pipeline_);
     pn.upload_positions();
 
     pn.get_nodepath().reparent_to(rpcore::Globals::render);
@@ -91,7 +91,7 @@ void World::create_sphere_points()
     };
 
     rpcore::PointsNode pn("sphere_points", points, 0.1f);
-    pn.set_sphere_point_effect();
+    pn.set_sphere_point_effect(*pipeline_);
     pn.upload_positions();
 
     pn.get_nodepath().reparent_to(rpcore::Globals::render);
@@ -110,7 +110,7 @@ void World::create_line_primitive()
     auto line = rpcore::create_line("line", vertices, 10.0f);
     line.reparent_to(rpcore::Globals::render);
 
-    rpcore::LineNode::set_line_effect(line);
+    rpcore::LineNode::set_line_effect(*pipeline_, line);
 }
 
 void World::create_vertex_colored_linesegs()
@@ -136,5 +136,5 @@ void World::create_vertex_colored_linesegs()
     mat.set_specular_ior(1);
     line.set_material(mat.get_material());
 
-    rpcore::LineNode::set_vertex_color_line_effect(line);
+    rpcore::LineNode::set_vertex_color_line_effect(*pipeline_, line);
 }

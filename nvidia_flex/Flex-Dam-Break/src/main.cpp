@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
 
         auto flex_plugin = static_cast<rpflex::Plugin*>(render_pipeline->get_plugin_mgr()->get_instance("rpflex")->downcast());
 
-        flex_plugin->add_instance(std::make_shared<Scene>(0.05f));
+        flex_plugin->add_instance(std::make_shared<Scene>(*render_pipeline, 0.05f));
 
         // Initialize movement controller, this is a convenience class
         // to provide an improved camera control compared to Panda3Ds default

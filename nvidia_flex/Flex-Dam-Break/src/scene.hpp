@@ -37,7 +37,7 @@
 class Scene : public rpflex::InstanceInterface
 {
 public:
-    Scene(float radius): radius_(radius)
+    Scene(rpcore::RenderPipeline& pipeline, float radius): pipeline_(pipeline), radius_(radius)
     {
     }
 
@@ -88,7 +88,7 @@ public:
         params.wave_floor_tilt = 0.0f;
 
         // create particle node.
-        entities_.push_back(std::make_shared<FlexParticlesEntity>(rpflex_plugin));
+        entities_.push_back(std::make_shared<FlexParticlesEntity>(pipeline_, rpflex_plugin));
         for (auto&& entity: entities_)
             entity->update(rpflex_plugin);
     }
@@ -101,6 +101,8 @@ public:
     }
 
 private:
+    rpcore::RenderPipeline& pipeline_;
+
     std::vector<std::shared_ptr<FlexEntity>> entities_;
 
     float radius_;

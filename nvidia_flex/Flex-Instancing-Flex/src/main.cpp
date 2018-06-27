@@ -117,7 +117,7 @@ int main(int argc, char* argv[])
         NodePath instanced_node = rpcore::Globals::render.attach_new_node("instanced_node");
         particle.reparent_to(instanced_node);
 
-        auto instancing = std::make_shared<rpcore::InstancingNode>(instanced_node);
+        auto instancing = std::make_shared<rpcore::InstancingNode>(*render_pipeline, instanced_node);
 
         std::vector<LMatrix4f> matrices;
         for (int z = 0; z < 30; ++z)

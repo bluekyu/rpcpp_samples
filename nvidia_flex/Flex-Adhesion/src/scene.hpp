@@ -38,6 +38,10 @@
 class Scene : public rpflex::InstanceInterface
 {
 public:
+    Scene(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
+    {
+    }
+
     void initialize(rpflex::Plugin& rpflex_plugin) final
     {
         auto& buffer = rpflex_plugin.get_flex_buffer();
@@ -83,7 +87,7 @@ public:
     void post_initialize(rpflex::Plugin& rpflex_plugin) final
     {
         // create particle node.
-        particles_entity_ = std::make_shared<FlexParticlesEntity>(rpflex_plugin);
+        particles_entity_ = std::make_shared<FlexParticlesEntity>(pipeline_, rpflex_plugin);
         entities_.push_back(particles_entity_);
 
         particles_entity_->get_particles_node()->set_active_point_count(rpflex_plugin.get_flex_buffer().active_indices.size());
@@ -112,6 +116,8 @@ public:
     }
 
 private:
+    rpcore::RenderPipeline& pipeline_;
+
     std::vector<std::shared_ptr<FlexEntity>> entities_;
     std::shared_ptr<FlexParticlesEntity> particles_entity_;
     Emitter emitter;

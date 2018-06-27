@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
 
         std::cout << "Loaded " << matrices.size() << " instances!" << std::endl;
 
-        rpcore::InstancingNode instancing(prefab);
+        rpcore::InstancingNode instancing(*render_pipeline, prefab);
         instancing.set_transforms(matrices);
         instancing.upload_transforms();
 
