@@ -192,7 +192,7 @@ AsyncTask::DoneStatus World::upload_texture(rppanda::FunctionalTask* task)
         return AsyncTask::DS_cont;
 
     PTA_uchar ram_image = ar_camera_texture_->modify_ram_image();
-    std::copy(framebuffer_.begin(), framebuffer_.end(), ram_image.p());
+    std::memcpy(ram_image.p(), framebuffer_.data(), framebuffer_.size() * sizeof(decltype(framebuffer_)::value_type));
 
     const auto& pose = header.standingTrackedDevicePose;
     if (pose.bPoseIsValid)
