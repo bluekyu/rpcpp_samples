@@ -15,17 +15,7 @@ option(${PROJECT_NAME}_ENABLE_RTTI "Enable Run-Time Type Information" OFF)
 include(debugging-information)
 
 # check installing directory
-if(render_pipeline_INSTALL_DIR)
-    get_filename_component(_render_pipeline_INSTALL_DIR ${render_pipeline_INSTALL_DIR} ABSOLUTE)
-    get_filename_component(_CMAKE_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX} ABSOLUTE)
-    if(NOT "${_render_pipeline_INSTALL_DIR}" STREQUAL "${_CMAKE_INSTALL_PREFIX}")
-        message(AUTHOR_WARNING "CMake install prefix is NOT same as installed directory of Render Pipeline:
-            CMAKE_INSTALL_PREFIX: ${_CMAKE_INSTALL_PREFIX}
-        render_pipeline_INSTALL_DIR: ${_render_pipeline_INSTALL_DIR}")
-    endif()
-    unset(_render_pipeline_INSTALL_DIR)
-    unset(_CMAKE_INSTALL_PREFIX)
-endif()
+render_pipeline_check_install_directory()
 
 set(RPPLUGINS_INSTALL_DIR "${render_pipeline_PLUGIN_DIR}/${RPPLUGINS_ID}")
 set(RPPLUGINS_CONFIG_IN_FILE "${CMAKE_CURRENT_SOURCE_DIR}/rpplugins-config.cmake.in")
