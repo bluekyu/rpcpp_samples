@@ -27,10 +27,11 @@
 #include <nodePath.h>
 #include <texture.h>
 
-#include <render_pipeline/rpcore/render_pipeline.hpp>
-#include <render_pipeline/rppanda/showbase/direct_object.hpp>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
+#include <render_pipeline/rpcore/rpobject.hpp>
 
 namespace rpcore {
+class RenderPipeline;
 class MovementController;
 }
 
@@ -39,13 +40,13 @@ class OpenVRPlugin;
 class OpenVRCameraInterface;
 }
 
-class World : public rppanda::DirectObject
+class MainApp : public rppanda::ShowBase, public rpcore::RPObject
 {
 public:
-    World(rpcore::RenderPipeline& pipeline);
-    virtual ~World();
+    MainApp(int argc, char* argv[]);
+    virtual ~MainApp();
 
-    ALLOC_DELETED_CHAIN(World);
+    ALLOC_DELETED_CHAIN(MainApp);
 
     void start();
 
@@ -57,7 +58,7 @@ private:
     // this is not optimized.
     AsyncTask::DoneStatus upload_texture(rppanda::FunctionalTask* task);
 
-    rpcore::RenderPipeline& pipeline_;
+    std::unique_ptr<rpcore::RenderPipeline> render_pipeline_;
     std::unique_ptr<rpcore::MovementController> controller_;
     rpplugins::OpenVRPlugin* openvr_plugin_;
 

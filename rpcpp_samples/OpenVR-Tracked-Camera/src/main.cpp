@@ -26,14 +26,11 @@
 
 #include <load_prc_file.h>
 
-#include <thread>
-#include <chrono>
-
 #include <fmt/ostream.h>
 
 #include <render_pipeline/rppanda/showbase/messenger.hpp>
-#include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/render_pipeline.hpp>
+#include <render_pipeline/rpcore/globals.hpp>
 #include <render_pipeline/rpcore/mount_manager.hpp>
 #include <render_pipeline/rpcore/pluginbase/day_manager.hpp>
 #include <render_pipeline/rpcore/pluginbase/manager.hpp>
@@ -74,7 +71,7 @@ MainApp::MainApp(int argc, char* argv[]) : ShowBase(), RPObject("MainApp")
     if (!openvr_plugin_->has_tracked_camera())
     {
         rpcore::RPObject::global_error("Application", "No tracked camera!");
-        return;
+        std::exit(1);
     }
 
     openvr_camera_ = openvr_plugin_->get_tracked_camera();
