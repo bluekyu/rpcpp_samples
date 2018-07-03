@@ -34,11 +34,11 @@
 #include <render_pipeline/rpcore/mount_manager.hpp>
 #include <render_pipeline/rpcore/loader.hpp>
 #include <render_pipeline/rpcore/pluginbase/day_manager.hpp>
+#include <render_pipeline/rpcore/pluginbase/manager.hpp>
+#include <render_pipeline/rpcore/util/movement_controller.hpp>
 #include <render_pipeline/rpcore/util/primitives.hpp>
 #include <render_pipeline/rpcore/util/rpgeomnode.hpp>
 #include <render_pipeline/rpcore/util/rptextnode.hpp>
-#include <render_pipeline/rpcore/pluginbase/manager.hpp>
-#include <render_pipeline/rpcore/util/movement_controller.hpp>
 #include <render_pipeline/rpcore/stage_manager.hpp>
 
 #include <openvr_plugin.hpp>
@@ -64,7 +64,8 @@ MainApp::MainApp(int argc, char* argv[]) : ShowBase(), RPObject("MainApp")
 
     render_pipeline_->create(argc, argv, this);
 
-    if (!render_pipeline_->get_plugin_mgr()->is_plugin_enabled("openvr"))
+    auto plugin_mgr = render_pipeline_->get_plugin_mgr();
+    if (!plugin_mgr->is_plugin_enabled("openvr"))
     {
         render_pipeline_->error("openvr plugin is not enabled!");
         render_pipeline_->error("Enable openvr in plugins.yaml");
@@ -72,7 +73,7 @@ MainApp::MainApp(int argc, char* argv[]) : ShowBase(), RPObject("MainApp")
         std::exit(1);
     }
 
-    if (!render_pipeline_->get_plugin_mgr()->is_plugin_enabled("ar_render"))
+    if (!plugin_mgr->is_plugin_enabled("ar_render"))
     {
         render_pipeline_->error("ar_render plugin is not enabled!");
         render_pipeline_->error("Enable ar_render in plugins.yaml");
@@ -83,33 +84,11 @@ MainApp::MainApp(int argc, char* argv[]) : ShowBase(), RPObject("MainApp")
     // Set time of day
     render_pipeline_->get_daytime_mgr()->set_time(0.569f);
 
-    openvr_plugin_ = static_cast<rpplugins::OpenVRPlugin*>(render_pipeline_->get_plugin_mgr()->get_instance("openvr")->downcast());
-
-    // axis on origin
-    NodePath axis_model = rpcore::RPLoader::load_model("/$$app/models/zup-axis.bam");
-    axis_model.reparent_to(rpcore::Globals::render);
-
-    auto openvr_devices = rpcore::Globals::render.find("openvr_devices");
-    const auto child_count = openvr_devices.get_num_children();
-    for (int k = 1; k < child_count; ++k)
-    {
-        auto device = openvr_devices.get_child(k);
-
-        auto axis = axis_model.copy_to(device);
-        axis.set_scale(0.01f);
-
-        // add label to devcies
-        rpcore::RPTextNode label("device_label", device);
-        label.set_text(device.get_name() + " : " + device.get_tag("serial_number"));
-        label.set_text_color(LColor(1, 0, 0, 1));
-        label.set_pixel_size(10.0f);
-        label.get_np().set_two_sided(true);
-        label.get_np().set_pos(0.0f, 0.0f, 0.1f);
-    }
+    openvr_plugin_ = static_cast<rpplugins::OpenVRPlugin*>(plugin_mgr->get_instance("openvr")->downcast());
 
     setup_event();
-
-    start();
+    load_scenes();
+    setup_ar_camera();
 }
 
 MainApp::~MainApp() = default;
@@ -133,7 +112,32 @@ void MainApp::setup_event()
     });
 }
 
-void MainApp::start()
+void MainApp::load_scenes()
+{
+    // axis on origin
+    NodePath axis_model = rpcore::RPLoader::load_model("/$$app/models/zup-axis.bam");
+    axis_model.reparent_to(rpcore::Globals::render);
+
+    auto openvr_devices = rpcore::Globals::render.find("openvr_devices");
+    const auto child_count = openvr_devices.get_num_children();
+    for (int k = 1; k < child_count; ++k)
+    {
+        auto device = openvr_devices.get_child(k);
+
+        auto axis = axis_model.copy_to(device);
+        axis.set_scale(0.01f);
+
+        // add label to devcies
+        rpcore::RPTextNode label("device_label", device);
+        label.set_text(device.get_name() + " : " + device.get_tag("serial_number"));
+        label.set_text_color(LColor(1, 0, 0, 1));
+        label.set_pixel_size(10.0f);
+        label.get_np().set_two_sided(true);
+        label.get_np().set_pos(0.0f, 0.0f, 0.1f);
+    }
+}
+
+void MainApp::setup_ar_camera()
 {
     if (!openvr_plugin_->has_tracked_camera())
     {

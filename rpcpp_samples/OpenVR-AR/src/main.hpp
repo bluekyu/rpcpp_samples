@@ -48,12 +48,12 @@ public:
 
     ALLOC_DELETED_CHAIN(MainApp);
 
-    void start();
-
     void toggle_streaming_action();
 
 private:
     void setup_event();
+    void load_scenes();
+    void setup_ar_camera();
 
     // this is not optimized.
     AsyncTask::DoneStatus upload_texture(rppanda::FunctionalTask* task);
