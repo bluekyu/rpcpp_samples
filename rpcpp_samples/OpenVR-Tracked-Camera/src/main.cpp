@@ -118,7 +118,7 @@ MainApp::~MainApp() = default;
 void MainApp::setup_event()
 {
     // Init movement controller
-    controller_ = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
+    controller_ = new rpcore::MovementController(this);
     controller_->set_initial_position_hpr(
         LVecBase3f(0.0f),
         LVecBase3f(0.0f, 0.0f, 0.0f));

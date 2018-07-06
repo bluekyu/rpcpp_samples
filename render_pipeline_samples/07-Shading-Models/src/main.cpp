@@ -63,14 +63,14 @@ public:
         render_pipeline_->prepare_scene(model);
 
         // Init movement controller
-        controller_ = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
+        controller_ = new rpcore::MovementController(this);
         controller_->set_initial_position(
             LVecBase3f(6.6f, -18.8f, 4.5f),
             LVecBase3f(4.7f, -16.7f, 3.4f));
         controller_->setup();
 
-        rpcore::Globals::base->accept("l", [this](const Event*) { tour(); });
-        rpcore::Globals::base->accept("r", [this](const Event*) { reload_shaders(); });
+        accept("l", [this](const Event*) { tour(); });
+        accept("r", [this](const Event*) { reload_shaders(); });
     }
 
     virtual ~MainApp() = default;
@@ -114,7 +114,7 @@ public:
 
 private:
     std::unique_ptr<rpcore::RenderPipeline> render_pipeline_;
-    std::unique_ptr<rpcore::MovementController> controller_;
+    PT(rpcore::MovementController) controller_;
 };
 
 int main(int argc, char* argv[])

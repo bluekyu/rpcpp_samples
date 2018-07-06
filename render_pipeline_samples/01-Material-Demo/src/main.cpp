@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
         //    "/$$rp/effects/default.yaml",
         //    { { "parallax_mapping", true } }, 100);
 
-        auto controller = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
+        PT(rpcore::MovementController) controller = new rpcore::MovementController(rpcore::Globals::base);
         controller->set_initial_position_hpr(
             LVecBase3f(-17.2912578583, -13.290019989, 6.88211250305),
             LVecBase3f(-39.7285499573, -14.6770210266, 0.0));

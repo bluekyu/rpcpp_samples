@@ -105,7 +105,7 @@ int main(int argc, char* argv[])
         render_pipeline->prepare_scene(model);
 
         // Init movement controller
-        auto controller = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
+        PT(rpcore::MovementController) controller = new rpcore::MovementController(rpcore::Globals::base);
         controller->set_initial_position_hpr(
             LVecBase3f(0.0f),
             LVecBase3f(0.0f, 0.0f, 0.0f));
