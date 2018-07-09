@@ -63,7 +63,7 @@ public:
         render_pipeline_->prepare_scene(model);
 
         // Init movement controller
-        controller_ = new rpcore::MovementController(this);
+        controller_ = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
         controller_->set_initial_position(
             LVecBase3f(6.6f, -18.8f, 4.5f),
             LVecBase3f(4.7f, -16.7f, 3.4f));
@@ -114,7 +114,7 @@ public:
 
 private:
     std::unique_ptr<rpcore::RenderPipeline> render_pipeline_;
-    PT(rpcore::MovementController) controller_;
+    std::unique_ptr<rpcore::MovementController> controller_;
 };
 
 int main(int argc, char* argv[])

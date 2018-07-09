@@ -50,6 +50,6 @@ private:
     AsyncTask::DoneStatus update();
 
     rpcore::RenderPipeline& pipeline_;
-    PT(rpcore::MovementController) controller_;
+    std::unique_ptr<rpcore::MovementController> controller_;
     rpplugins::OpenVRPlugin* openvr_plugin_;
 };

@@ -88,7 +88,7 @@ public:
         }
 
         // Init movement controller
-        controller_ = new rpcore::MovementController(this);
+        controller_ = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
         controller_->set_initial_position(
             LVecBase3f(-12568, -11736, 697),
             LVecBase3f(-12328, -11357, 679));
@@ -141,7 +141,7 @@ public:
 
 private:
     std::unique_ptr<rpcore::RenderPipeline> render_pipeline_;
-    PT(rpcore::MovementController) controller_;
+    std::unique_ptr<rpcore::MovementController> controller_;
 
     NodePath terrain_np_;
 };

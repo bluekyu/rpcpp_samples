@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
         // Initialize movement controller, this is a convenience class
         // to provide an improved camera control compared to Panda3Ds default
         // mouse controller.
-        PT(rpcore::MovementController) controller = new rpcore::MovementController(rpcore::Globals::base);
+        std::shared_ptr<rpcore::MovementController> controller = std::make_shared<rpcore::MovementController>(rpcore::Globals::base);
         controller->set_initial_position(
             LVecBase3f(0, -20, 5),
             LVecBase3f(0));

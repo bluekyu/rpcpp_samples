@@ -48,5 +48,5 @@ private:
     void setup_event();
 
     std::unique_ptr<rpcore::RenderPipeline> render_pipeline_;
-    PT(rpcore::MovementController) controller_;
+    std::unique_ptr<rpcore::MovementController> controller_;
 };

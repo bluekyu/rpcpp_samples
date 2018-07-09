@@ -59,7 +59,7 @@ private:
     AsyncTask::DoneStatus upload_texture(rppanda::FunctionalTask* task);
 
     std::unique_ptr<rpcore::RenderPipeline> render_pipeline_;
-    PT(rpcore::MovementController) controller_;
+    std::unique_ptr<rpcore::MovementController> controller_;
     rpplugins::OpenVRPlugin* openvr_plugin_;
 
     rpplugins::OpenVRCameraInterface* openvr_camera_;

@@ -20,5 +20,5 @@ private:
     void on_imgui_new_frame();
 
     std::unique_ptr<rpcore::RenderPipeline> render_pipeline_;
-    PT(rpcore::MovementController) controller_;
+    std::unique_ptr<rpcore::MovementController> controller_;
 };

@@ -187,7 +187,7 @@ int main(int argc, char* argv[])
         auto world = std::make_unique<World>(render_pipeline.get());
 
         // Init movement controller
-        PT(rpcore::MovementController) controller = new rpcore::MovementController(rpcore::Globals::base);
+        auto controller = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
         controller->set_initial_position(
             LVecBase3f(30, -45, 26),
             LVecBase3f(0, 0, 0));
