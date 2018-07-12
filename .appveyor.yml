@@ -91,22 +91,18 @@ build_script:
     -Drpcpp_samples_BUILD_render_pipeline_samples:BOOL=ON
     -Drpcpp_samples_BUILD_rpcpp_samples:BOOL=ON
     -Drpcpp_samples_BUILD_snippets:BOOL=ON
-- cmake --build . --config %CONFIGURATION% --target install
-- cmd: >-
-    cmake -G "%CMAKE_GENERATOR%" -Wno-dev ..
-    -DCMAKE_INSTALL_PREFIX="C:/projects/_install/render_pipeline_cpp"
-- cmake --build . --config %CONFIGURATION% --target install
+- cmake --build . --config %CONFIGURATION%
 - ps: popd
-
-after_build:
-- 7z a rpcpp_samples.7z "C:/projects/_install/rpcpp_samples"
 
 #---------------------------------#
 #       tests configuration       #
 #---------------------------------#
 
-# to disable automatic tests
-test: off
+test_script:
+
+after_test:
+- cmake --build _build --config %CONFIGURATION% --target install
+- 7z a rpcpp_samples.7z "C:/projects/_install/rpcpp_samples"
 
 #---------------------------------#
 #      artifacts configuration    #
