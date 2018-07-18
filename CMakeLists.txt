@@ -1,6 +1,10 @@
 # Author: Younguk Kim (bluekyu)
 
 cmake_minimum_required(VERSION 3.10.2)
+
+cmake_policy(PUSH)
+cmake_policy(SET CMP0074 NEW)
+
 project(rpcpp_samples_project
     DESCRIPTION "Samples of Render Pipeline C++"
     LANGUAGES CXX
@@ -45,3 +49,5 @@ install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/models"
 )
 install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources/etc/" DESTINATION "etc")
 # ==================================================================================================
+
+cmake_policy(POP)
