@@ -7,7 +7,14 @@ project(panda3d_samples
 
 # === configure ====================================================================================
 # warning about fixed function
-file(STRINGS "${panda3d_ROOT}/include/dtool_config.h"
+if(EXISTS ${panda3d_ROOT})
+    set(_panda3d_root "${panda3d_ROOT}")
+elseif(EXISTS ${panda3d_ROOT_RELEASE})
+    set(_panda3d_root "${panda3d_ROOT_RELEASE}")
+else()
+    set(_panda3d_root "${panda3d_ROOT_DEBUG}")
+endif()
+file(STRINGS "${_panda3d_root}/include/dtool_config.h"
     panda3d_dtool_SUPPORT_FIXED_FUNCTION
     REGEX "#define SUPPORT_FIXED_FUNCTION 1"
 )
