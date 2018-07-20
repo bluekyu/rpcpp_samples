@@ -14,8 +14,6 @@ public:
 
     virtual ~World();
 
-    ALLOC_DELETED_CHAIN(World);
-
 private:
     void on_imgui_new_frame();
 

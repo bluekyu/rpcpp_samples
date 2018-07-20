@@ -124,8 +124,6 @@ public:
         accept("m", [this](auto) { toggle_shadow(teapot_); });
     }
 
-    ALLOC_DELETED_CHAIN(World);
-
     void toggle_interval(CInterval* ival) const
     {
         if (ival->is_playing())

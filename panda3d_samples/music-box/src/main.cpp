@@ -176,8 +176,6 @@ public:
         panda_turn_->pause();
     }
 
-    ALLOC_DELETED_CHAIN(MusicBox);
-
     void set_music_box_volume()
     {
         float new_vol = slider_->get_gui_item()->get_value();

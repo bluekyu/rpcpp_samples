@@ -52,8 +52,6 @@ public:
             chorusline.instance_to(placeholder);
         }
     }
-
-    ALLOC_DELETED_CHAIN(ChorusLineDemo);
 };
 
 int main(int argc, char* argv[])

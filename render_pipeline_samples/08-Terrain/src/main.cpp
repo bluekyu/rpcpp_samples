@@ -101,8 +101,6 @@ public:
 
     virtual ~Application() = default;
 
-    ALLOC_DELETED_CHAIN(Application);
-
     void reload_shaders()
     {
         render_pipeline_->reload_shaders();

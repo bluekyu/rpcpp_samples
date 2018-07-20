@@ -46,8 +46,6 @@ public:
     MainApp(int argc, char* argv[]);
     virtual ~MainApp();
 
-    ALLOC_DELETED_CHAIN(MainApp);
-
     void toggle_streaming_action();
 
 private:

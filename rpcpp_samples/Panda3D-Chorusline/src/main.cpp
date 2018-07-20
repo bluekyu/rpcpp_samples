@@ -67,8 +67,6 @@ public:
         }
     }
 
-    ALLOC_DELETED_CHAIN(World);
-
 private:
     rpcore::RenderPipeline* pipeline_;
     rppanda::ShowBase* base_;

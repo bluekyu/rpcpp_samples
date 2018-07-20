@@ -41,8 +41,6 @@ public:
     World(rpcore::RenderPipeline& pipeline);
     virtual ~World();
 
-    ALLOC_DELETED_CHAIN(World);
-
     void start();
 
 private:
