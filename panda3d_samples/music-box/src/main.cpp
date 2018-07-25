@@ -242,15 +242,13 @@ int main(int argc, char* argv[])
     auto vfs = VirtualFileSystem::get_global_ptr();
     vfs->mount("../share/rpcpp_samples/music-box", "/$$app", 0);
 
-    PT(rppanda::ShowBase) base = new rppanda::ShowBase(argc, argv);
-
     {
-        MusicBox mb(base);
-        base->run();
-    }
+        rppanda::ShowBase base(argc, argv);
 
-    // release explicitly
-    base.clear();
+        MusicBox mb(&base);
+
+        base.run();
+    }
 
     return 0;
 }

@@ -101,8 +101,7 @@ void World::on_imgui_new_frame()
 
 int main(int argc, char* argv[])
 {
-    PT(World) world = new World(argc, argv);
-    world->run();
+    World(argc, argv).run();
 
     return 0;
 }

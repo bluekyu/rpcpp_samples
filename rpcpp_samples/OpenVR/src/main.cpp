@@ -53,8 +53,8 @@ int main(int argc, char* argv[])
             return 0;
         }
 
-        PT(World) world = new World(*render_pipeline);
-        world->start();
+        World world(*render_pipeline);
+        world.start();
 
         render_pipeline->run();
     }

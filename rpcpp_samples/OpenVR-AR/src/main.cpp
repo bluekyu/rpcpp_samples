@@ -246,8 +246,7 @@ AsyncTask::DoneStatus MainApp::upload_texture(rppanda::FunctionalTask* task)
 
 int main(int argc, char* argv[])
 {
-    PT(MainApp) app = new MainApp(argc, argv);
-    app->run();
+    MainApp(argc, argv).run();
 
     return 0;
 }

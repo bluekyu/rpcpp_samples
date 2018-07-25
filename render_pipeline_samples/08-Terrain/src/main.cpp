@@ -146,8 +146,7 @@ private:
 
 int main(int argc, char* argv[])
 {
-    PT(Application) app = new Application(argc, argv);
-    app->run();
+    Application(argc, argv).run();
 
     return 0;
 }
