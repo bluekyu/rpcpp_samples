@@ -44,6 +44,10 @@ MainApp::MainApp(int argc, char* argv[]) : ShowBase(true), RPObject("MainApp")
         "sync-video false\n"
         "window-title Render Pipeline - Assimp-Models");
 
+    // load librpassimp.so explicitly
+    if (!rpcore::load_rpassimp())
+        exit(1);
+
     // configure panda3d in program.
     render_pipeline_ = std::make_unique<rpcore::RenderPipeline>();
 
@@ -51,10 +55,6 @@ MainApp::MainApp(int argc, char* argv[]) : ShowBase(true), RPObject("MainApp")
     VirtualFileSystem::get_global_ptr()->mount("../share/rpcpp_samples", "/$$app", 0);
 
     render_pipeline_->create(this);
-
-    // load librpassimp.so explicitly
-    if (!rpcore::load_rpassimp())
-        exit(1);
 
     // Set time of day
     render_pipeline_->get_daytime_mgr()->set_time(0.769f);
