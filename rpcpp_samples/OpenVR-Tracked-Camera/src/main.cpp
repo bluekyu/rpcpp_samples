@@ -42,7 +42,7 @@
 #include <openvr_plugin.hpp>
 #include <openvr_camera_interface.hpp>
 
-MainApp::MainApp(int argc, char* argv[]) : ShowBase(true), RPObject("MainApp")
+MainApp::MainApp() : ShowBase(true), RPObject("MainApp")
 {
     // Setup window size, title and so on
     load_prc_file_data("",
@@ -193,9 +193,9 @@ void MainApp::setup_gl_texture()
 
 // ************************************************************************************************
 
-int main(int argc, char* argv[])
+int main()
 {
-    MainApp(argc, argv).run();
+    MainApp().run();
 
     return 0;
 }

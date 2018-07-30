@@ -28,7 +28,7 @@
 #include <render_pipeline/rpcore/mount_manager.hpp>
 #include <render_pipeline/rpcore/globals.hpp>
 
-int main(int argc, char* argv[])
+int main()
 {
     // configure panda3d in program.
     auto render_pipeline = std::make_unique<rpcore::RenderPipeline>();

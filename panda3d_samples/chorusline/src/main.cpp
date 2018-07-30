@@ -29,7 +29,7 @@
 class ChorusLineDemo : public rppanda::ShowBase
 {
 public:
-    ChorusLineDemo(int& argc, char**& argv)
+    ChorusLineDemo()
     {
         PT(rppanda::Actor) panda = new rppanda::Actor(
             rppanda::Actor::ModelsType{ "models/panda-model" });
@@ -54,14 +54,14 @@ public:
     }
 };
 
-int main(int argc, char* argv[])
+int main()
 {
     // setup directory of Render Pipeline. you can use mounted path.
     auto mount_manager = std::make_unique<rpcore::MountManager>();
     mount_manager->mount();
 
     {
-        ChorusLineDemo demo(argc, argv);
+        ChorusLineDemo demo;
         demo.run();
     }
 

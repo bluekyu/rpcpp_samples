@@ -70,7 +70,7 @@ inline rppanda::OnscreenText gen_label_text(const std::string& text, int i)
 class LookingGrippingDemo : public rppanda::ShowBase
 {
 public:
-    LookingGrippingDemo(int& argc, char**& argv)
+    LookingGrippingDemo()
     {
         // This code puts the standard title and instruction text on screen
         title_ = rppanda::OnscreenText(
@@ -206,14 +206,14 @@ private:
     std::vector<NodePath> models_;
 };
 
-int main(int argc, char* argv[])
+int main()
 {
     // help to find models
     auto& model_path = get_model_path();
     model_path.prepend_directory("../share/rpcpp_samples/looking-and-gripping");
 
     {
-        LookingGrippingDemo demo(argc, argv);
+        LookingGrippingDemo demo;
         demo.run();
     }
 

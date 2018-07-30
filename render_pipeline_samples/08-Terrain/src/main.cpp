@@ -42,7 +42,7 @@
 class Application : public rppanda::ShowBase
 {
 public:
-    Application(int argc, char* argv[]) : ShowBase(true)
+    Application() : ShowBase(true)
     {
         // Setup window size, title and so on
         load_prc_file_data("",
@@ -144,9 +144,9 @@ private:
     NodePath terrain_np_;
 };
 
-int main(int argc, char* argv[])
+int main()
 {
-    Application(argc, argv).run();
+    Application().run();
 
     return 0;
 }

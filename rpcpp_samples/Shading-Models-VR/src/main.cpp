@@ -72,7 +72,7 @@ void tour(rpcore::MovementController* mc)
     mc->play_motion_path(mopath, 2.3);
 }
 
-int main(int argc, char* argv[])
+int main()
 {
     // Setup window size, title and so on
     load_prc_file_data("",

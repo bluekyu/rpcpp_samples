@@ -33,7 +33,7 @@
 
 #include "world.hpp"
 
-int main(int argc, char* argv[])
+int main()
 {
     // Setup window size, title and so on
     load_prc_file_data("",

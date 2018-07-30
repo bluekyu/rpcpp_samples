@@ -37,7 +37,7 @@ class MovementController;
 class MainApp : public rppanda::ShowBase, public rpcore::RPObject
 {
 public:
-    MainApp(int argc, char* argv[]);
+    MainApp();
     virtual ~MainApp();
 
     void load_models();

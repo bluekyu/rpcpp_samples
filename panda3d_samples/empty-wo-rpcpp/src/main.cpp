@@ -27,11 +27,11 @@
 #include "pandaFramework.h"
 #include "pandaSystem.h"
 
-int main(int argc, char* argv[])
+int main()
 {
     // open a new window framework
     PandaFramework framework;
-    framework.open_framework(argc, argv);
+    framework.open_framework();
 
     // set the window title to My Panda3D Window
     framework.set_window_title("My Panda3D Window");

@@ -49,7 +49,7 @@
 
 #define MR_MODE 0
 
-MainApp::MainApp(int argc, char* argv[]) : ShowBase(true), RPObject("MainApp")
+MainApp::MainApp() : ShowBase(true), RPObject("MainApp")
 {
     // Setup window size, title and so on
     load_prc_file_data("",
@@ -244,9 +244,9 @@ AsyncTask::DoneStatus MainApp::upload_texture(rppanda::FunctionalTask* task)
 
 // ************************************************************************************************
 
-int main(int argc, char* argv[])
+int main()
 {
-    MainApp(argc, argv).run();
+    MainApp().run();
 
     return 0;
 }

@@ -237,7 +237,7 @@ private:
     PT(rppanda::LerpHprInterval) panda_turn_;
 };
 
-int main(int argc, char* argv[])
+int main()
 {
     auto vfs = VirtualFileSystem::get_global_ptr();
     vfs->mount("../share/rpcpp_samples/music-box", "/$$app", 0);

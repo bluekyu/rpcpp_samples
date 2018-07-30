@@ -10,7 +10,7 @@ class MovementController;
 class World : public rppanda::ShowBase
 {
 public:
-    World(int argc, char* argv[]);
+    World();
 
     virtual ~World();
 

@@ -12,7 +12,7 @@
 
 #include "main.hpp"
 
-World::World(int argc, char* argv[]) : ShowBase(true)
+World::World() : ShowBase(true)
 {
     // Setup window size, title and so on
     load_prc_file_data("",
@@ -99,9 +99,9 @@ void World::on_imgui_new_frame()
     }
 }
 
-int main(int argc, char* argv[])
+int main()
 {
-    World(argc, argv).run();
+    World().run();
 
     return 0;
 }

@@ -37,7 +37,7 @@
 class MainApp : public rppanda::ShowBase
 {
 public:
-    MainApp(int argc, char* argv[]) : ShowBase(true)
+    MainApp() : ShowBase(true)
     {
         // Setup window size, title and so on
         load_prc_file_data("",
@@ -96,9 +96,9 @@ private:
     std::unique_ptr<rpcore::MovementController> controller_;
 };
 
-int main(int argc, char* argv[])
+int main()
 {
-    MainApp(argc, argv).run();
+    MainApp().run();
 
     return 0;
 }

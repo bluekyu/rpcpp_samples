@@ -42,7 +42,7 @@ class OpenVRCameraInterface;
 class MainApp : public rppanda::ShowBase, public rpcore::RPObject
 {
 public:
-    MainApp(int argc, char* argv[]);
+    MainApp();
     virtual ~MainApp();
 
     void toggle_streaming_action();
