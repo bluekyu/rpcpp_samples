@@ -12,7 +12,7 @@
 
 #include "main.hpp"
 
-World::World(int argc, char* argv[])
+World::World(int argc, char* argv[]) : ShowBase(true)
 {
     // Setup window size, title and so on
     load_prc_file_data("",
@@ -23,7 +23,7 @@ World::World(int argc, char* argv[])
 
     render_pipeline_->get_mount_mgr()->set_base_path("../share/render_pipeline");
     render_pipeline_->get_mount_mgr()->set_config_dir("../etc/rpsamples/imgui");
-    render_pipeline_->create(argc, argv, this);
+    render_pipeline_->create(this);
 
     // Set time of day
     render_pipeline_->get_daytime_mgr()->set_time(0.619f);

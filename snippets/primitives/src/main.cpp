@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
 
     {
         render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
-        render_pipeline->create(argc, argv);
+        render_pipeline->create();
 
         // Set time of day
         render_pipeline->get_daytime_mgr()->set_time(0.769f);

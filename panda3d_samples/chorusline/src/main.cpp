@@ -29,7 +29,7 @@
 class ChorusLineDemo : public rppanda::ShowBase
 {
 public:
-    ChorusLineDemo(int& argc, char**& argv): ShowBase(argc, argv)
+    ChorusLineDemo(int& argc, char**& argv)
     {
         PT(rppanda::Actor) panda = new rppanda::Actor(
             rppanda::Actor::ModelsType{ "models/panda-model" });

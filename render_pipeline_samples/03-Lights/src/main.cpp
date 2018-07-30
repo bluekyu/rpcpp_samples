@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
         render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
         VirtualFileSystem::get_global_ptr()->mount("../share/rpcpp_samples/03-Lights", "/$$app", 0);
 
-        render_pipeline->create(argc, argv);
+        render_pipeline->create();
 
         // ------ End of render pipeline code, thats it! ------
 

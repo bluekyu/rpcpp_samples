@@ -49,7 +49,7 @@
 
 #define MR_MODE 0
 
-MainApp::MainApp(int argc, char* argv[]) : ShowBase(), RPObject("MainApp")
+MainApp::MainApp(int argc, char* argv[]) : ShowBase(true), RPObject("MainApp")
 {
     // Setup window size, title and so on
     load_prc_file_data("",
@@ -62,7 +62,7 @@ MainApp::MainApp(int argc, char* argv[]) : ShowBase(), RPObject("MainApp")
     render_pipeline_->get_mount_mgr()->set_config_dir("../etc/rpsamples/ar");
     VirtualFileSystem::get_global_ptr()->mount("../share/rpcpp_samples", "/$$app", 0);
 
-    render_pipeline_->create(argc, argv, this);
+    render_pipeline_->create(this);
 
     auto plugin_mgr = render_pipeline_->get_plugin_mgr();
     if (!plugin_mgr->is_plugin_enabled("openvr"))

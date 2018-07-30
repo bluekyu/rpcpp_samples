@@ -243,7 +243,7 @@ int main(int argc, char* argv[])
     vfs->mount("../share/rpcpp_samples/music-box", "/$$app", 0);
 
     {
-        rppanda::ShowBase base(argc, argv);
+        rppanda::ShowBase base;
 
         MusicBox mb(&base);
 

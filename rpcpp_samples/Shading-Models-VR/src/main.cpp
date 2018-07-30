@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
         render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/vr");
         VirtualFileSystem::get_global_ptr()->mount("../share/rpcpp_samples/07-Shading-Models", "/$$app", 0);
 
-        render_pipeline->create(argc, argv);
+        render_pipeline->create();
 
         if (!render_pipeline->is_stereo_mode())
         {

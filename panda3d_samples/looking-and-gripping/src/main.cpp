@@ -70,7 +70,7 @@ inline rppanda::OnscreenText gen_label_text(const std::string& text, int i)
 class LookingGrippingDemo : public rppanda::ShowBase
 {
 public:
-    LookingGrippingDemo(int& argc, char**& argv): ShowBase(argc, argv)
+    LookingGrippingDemo(int& argc, char**& argv)
     {
         // This code puts the standard title and instruction text on screen
         title_ = rppanda::OnscreenText(

@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
         render_pipeline->get_mount_mgr()->set_config_dir("../etc/rpsamples/default");
         VirtualFileSystem::get_global_ptr()->mount("../share/rpcpp_samples/01-Material-Demo", "/$$app", 0);
 
-        render_pipeline->create(argc, argv);
+        render_pipeline->create();
 
         // Set time of day
         render_pipeline->get_daytime_mgr()->set_time("19:17");

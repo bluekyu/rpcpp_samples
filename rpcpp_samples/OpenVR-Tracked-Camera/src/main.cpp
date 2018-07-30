@@ -42,7 +42,7 @@
 #include <openvr_plugin.hpp>
 #include <openvr_camera_interface.hpp>
 
-MainApp::MainApp(int argc, char* argv[]) : ShowBase(), RPObject("MainApp")
+MainApp::MainApp(int argc, char* argv[]) : ShowBase(true), RPObject("MainApp")
 {
     // Setup window size, title and so on
     load_prc_file_data("",
@@ -54,7 +54,7 @@ MainApp::MainApp(int argc, char* argv[]) : ShowBase(), RPObject("MainApp")
 
     render_pipeline_->get_mount_mgr()->set_config_dir("../etc/rpsamples/vr");
 
-    render_pipeline_->create(argc, argv, this);
+    render_pipeline_->create(this);
 
     if (!render_pipeline_->get_plugin_mgr()->is_plugin_enabled("openvr"))
     {
