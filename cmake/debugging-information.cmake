@@ -24,45 +24,66 @@ function(configure_debugging_information)
     foreach(config ${ARG_CONFIGURATIONS})
         string(TOUPPER ${config} config_upper)
 
-        define_property(TARGET PROPERTY DEBINFO_PATH_${config_upper}
-            BRIEF_DOCS "The path of FULL debugging information file."
-            FULL_DOCS "The path of FULL debugging information file."
-        )
-
         if(MSVC)
             define_property(TARGET PROPERTY DEBINFO_STRIP_PATH_${config_upper}
                 BRIEF_DOCS "The path of STRIPPED debugging information file."
                 FULL_DOCS "The path of STRIPPED debugging information file."
             )
 
-            get_target_property(LIBRARY_OUTPUT_DIRECTORY ${ARG_TARGET} LIBRARY_OUTPUT_DIRECTORY_${config_upper})
-            if(NOT LIBRARY_OUTPUT_DIRECTORY)
-                set(LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/${config}")
+            # get PDB_OUTPUT_DIRECTORY
+            get_target_property(PDB_OUTPUT_DIRECTORY ${ARG_TARGET} PDB_OUTPUT_DIRECTORY_${config_upper})
+            if(NOT PDB_OUTPUT_DIRECTORY)
+                get_target_property(PDB_OUTPUT_DIRECTORY ${ARG_TARGET} PDB_OUTPUT_DIRECTORY)
+                if(NOT PDB_OUTPUT_DIRECTORY)
+                    get_target_property(PDB_OUTPUT_DIRECTORY ${ARG_TARGET} LIBRARY_OUTPUT_DIRECTORY_${config_upper})
+                    if(NOT PDB_OUTPUT_DIRECTORY)
+                        get_target_property(PDB_OUTPUT_DIRECTORY ${ARG_TARGET} LIBRARY_OUTPUT_DIRECTORY)
+                        if(NOT PDB_OUTPUT_DIRECTORY)
+                            set(PDB_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}")
+                            if(NOT CMAKE_BUILD_TYPE)
+                                set(PDB_OUTPUT_DIRECTORY "${PDB_OUTPUT_DIRECTORY}/${config}")
+                            endif()
+                        endif()
+                    endif()
+                endif()
             endif()
 
-            get_target_property(OUTPUT_NAME ${ARG_TARGET} OUTPUT_NAME_${config_upper})
-            if(NOT OUTPUT_NAME)
-                get_target_property(OUTPUT_NAME ${ARG_TARGET} NAME)
-            endif()
+            # get PDB_NAME
+            get_target_property(PDB_NAME ${ARG_TARGET} PDB_NAME_${config_upper})
+            if(NOT PDB_NAME)
+                get_target_property(PDB_NAME ${ARG_TARGET} PDB_NAME)
+                if(NOT PDB_NAME)
+                    get_target_property(PREFIX ${ARG_TARGET} PREFIX)
+                    if(NOT PREFIX)
+                        set(PREFIX "")
+                    endif()
 
-            get_target_property(POSTFIX ${ARG_TARGET} ${config_upper}_POSTFIX)
-            if(NOT POSTFIX)
-                set(POSTFIX "")
+                    get_target_property(_OUTPUT_NAME ${ARG_TARGET} OUTPUT_NAME_${config_upper})
+                    if(NOT _OUTPUT_NAME)
+                        get_target_property(_OUTPUT_NAME ${ARG_TARGET} OUTPUT_NAME)
+                        if(NOT _OUTPUT_NAME)
+                            get_target_property(_OUTPUT_NAME ${ARG_TARGET} NAME)
+                        endif()
+                    endif()
+
+                    get_target_property(POSTFIX ${ARG_TARGET} ${config_upper}_POSTFIX)
+                    if(NOT POSTFIX)
+                        set(POSTFIX "")
+                    endif()
+
+                    set(PDB_NAME "${PREFIX}${_OUTPUT_NAME}${POSTFIX}")
+                endif()
             endif()
 
             if(private_debinfo_postfix)
-                set(DEBINFO_PATH "${LIBRARY_OUTPUT_DIRECTORY}/${OUTPUT_NAME}${POSTFIX}${private_debinfo_postfix}.pdb")
-                set(DEBINFO_STRIP_PATH "${LIBRARY_OUTPUT_DIRECTORY}/${OUTPUT_NAME}${POSTFIX}.pdb")
+                set(DEBINFO_STRIP_PATH "${PDB_OUTPUT_DIRECTORY}/${PDB_NAME}.pdb")
 
-                set_target_properties(${ARG_TARGET} PROPERTIES DEBINFO_PATH_${config_upper} "${DEBINFO_PATH}")
                 set_target_properties(${ARG_TARGET} PROPERTIES DEBINFO_STRIP_PATH_${config_upper} "${DEBINFO_STRIP_PATH}")
+                set_target_properties(${ARG_TARGET} PROPERTIES PDB_NAME_${config_upper} "${PDB_NAME}${private_debinfo_postfix}")
 
                 set_property(TARGET ${ARG_TARGET} APPEND_STRING PROPERTY LINK_FLAGS_${config_upper}
-                    " /PDB:${DEBINFO_PATH} /PDBSTRIPPED:${DEBINFO_STRIP_PATH} "
+                    " /PDBSTRIPPED:${DEBINFO_STRIP_PATH} "
                 )
-            else()
-                set(DEBINFO_PATH "${LIBRARY_OUTPUT_DIRECTORY}/${OUTPUT_NAME}${POSTFIX}.pdb")
-                set_target_properties(${ARG_TARGET} PROPERTIES DEBINFO_PATH_${config_upper} "${DEBINFO_PATH}")
             endif()
         else()
             if(strip_postfix)
@@ -99,20 +120,15 @@ function(install_debugging_information)
         if(MSVC)
             string(TOUPPER ${config} config_upper)
 
-            get_target_property(DEBINFO_PATH ${ARG_TARGET} DEBINFO_PATH_${config_upper})
             get_target_property(DEBINFO_STRIP_PATH ${ARG_TARGET} DEBINFO_STRIP_PATH_${config_upper})
-            if(NOT DEBINFO_PATH)
-                message(WARNING "'DEBINFO_PATH' variable is NOT found. Call 'configure_debug_info' function.")
-                return()
-            endif()
 
             if(DEBINFO_STRIP_PATH)
                 install(FILES "${DEBINFO_STRIP_PATH}" DESTINATION "${ARG_DESTINATION}" CONFIGURATIONS ${config})
                 if(ARG_INSTALL_PRIVATE)
-                    install(FILES "${DEBINFO_PATH}" DESTINATION "${ARG_DESTINATION}" CONFIGURATIONS ${config})
+                    install(FILES $<TARGET_PDB_FILE:${ARG_TARGET}> DESTINATION "${ARG_DESTINATION}" CONFIGURATIONS ${config})
                 endif()
             else()
-                install(FILES "${DEBINFO_PATH}" DESTINATION "${ARG_DESTINATION}" CONFIGURATIONS ${config})
+                install(FILES $<TARGET_PDB_FILE:${ARG_TARGET}> DESTINATION "${ARG_DESTINATION}" CONFIGURATIONS ${config})
             endif()
         endif()
     endforeach()
