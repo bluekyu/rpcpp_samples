@@ -26,6 +26,7 @@
 
 #include <load_prc_file.h>
 #include <virtualFileSystem.h>
+#include <nodePathCollection.h>
 
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 #include <render_pipeline/rppanda/showbase/messenger.hpp>
@@ -33,6 +34,7 @@
 #include <render_pipeline/rpcore/mount_manager.hpp>
 #include <render_pipeline/rpcore/pluginbase/day_manager.hpp>
 #include <render_pipeline/rpcore/globals.hpp>
+#include <render_pipeline/rpcore/util/rpgeomnode.hpp>
 #include <render_pipeline/rpcore/util/movement_controller.hpp>
 #include <render_pipeline/rpcore/loader.hpp>
 
@@ -59,6 +61,10 @@ public:
         // Load the scene
         NodePath model = rpcore::RPLoader::load_model("/$$app/scene/TestScene.bam");
         model.reparent_to(rpcore::Globals::render);
+
+        // Geoms of TRANSPARENT_MODEL have none transparency attrib in current TestScene.bam file.
+        // So, remove it in code level.
+        remove_transparency_attrib(model);
 
         render_pipeline_->prepare_scene(model);
 
@@ -108,6 +114,22 @@ public:
             { LVecBase3(4.39108037949, 37.2143096924, 5.16932630539), LVecBase3(809.65637207, -2.39745855331, 0.0) },
         };
         controller_->play_motion_path(mopath, 2.3);
+    }
+
+    void remove_transparency_attrib(NodePath model)
+    {
+        NodePathCollection gn_npc = model.find_all_matches("**/+GeomNode");
+        for (int k = 0, k_end = gn_npc.get_num_paths(); k < k_end; ++k)
+        {
+            rpcore::RPGeomNode gn(gn_npc.get_path(k));
+            const int geom_count = gn.get_num_geoms();
+            for (int i = 0; i < geom_count; ++i)
+            {
+                auto shading_model = gn.get_material(i).get_shading_model();
+                if (shading_model == rpcore::RPMaterial::ShadingModel::TRANSPARENT_MODEL)
+                    gn->set_geom_state(i, gn->get_geom_state(i)->remove_attrib(TransparencyAttrib::get_class_slot()));
+            }
+        }
     }
 
 private:
