@@ -110,7 +110,7 @@ void World::create_line_primitive()
     auto line = rpcore::create_line("line", vertices, 10.0f);
     line.reparent_to(rpcore::Globals::render);
 
-    rpcore::LineNode::set_line_effect(*pipeline_, line);
+    rpcore::LineNode(line).set_line_effect(*pipeline_);
 }
 
 void World::create_vertex_colored_linesegs()
@@ -136,5 +136,5 @@ void World::create_vertex_colored_linesegs()
     mat.set_specular_ior(1);
     line.set_material(mat.get_material());
 
-    rpcore::LineNode::set_vertex_color_line_effect(*pipeline_, line);
+    rpcore::LineNode(line).set_vertex_color_line_effect(*pipeline_);
 }
