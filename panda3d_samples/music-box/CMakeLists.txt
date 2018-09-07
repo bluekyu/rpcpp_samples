@@ -42,6 +42,13 @@ else()
     )
 endif()
 
+target_compile_definitions(${PROJECT_NAME}
+    PRIVATE
+
+    # Visual Studio 2017 15.8 fixes align bug, which needs macro definition:
+    $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<VERSION_GREATER_EQUAL:${CMAKE_CXX_COMPILER_VERSION},19.15>>:_ENABLE_EXTENDED_ALIGNED_STORAGE=1>
+)
+
 target_include_directories(${PROJECT_NAME}
     PRIVATE "${PROJECT_SOURCE_DIR}/include" "${CMAKE_CURRENT_SOURCE_DIR}/src"
 )
