@@ -22,6 +22,7 @@ if(NOT TARGET imgui::imgui)
     message(STATUS "\n  Failed to find 'imgui' package. ${PROJECT_NAME} project will be disabled.\n")
     return()
 endif()
+set_target_properties(imgui::imgui PROPERTIES MAP_IMPORTED_CONFIG_RELWITHDEBINFO RELEASE)
 # ==================================================================================================
 
 # === sources ======================================================================================
