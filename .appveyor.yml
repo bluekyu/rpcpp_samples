@@ -82,7 +82,7 @@ build:
 build_script:
 - ps: (mkdir _build) -and (pushd _build)
 - cmd: >-
-    cmake -G "%CMAKE_GENERATOR%" -Wno-dev ..
+    cmake .. -G "%CMAKE_GENERATOR%" -Wno-dev -Thost=x64
     -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
     -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
     -DCMAKE_INSTALL_PREFIX="C:/projects/_install/rpcpp_samples"
