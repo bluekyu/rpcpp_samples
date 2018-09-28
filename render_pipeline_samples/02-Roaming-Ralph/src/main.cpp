@@ -46,11 +46,18 @@
 #include <virtualFileSystem.h>
 #include <nodePathCollection.h>
 #include <graphicsWindow.h>
+#include <ambientLight.h>
+#include <directionalLight.h>
+#include <collisionTraverser.h>
+#include <collisionNode.h>
+#include <collisionRay.h>
+#include <collisionHandlerQueue.h>
 
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 #include <render_pipeline/rppanda/showbase/loader.hpp>
 #include <render_pipeline/rppanda/showbase/messenger.hpp>
 #include <render_pipeline/rppanda/actor/actor.hpp>
+#include <render_pipeline/rppanda/gui/onscreen_text.hpp>
 #include <render_pipeline/rpcore/render_pipeline.hpp>
 #include <render_pipeline/rpcore/mount_manager.hpp>
 #include <render_pipeline/rpcore/pluginbase/day_manager.hpp>
@@ -63,6 +70,15 @@ class World : public rppanda::ShowBase
 {
 public:
     static constexpr float SPEED = 0.5f;
+
+    static rppanda::OnscreenText add_instructions(float pos, const std::string& msg)
+    {
+        return rppanda::OnscreenText(
+            msg, rppanda::OnscreenText::Style::plain, LVecBase2(-0.9f, pos - 0.2f), 0,
+            LVecBase2(0.035f), LColor(1, 1, 1, 1), {},
+            {}, rppanda::OnscreenText::Default::shadow_offset, {},
+            TextProperties::A_left);
+    }
 
 public:
     World() : ShowBase(true)
@@ -89,6 +105,16 @@ public:
         key_map_ = { {"left", 0}, {"right", 0}, {"forward", 0}, {"backward", 0}, {"cam-left", 0}, {"cam-right", 0} };
         speed_ = 1.0f;
         get_win()->set_clear_color(LColor(0, 0, 0, 1));
+
+        // Post the instructions
+
+        inst_.push_back(add_instructions(0.95, "[ESC]  Quit"));
+        inst_.push_back(add_instructions(0.90, "[W]  Run Ralph Forward"));
+        inst_.push_back(add_instructions(0.85, "[S]  Run Ralph Backward"));
+        inst_.push_back(add_instructions(0.80, "[A]  Rotate Ralph Left"));
+        inst_.push_back(add_instructions(0.75, "[D]  Rotate Ralph Right"));
+        inst_.push_back(add_instructions(0.70, "[Left Arrow]  Rotate Camera Left"));
+        inst_.push_back(add_instructions(0.65, "[Right Arrow]  Rotate Camera Right"));
 
         // Set up the environment
         // 
@@ -162,6 +188,48 @@ public:
         // A ray may hit the terrain, or it may hit a rock or a tree.  If it
         // hits the terrain, we can detect the height.  If it hits anything
         // else, we rule that the move is illegal.
+
+        ctrav_ = std::make_unique<CollisionTraverser>();
+
+        ralph_ground_ray_ = new CollisionRay;
+        ralph_ground_ray_->set_origin(0, 0, 1000);
+        ralph_ground_ray_->set_direction(0, 0, -1);
+        ralph_ground_col_ = new CollisionNode("ralphRay");
+        ralph_ground_col_->add_solid(ralph_ground_ray_);
+        ralph_ground_col_->set_from_collide_mask(BitMask32::bit(0));
+        ralph_ground_col_->set_into_collide_mask(BitMask32::all_off());
+        ralph_ground_col_np_ = ralph_->attach_new_node(ralph_ground_col_);
+        ralph_ground_handler_ = new CollisionHandlerQueue;
+        ctrav_->add_collider(ralph_ground_col_np_, ralph_ground_handler_);
+
+        cam_ground_ray_ = new CollisionRay;
+        cam_ground_ray_->set_origin(0, 0, 1000);
+        cam_ground_ray_->set_direction(0, 0, -1);
+        cam_ground_col_ = new CollisionNode("camRay");
+        cam_ground_col_->add_solid(cam_ground_ray_);
+        cam_ground_col_->set_from_collide_mask(BitMask32::bit(0));
+        cam_ground_col_->set_into_collide_mask(BitMask32::all_off());
+        cam_ground_col_np_ = ralph_->attach_new_node(cam_ground_col_);
+        cam_ground_handler_ = new CollisionHandlerQueue;
+        ctrav_->add_collider(cam_ground_col_np_, cam_ground_handler_);
+
+        // Uncomment this line to see the collision rays
+        //ralph_ground_col_np_.show();
+        //cam_ground_col_np_.show();
+
+        // Uncomment this line to show a visual representation of the
+        // collisions occuring
+        //ctrav_->show_collisions(get_render());
+
+        // Create some lighting
+        PT(AmbientLight) ambient_light = new AmbientLight("ambientLight");
+        ambient_light->set_color(LColorf(.3, .3, .3, 1));
+        PT(DirectionalLight) directional_light = new DirectionalLight("directionalLight");
+        directional_light->set_direction(LVecBase3f(-5, -5, -5));
+        directional_light->set_color(LColorf(1, 1, 1, 1));
+        directional_light->set_specular_color(LColorf(1, 1, 1, 1));
+        get_render().set_light(get_render().attach_new_node(ambient_light));
+        get_render().set_light(get_render().attach_new_node(directional_light));
     }
 
     virtual ~World() = default;
@@ -236,12 +304,64 @@ public:
         // If the camera is too far from ralph, move it closer.
         // If the camera is too close to ralph, move it farther.
 
+        auto camvec = ralph_->get_pos() - cam.get_pos();
+        camvec.set_z(0);
+        auto camdist = camvec.length();
+        camvec.normalize();
+        if (camdist > 10.0)
+        {
+            cam.set_pos(cam.get_pos() + camvec * (camdist - 10));
+            camdist = 10.0;
+        }
+        if (camdist < 5.0)
+        {
+            cam.set_pos(cam.get_pos() - camvec * (5 - camdist));
+            camdist = 5.0;
+        }
 
+        // Now check for collisions.
+
+        ctrav_->traverse(get_render());
+
+        // Adjust ralph's Z coordinate.  If ralph's ray hit terrain,
+        // update his Z.If it hit anything else, or didn't hit anything, put
+        // him back where he was last frame.
+
+        std::vector<CollisionEntry*> entries;
+        for (int k = 0, k_end = ralph_ground_handler_->get_num_entries(); k < k_end; ++k)
+            entries.push_back(ralph_ground_handler_->get_entry(k));
+        if (entries.size() > 0 && entries[0]->get_into_node()->get_name() == "terrain")
+            ralph_->set_z(entries[0]->get_surface_point(get_render()).get_z());
+        else
+            ralph_->set_pos(startpos);
+
+        // Keep the camera at one foot above the terrain,
+        // or two feet above ralph, whichever is greater.
+
+        entries.clear();
+        for (int k = 0, k_end = cam_ground_handler_->get_num_entries(); k < k_end; ++k)
+            entries.push_back(cam_ground_handler_->get_entry(k));
+        if (entries.size() > 0 && entries[0]->get_into_node()->get_name() == "terrain")
+            cam.set_z(entries[0]->get_surface_point(get_render()).get_z() + 1);
+        if (cam.get_z() < ralph_->get_z() + 2)
+            cam.set_z(ralph_->get_z() + 2);
+
+        // The camera should look in ralph's direction,
+        // but it should also try to stay horizontal, so look at
+        // a floater which hovers above ralph's head.
+
+        floater_.set_pos(ralph_->get_pos());
+        floater_.set_z(ralph_->get_z() + 2.0);
+        cam.look_at(floater_);
+
+        return AsyncTask::DS_cont;
     }
 
 private:
     std::unique_ptr<rpcore::RenderPipeline> render_pipeline_;
     std::unique_ptr<rpcore::MovementController> controller_;
+
+    std::vector<rppanda::OnscreenText> inst_;
 
     std::unordered_map<std::string, int> key_map_;
     float speed_;
@@ -249,6 +369,17 @@ private:
     PT(rppanda::Actor) ralph_;
     NodePath floater_;
     bool is_moving_;
+
+    std::unique_ptr<CollisionTraverser> ctrav_;
+    PT(CollisionRay) ralph_ground_ray_;
+    PT(CollisionNode) ralph_ground_col_;
+    NodePath ralph_ground_col_np_;
+    PT(CollisionHandlerQueue) ralph_ground_handler_;
+
+    PT(CollisionRay) cam_ground_ray_;
+    PT(CollisionNode) cam_ground_col_;
+    NodePath cam_ground_col_np_;
+    PT(CollisionHandlerQueue) cam_ground_handler_;
 };
 
 int main()
