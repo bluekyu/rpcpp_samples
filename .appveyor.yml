@@ -11,7 +11,7 @@ version: '{branch}-{build}'
 
 # Build worker image (VM template)
 image:
-- Visual Studio 2017
+- Visual Studio 2017 Preview
 
 # set clone depth
 clone_depth: 1
@@ -52,11 +52,11 @@ cache:
 
 # scripts that run after cloning repository
 install:
-- vcpkg install fmt openvr eigen3 imgui
+- vcpkg install fmt openvr imgui
 - ps: (mkdir C:\projects\_install) -and (pushd C:\projects\_install)
 - ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.7z?branch=master&job=Image%3A+Visual+Studio+2017%3B+Configuration%3A+' + "$env:CONFIGURATION")
 - 7z x -y panda3d.7z > nul
-- ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/render-pipeline-cpp/artifacts/render_pipeline_cpp.7z?branch=master&job=Image%3A+Visual+Studio+2017%3B+Configuration%3A+' + "$env:CONFIGURATION")
+- ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/render-pipeline-cpp/artifacts/render_pipeline_cpp.7z?branch=master&job=Image%3A+Visual+Studio+2017+Preview%3B+Configuration%3A+' + "$env:CONFIGURATION")
 - 7z x -y render_pipeline_cpp.7z > nul
 - ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/rpcpp-plugins/artifacts/rpcpp_plugins.7z?branch=master&job=Configuration%3A+' + "$env:CONFIGURATION")
 - 7z x -y rpcpp_plugins.7z > nul

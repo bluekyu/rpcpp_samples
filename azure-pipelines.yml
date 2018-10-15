@@ -107,6 +107,7 @@ jobs:
 
   # copy artifacts
   - task: CopyFiles@2
+    displayName: Copy rpcpp_plugins
     inputs:
       sourceFolder: $(Build.BinariesDirectory)/rpcpp_plugins
       contents: '**'
