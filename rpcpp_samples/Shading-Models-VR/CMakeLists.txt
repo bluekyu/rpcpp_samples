@@ -1,6 +1,6 @@
 # Author: Younguk Kim (bluekyu)
 
-cmake_minimum_required(VERSION 3.10.2)
+cmake_minimum_required(VERSION 3.11.4)
 project(Shading-Models-VR
     DESCRIPTION "VR version of Shading Models sample"
     LANGUAGES CXX

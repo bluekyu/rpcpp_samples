@@ -1,6 +1,6 @@
 # Author: Younguk Kim (bluekyu)
 
-cmake_minimum_required(VERSION 3.10.2)
+cmake_minimum_required(VERSION 3.11.4)
 
 get_filename_component(RPPLUGINS_ID ${CMAKE_CURRENT_LIST_DIR} NAME)
 project(rpplugins_${RPPLUGINS_ID}
@@ -96,17 +96,10 @@ set(TARGET_EXPORT_NAME "${PACKAGE_NAME}-targets")
 set(PACKAGE_CMAKE_INSTALL_DIR "${RPPLUGINS_INSTALL_DIR}/cmake")
 
 include(CMakePackageConfigHelpers)
-if(CMAKE_VERSION VERSION_LESS "3.11")
-    write_basic_package_version_file(${PACKAGE_VERSION_CONFIG_FILE}
-        VERSION ${PACKAGE_VERSION}
-        COMPATIBILITY SameMajorVersion
-    )
-else()
-    write_basic_package_version_file(${PACKAGE_VERSION_CONFIG_FILE}
-        VERSION ${PACKAGE_VERSION}
-        COMPATIBILITY SameMinorVersion
-    )
-endif()
+write_basic_package_version_file(${PACKAGE_VERSION_CONFIG_FILE}
+    VERSION ${PACKAGE_VERSION}
+    COMPATIBILITY SameMinorVersion
+)
 configure_package_config_file(${RPPLUGINS_CONFIG_IN_FILE}
     ${PACKAGE_CONFIG_FILE}
     INSTALL_DESTINATION ${PACKAGE_CMAKE_INSTALL_DIR}

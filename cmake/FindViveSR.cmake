@@ -18,7 +18,7 @@
 #
 #   ViveSR::ViveSR          - The ViveSR library
 
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.11.4)
 
 set(ViveSR_ROOT "${ViveSR_ROOT}" CACHE PATH "Hint for finding ViveSR root directory")
 

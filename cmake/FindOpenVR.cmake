@@ -18,7 +18,7 @@
 #
 #   OpenVR::OpenVR          - The OpenVR library
 
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.11.4)
 
 if(NOT OpenVR_ROOT)
     # support vcpkg

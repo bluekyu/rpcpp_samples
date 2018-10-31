@@ -1,7 +1,7 @@
 # Author: Younguk Kim (bluekyu)
 # Date  : 2017-05-12
 
-cmake_minimum_required(VERSION 3.10.2)
+cmake_minimum_required(VERSION 3.11.4)
 project(empty-wo-rpcpp
     DESCRIPTION "Empty example without Render Pipeline C++"
     LANGUAGES CXX

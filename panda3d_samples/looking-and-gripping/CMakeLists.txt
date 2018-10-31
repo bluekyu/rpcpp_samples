@@ -1,7 +1,7 @@
 # Author: Younguk Kim (bluekyu)
 # Date  : 2017-05-12
 
-cmake_minimum_required(VERSION 3.10.2)
+cmake_minimum_required(VERSION 3.11.4)
 project(looking-and-gripping
     DESCRIPTION "Load, play, and manipulate sounds in Panda3D"
     LANGUAGES CXX
