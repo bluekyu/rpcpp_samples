@@ -39,8 +39,8 @@
 #include <render_pipeline/rpcore/util/rpgeomnode.hpp>
 #include <render_pipeline/rpcore/util/rpmaterial.hpp>
 
-#include <openvr_plugin.hpp>
-#include <openvr_camera_interface.hpp>
+#include <rpplugins/openvr/plugin.hpp>
+#include <rpplugins/openvr/camera_interface.hpp>
 
 MainApp::MainApp() : ShowBase(true), RPObject("MainApp")
 {

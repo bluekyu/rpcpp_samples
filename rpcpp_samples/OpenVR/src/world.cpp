@@ -35,7 +35,7 @@
 #include <render_pipeline/rpcore/pluginbase/manager.hpp>
 #include <render_pipeline/rpcore/util/movement_controller.hpp>
 
-#include <openvr_plugin.hpp>
+#include <rpplugins/openvr/plugin.hpp>
 
 #include <fmt/ostream.h>
 

@@ -41,8 +41,8 @@
 #include <render_pipeline/rpcore/util/rptextnode.hpp>
 #include <render_pipeline/rpcore/stage_manager.hpp>
 
-#include <openvr_plugin.hpp>
-#include <openvr_camera_interface.hpp>
+#include <rpplugins/openvr/plugin.hpp>
+#include <rpplugins/openvr/camera_interface.hpp>
 
 #include <rpplugins/ar_render/plugin.hpp>
 #include <rpplugins/ar_render/ar_composite_stage.hpp>

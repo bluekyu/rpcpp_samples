@@ -35,7 +35,7 @@
 #include <render_pipeline/rpcore/loader.hpp>
 #include <render_pipeline/rpcore/pluginbase/manager.hpp>
 
-#include <openvr_plugin.hpp>
+#include <rpplugins/openvr/plugin.hpp>
 
 void reload_shaders(rpcore::RenderPipeline* rp)
 {
