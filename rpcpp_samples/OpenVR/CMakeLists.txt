@@ -36,8 +36,7 @@ endif()
 # set input files
 set(sources_files
     "${PROJECT_SOURCE_DIR}/src/main.cpp"
-    "${PROJECT_SOURCE_DIR}/src/world.cpp"
-    "${PROJECT_SOURCE_DIR}/src/world.hpp"
+    "${PROJECT_SOURCE_DIR}/src/main.hpp"
 )
 
 # grouping

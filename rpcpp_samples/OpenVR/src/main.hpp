@@ -24,10 +24,11 @@
 
 #pragma once
 
-#include <render_pipeline/rpcore/render_pipeline.hpp>
-#include <render_pipeline/rppanda/showbase/direct_object.hpp>
+#include <render_pipeline/rppanda/showbase/showbase.hpp>
+#include <render_pipeline/rpcore/rpobject.hpp>
 
 namespace rpcore {
+class RenderPipeline;
 class MovementController;
 }
 
@@ -35,11 +36,11 @@ namespace rpplugins {
 class OpenVRPlugin;
 }
 
-class World : public rppanda::DirectObject
+class MainApp : public rppanda::ShowBase, public rpcore::RPObject
 {
 public:
-    World(rpcore::RenderPipeline& pipeline);
-    virtual ~World();
+    MainApp();
+    virtual ~MainApp();
 
     void start();
 
@@ -47,7 +48,7 @@ private:
     void setup_event();
     AsyncTask::DoneStatus update();
 
-    rpcore::RenderPipeline& pipeline_;
+    std::unique_ptr<rpcore::RenderPipeline> render_pipeline_;
     std::unique_ptr<rpcore::MovementController> controller_;
     rpplugins::OpenVRPlugin* openvr_plugin_;
 };
