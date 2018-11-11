@@ -94,6 +94,17 @@ void World::setup_event()
     accept("p", [this](const Event*) {
         openvr_plugin_->take_stereo_screenshots("screenshot_preview", "screenshot_stereo");
     });
+
+    // acceptor for specific event
+    accept("VREvent_TrackedDeviceDeactivated", [this](const Event* ev) {
+        auto vr_event = openvr_plugin_->get_vr_event(ev->get_parameter(0).get_int_value());
+        std::cout << fmt::format("Device {} detached.", vr_event.trackedDeviceIndex) << std::endl;
+    });
+
+    accept("VREvent_TrackedDeviceUpdated", [this](const Event* ev) {
+        auto vr_event = openvr_plugin_->get_vr_event(ev->get_parameter(0).get_int_value());
+        std::cout << fmt::format("Device {} updated.", vr_event.trackedDeviceIndex) << std::endl;
+    });
 }
 
 void World::start()
@@ -107,9 +118,8 @@ AsyncTask::DoneStatus World::update()
 {
     auto vr_system = openvr_plugin_->get_vr_system();
 
-    // process events
-    vr::VREvent_t ev;
-    while (vr_system->PollNextEvent(&ev, sizeof(ev)))
+    // get all events
+    for (const auto& ev: openvr_plugin_->get_vr_events())
     {
         std::cout << "Event : " << vr_system->GetEventTypeNameFromEnum(vr::EVREventType(ev.eventType)) << std::endl;
     }
