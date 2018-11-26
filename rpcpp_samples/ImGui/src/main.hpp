@@ -12,7 +12,7 @@ class World : public rppanda::ShowBase
 public:
     World();
 
-    virtual ~World();
+    ~World();
 
 private:
     void on_imgui_new_frame();

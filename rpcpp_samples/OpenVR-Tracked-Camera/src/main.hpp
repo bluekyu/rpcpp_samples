@@ -43,7 +43,7 @@ class MainApp : public rppanda::ShowBase, public rpcore::RPObject
 {
 public:
     MainApp();
-    virtual ~MainApp();
+    ~MainApp();
 
     void toggle_streaming_action();
 
