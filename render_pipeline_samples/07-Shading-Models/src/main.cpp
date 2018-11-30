@@ -79,7 +79,7 @@ public:
         accept("r", [this](const Event*) { reload_shaders(); });
     }
 
-    virtual ~MainApp() = default;
+    ~MainApp() = default;
 
     void reload_shaders()
     {

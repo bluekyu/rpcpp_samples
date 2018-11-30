@@ -27,8 +27,6 @@
 #include <render_pipeline/rppanda/showbase/showbase.hpp>
 #include <render_pipeline/rpcore/rpobject.hpp>
 
-#include <openvr.h>
-
 namespace rpcore {
 class RenderPipeline;
 class MovementController;

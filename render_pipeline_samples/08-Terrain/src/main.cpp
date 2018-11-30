@@ -99,7 +99,7 @@ public:
         reload_shaders();
     }
 
-    virtual ~Application() = default;
+    ~Application() = default;
 
     void reload_shaders()
     {

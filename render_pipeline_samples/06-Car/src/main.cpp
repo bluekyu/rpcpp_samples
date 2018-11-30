@@ -70,7 +70,7 @@ public:
         accept("l", [&](const Event*) { tour(); });
     }
 
-    virtual ~MainApp() = default;
+    ~MainApp() = default;
 
     void reload_shaders()
     {

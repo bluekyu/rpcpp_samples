@@ -232,7 +232,7 @@ public:
         get_render().set_light(get_render().attach_new_node(directional_light));
     }
 
-    virtual ~World() = default;
+    ~World() = default;
 
     // Records the state of the arrow keys
     void set_key(const std::string& key, int value)
