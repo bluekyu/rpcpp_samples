@@ -147,7 +147,7 @@ void MainApp::setup_ar_camera()
 
     openvr_camera_ = openvr_plugin_->get_tracked_camera();
 
-    PT(Camera) ar_camera_ = openvr_camera_->create_camera_node();
+    PT(Camera) ar_camera_ = openvr_camera_->create_camera_node(0);
     const auto real_object_mask = DrawMask::bit(20);
     ar_camera_->set_camera_mask(real_object_mask);
 
