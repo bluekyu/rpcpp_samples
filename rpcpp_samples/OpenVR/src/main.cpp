@@ -102,6 +102,8 @@ MainApp::MainApp() : ShowBase(true), RPObject("MainApp")
     }
 
     setup_event();
+
+    start();
 }
 
 MainApp::~MainApp() = default;
@@ -152,7 +154,8 @@ AsyncTask::DoneStatus MainApp::update()
     // process controller state
     for (uint i = 0, i_end = vr::k_unMaxTrackedDeviceCount; i < i_end; ++i)
     {
-        if (openvr_plugin_->get_tracked_device_class(i) != vr::ETrackedDeviceClass::TrackedDeviceClass_Controller)
+        auto device_class = openvr_plugin_->get_tracked_device_class(i);
+        if (device_class != vr::ETrackedDeviceClass::TrackedDeviceClass_Controller && device_class != vr::ETrackedDeviceClass::TrackedDeviceClass_GenericTracker)
             continue;
 
         vr::VRControllerState_t state;

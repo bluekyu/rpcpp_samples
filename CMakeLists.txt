@@ -1,8 +1,9 @@
 # Author: Younguk Kim (bluekyu)
 
-cmake_minimum_required(VERSION 3.11.4...3.12)
+cmake_minimum_required(VERSION 3.12)
 project(rpcpp_samples_project
     DESCRIPTION "Samples of Render Pipeline C++"
+    HOMEPAGE_URL "https://github.com/bluekyu/rpcpp_samples"
     LANGUAGES CXX
 )
 
