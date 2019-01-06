@@ -13,11 +13,10 @@ version: '{branch}-{build}'
 image:
 - Visual Studio 2017 Preview
 
+
 # set clone depth
 clone_depth: 1
 
-# clone directory
-clone_folder: c:\projects\rpcpp_samples
 
 # scripts that are called at very beginning, before repo cloning
 init:
@@ -25,43 +24,63 @@ init:
     if (Test-Path env:TRIGGER_NAME) {
         Update-AppveyorBuild -Message "Build by $env:TRIGGER_BUILD_VERSION in $env:TRIGGER_NAME"
     }
-# checkout recent vcpkg
-- ps: pushd C:\tools\vcpkg
-- git pull --quiet
-- git checkout -qf 56ea0dca4098754cee6dba7766c9e38d1fe40165
-- .\bootstrap-vcpkg.bat > nul
-- ps: popd
 - git --version
 - cmake --version
-- vcpkg version
+
 
 # environment variables
 environment:
     CMAKE_PREFIX_PATH: C:\projects\_install;
+    INSTALL_PREFIX: C:/projects/_install
+    BUILD_TOOLSET_VERSION: 141
     CMAKE_GENERATOR: Visual Studio 15 2017 Win64
-    BOOST_ROOT: C:\Libraries\boost_1_67_0
-    VCPKG_DEFAULT_TRIPLET: x64-windows
+
 
 # this is how to allow failing jobs in the matrix
 matrix:
     fast_finish: true   # set this flag to immediately finish build once one of the jobs fails.
 
+
 # build cache to preserve files/folders between builds
-cache:
-    - c:\tools\vcpkg\installed\ -> .appveyor.yml
+#cache:
+
 
 # scripts that run after cloning repository
 install:
-- vcpkg install fmt openvr imgui
-- ps: (mkdir C:\projects\_install) -and (pushd C:\projects\_install)
+- ps: mkdir $env:INSTALL_PREFIX
+- ps: pushd $env:INSTALL_PREFIX
+
+# initialize vcpkg
+- git clone -q --branch rpcpp-devops --depth 1 https://github.com/bluekyu/vcpkg.git
+- ps: pushd vcpkg
+
+# download vcpkg artifacts
+- ps: >-
+    if ($isWindows) {
+        Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/vcpkg/artifacts/vcpkg.7z?branch=rpcpp-devops&job=Image%3A+Visual+Studio+2017+Preview'
+    } else {
+        Start-FileDownload 'https://ci.appveyor.com/api/projects/bluekyu/vcpkg/artifacts/vcpkg.tar.xz?branch=rpcpp-devops&job=Image%3A+Ubuntu1804'
+    }
+
+# extract vcpkg cache
+- sh: tar xf vcpkg.tar.xz
+- cmd: 7z x -y vcpkg.7z > nul
+- ps: popd
+
+# download and extract panda3d
 - ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/panda3d/artifacts/panda3d.7z?branch=master&job=Image%3A+Visual+Studio+2017+Preview%3B+Configuration%3A+' + "$env:CONFIGURATION")
 - 7z x -y panda3d.7z > nul
+
+# download and extract render pipeline
 - ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/render-pipeline-cpp/artifacts/render_pipeline_cpp.7z?branch=master&job=Image%3A+Visual+Studio+2017+Preview%3B+Configuration%3A+' + "$env:CONFIGURATION")
 - 7z x -y render_pipeline_cpp.7z > nul
+
+# download and extract rpcpp-plugins
 - ps: Start-FileDownload ('https://ci.appveyor.com/api/projects/bluekyu/rpcpp-plugins/artifacts/rpcpp_plugins.7z?branch=master&job=Configuration%3A+' + "$env:CONFIGURATION")
 - 7z x -y rpcpp_plugins.7z > nul
 - cmd: xcopy /E .\rpcpp_plugins .\render_pipeline_cpp
 - ps: popd
+
 
 #---------------------------------#
 #       build configuration       #
@@ -70,23 +89,28 @@ install:
 # build platform, i.e. x86, x64, Any CPU. This setting is optional.
 platform: x64
 
+
 # build Configuration, i.e. Debug, Release, etc.
 configuration:
 - Debug
 - Release
 
+
 build:
     parallel: true                  # enable MSBuild parallel builds
 
+
 # to run your custom scripts instead of automatic MSBuild
 build_script:
-- ps: (mkdir _build) -and (pushd _build)
+- ps: mkdir _build
+- ps: pushd _build
 - cmd: >-
     cmake .. -G "%CMAKE_GENERATOR%" -Wno-dev -Thost=x64
-    -DCMAKE_TOOLCHAIN_FILE=C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
+    -DCMAKE_TOOLCHAIN_FILE=%INSTALL_PREFIX%/vcpkg/scripts/buildsystems/vcpkg.cmake
     -DVCPKG_APPLOCAL_DEPS:BOOL=OFF
-    -DCMAKE_INSTALL_PREFIX="C:/projects/_install/rpcpp_samples"
-    -Dpanda3d_ROOT:PATH="C:/projects/_install/panda3d"
+    -DVCPKG_TARGET_TRIPLET=x64-windows-vc%BUILD_TOOLSET_VERSION%
+    -DCMAKE_INSTALL_PREFIX="%INSTALL_PREFIX%/rpcpp_samples"
+    -Dpanda3d_ROOT:PATH="%INSTALL_PREFIX%/panda3d"
     -Drpcpp_samples_BUILD_panda3d_samples:BOOL=ON
     -Drpcpp_samples_BUILD_render_pipeline_samples:BOOL=ON
     -Drpcpp_samples_BUILD_rpcpp_samples:BOOL=ON
@@ -102,7 +126,7 @@ test_script:
 
 after_test:
 - cmake --build _build --config %CONFIGURATION% --target install
-- 7z a rpcpp_samples.7z "C:/projects/_install/rpcpp_samples"
+- 7z a rpcpp_samples.7z "%INSTALL_PREFIX%/rpcpp_samples"
 
 #---------------------------------#
 #      artifacts configuration    #
