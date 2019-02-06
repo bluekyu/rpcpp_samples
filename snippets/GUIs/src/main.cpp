@@ -73,8 +73,8 @@ int main()
         // Init movement controller
         auto controller = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
         controller->set_initial_position_hpr(
-            LVecBase3f(-17.2912578583, -13.290019989, 6.88211250305),
-            LVecBase3f(-39.7285499573, -14.6770210266, 0.0));
+            LVecBase3(-17.2912578583, -13.290019989, 6.88211250305),
+            LVecBase3(-39.7285499573, -14.6770210266, 0.0));
         controller->setup();
 
         render_pipeline->run();

@@ -107,8 +107,8 @@ int main()
         // Init movement controller
         auto controller = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
         controller->set_initial_position_hpr(
-            LVecBase3f(0.0f),
-            LVecBase3f(0.0f, 0.0f, 0.0f));
+            LVecBase3(0.0f),
+            LVecBase3(0.0f, 0.0f, 0.0f));
         controller->setup();
 
         // screenshot key

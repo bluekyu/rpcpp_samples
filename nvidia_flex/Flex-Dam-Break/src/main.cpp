@@ -77,8 +77,8 @@ int main()
         // mouse controller.
         std::shared_ptr<rpcore::MovementController> controller = std::make_shared<rpcore::MovementController>(rpcore::Globals::base);
         controller->set_initial_position(
-            LVecBase3f(0, -20, 5),
-            LVecBase3f(0));
+            LVecBase3(0, -20, 5),
+            LVecBase3(0));
         controller->setup();
 
         render_pipeline->run();

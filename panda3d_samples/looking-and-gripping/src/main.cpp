@@ -123,7 +123,7 @@ public:
         // This is a table with models, positions, rotations, and scales of objects to
         // be attached to our exposed joint.These are stock models and so they needed
         // to be repositioned to look right.
-        std::vector<std::tuple<std::string, LVecBase3f, LVecBase3f, float>> positions = {
+        std::vector<std::tuple<std::string, LVecBase3, LVecBase3, float>> positions = {
             {"teapot", {0, -.66f, -.95f}, {90, 0, 90}, .4f},
             {"models/candycane", {.15f, -.99f, -.22f}, {90, 0, 90}, 1},
             {"models/banana", {.08f, -.1f, .09f}, {0, -90, 0}, 1.75f},

@@ -189,8 +189,8 @@ int main()
 
         auto controller = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
         controller->set_initial_position(
-            LVecBase3f(23.9, 42.5, 13.4),
-            LVecBase3f(23.8, 33.4, 10.8));
+            LVecBase3(23.9, 42.5, 13.4),
+            LVecBase3(23.8, 33.4, 10.8));
         controller->setup();
 
         rpcore::Globals::base->add_task(std::bind(&update, std::placeholders::_1), "update");

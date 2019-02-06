@@ -48,7 +48,7 @@ World::~World() = default;
 
 void World::create_square_points()
 {
-    std::vector<LPoint3f> points = {
+    std::vector<LPoint3> points = {
         { -2, 0, 2 },
         { -1, 0, 2 },
         { 0, 0, 2 },
@@ -65,7 +65,7 @@ void World::create_square_points()
 
 void World::create_disk_points()
 {
-    std::vector<LPoint3f> points = {
+    std::vector<LPoint3> points = {
         { -2, 0, 1.5f },
         { -1, 0, 1.5f },
         { 0, 0, 1.5f },
@@ -82,7 +82,7 @@ void World::create_disk_points()
 
 void World::create_sphere_points()
 {
-    std::vector<LPoint3f> points = {
+    std::vector<LPoint3> points = {
         { -2, 0, 1 },
         { -1, 0, 1 },
         { 0, 0, 1 },

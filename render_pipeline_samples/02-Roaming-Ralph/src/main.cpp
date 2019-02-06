@@ -223,11 +223,11 @@ public:
 
         // Create some lighting
         PT(AmbientLight) ambient_light = new AmbientLight("ambientLight");
-        ambient_light->set_color(LColorf(.3, .3, .3, 1));
+        ambient_light->set_color(LColor(.3, .3, .3, 1));
         PT(DirectionalLight) directional_light = new DirectionalLight("directionalLight");
-        directional_light->set_direction(LVecBase3f(-5, -5, -5));
-        directional_light->set_color(LColorf(1, 1, 1, 1));
-        directional_light->set_specular_color(LColorf(1, 1, 1, 1));
+        directional_light->set_direction(LVecBase3(-5, -5, -5));
+        directional_light->set_color(LColor(1, 1, 1, 1));
+        directional_light->set_specular_color(LColor(1, 1, 1, 1));
         get_render().set_light(get_render().attach_new_node(ambient_light));
         get_render().set_light(get_render().attach_new_node(directional_light));
     }

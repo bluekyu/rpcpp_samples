@@ -43,7 +43,7 @@
 rppanda::OnscreenText add_instructions(float pos, const std::string& msg)
 {
     return rppanda::OnscreenText(msg, rppanda::OnscreenText::Style::plain,
-        LVecBase2f(0.08f, -pos - 0.54f), 0.0f, LVecBase2(0.05f), LColor{1, 1, 1, 1}, {},
+        LVecBase2(0.08f, -pos - 0.54f), 0.0f, LVecBase2(0.05f), LColor{1, 1, 1, 1}, {},
         LColor{0, 0, 0, 1}, rppanda::OnscreenText::Default::shadow_offset,
         {}, TextNode::Alignment::A_left, {}, {}, false, nullptr, rpcore::Globals::base->get_aspect_2d().find("a2d_top_left"));
 }
@@ -187,8 +187,8 @@ int main()
         // Init movement controller
         auto controller = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
         controller->set_initial_position(
-            LVecBase3f(30, -45, 26),
-            LVecBase3f(0, 0, 0));
+            LVecBase3(30, -45, 26),
+            LVecBase3(0, 0, 0));
         controller->setup();
 
         render_pipeline->run();

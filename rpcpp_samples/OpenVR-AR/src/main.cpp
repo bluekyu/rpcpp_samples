@@ -98,8 +98,8 @@ void MainApp::setup_event()
     // Init movement controller
     controller_ = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
     controller_->set_initial_position_hpr(
-        LVecBase3f(0.0f),
-        LVecBase3f(0.0f, 0.0f, 0.0f));
+        LVecBase3(0.0f),
+        LVecBase3(0.0f, 0.0f, 0.0f));
     controller_->setup();
 
     // OpenVR screenshot
@@ -232,9 +232,9 @@ AsyncTask::DoneStatus MainApp::upload_texture(rppanda::FunctionalTask* task)
     const auto& pose = header.standingTrackedDevicePose;
     if (pose.bPoseIsValid)
     {
-        ar_camera_np_.set_mat(LMatrix4f::z_to_y_up_mat() *
+        ar_camera_np_.set_mat(LMatrix4::z_to_y_up_mat() *
             rpplugins::OpenVRPlugin::convert_matrix(pose.mDeviceToAbsoluteTracking) *
-            LMatrix4f::y_to_z_up_mat());
+            LMatrix4::y_to_z_up_mat());
     }
 
     last_frame_sequence = header.nFrameSequence;

@@ -63,7 +63,7 @@ int main()
         NodePath prefab = model.find("**/InstancedObjectPrefab");
 
         // get matrix of parent node to get local transform.
-        LMatrix4f parent_mat = prefab.get_mat(rpcore::Globals::render);
+        LMatrix4 parent_mat = prefab.get_mat(rpcore::Globals::render);
         parent_mat.invert_in_place();
 
         // Collect all instances
@@ -86,8 +86,8 @@ int main()
         // mouse controller.
         auto controller = std::make_unique<rpcore::MovementController>(rpcore::Globals::base);
         controller->set_initial_position_hpr(
-            LVecBase3f(-23.2, -32.5, 5.3),
-            LVecBase3f(-33.8, -8.3, 0.0));
+            LVecBase3(-23.2, -32.5, 5.3),
+            LVecBase3(-33.8, -8.3, 0.0));
         controller->setup();
 
         render_pipeline->run();

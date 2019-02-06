@@ -36,17 +36,17 @@ struct Emitter
 {
     Emitter() : mSpeed(0.0f), mEnabled(false), mLeftOver(0.0f), mWidth(8)   {}
 
-    LVecBase3f mPos;
-    LVecBase3f mDir;
-    LVecBase3f mRight;
+    LVecBase3 mPos;
+    LVecBase3 mDir;
+    LVecBase3 mRight;
     float mSpeed;
     bool mEnabled;
     float mLeftOver;
     int mWidth;
 };
 
-void CreateParticleGrid(rpflex::FlexBuffer& buffer, const LVecBase3f& lower, int dimx, int dimy, int dimz, float radius,
-    const LVecBase3f& velocity, float invMass, bool rigid, float rigidStiffness, int phase, float jitter=0.005f)
+void CreateParticleGrid(rpflex::FlexBuffer& buffer, const LVecBase3& lower, int dimx, int dimy, int dimz, float radius,
+    const LVecBase3& velocity, float invMass, bool rigid, float rigidStiffness, int phase, float jitter=0.005f)
 {
     if (rigid && buffer.rigid_indices.empty())
         buffer.rigid_offsets.push_back(0);
@@ -60,9 +60,9 @@ void CreateParticleGrid(rpflex::FlexBuffer& buffer, const LVecBase3f& lower, int
                 if (rigid)
                     buffer.rigid_indices.push_back(int(buffer.positions.size()));
 
-                LVecBase3f position = lower + LVecBase3f(float(x), float(y), float(z))*radius + RandomUnitVector()*jitter;
+                LVecBase3 position = lower + LVecBase3(float(x), float(y), float(z))*radius + RandomUnitVector()*jitter;
 
-                buffer.positions.push_back(LVecBase4f(position, invMass));
+                buffer.positions.push_back(LVecBase4(position, invMass));
                 buffer.velocities.push_back(velocity);
                 buffer.phases.push_back(phase);
             }
@@ -83,19 +83,19 @@ void UpdateEmitters(rpflex::Plugin& rpflex_plugin, Emitter& emitter)
 
     NodePath cam = rpcore::Globals::base->get_cam();
 
-    LVecBase3f spinned_cam = cam.get_hpr(rpcore::Globals::render) + LVecBase3f(15, 0, 0);
+    LVecBase3 spinned_cam = cam.get_hpr(rpcore::Globals::render) + LVecBase3(15, 0, 0);
 
-    LQuaternionf rot;
+    LQuaternion rot;
     rot.set_hpr(spinned_cam);
-    LMatrix4f mat;
+    LMatrix4 mat;
     rot.extract_to_matrix(mat);
 
-    const LVecBase3f forward((LVecBase4f(0, 1, 0, 0) * mat).get_xyz());
-    const LVecBase3f right(forward.cross(LVecBase3f(0.0f, 0.0f, 1.0f)).normalized());
+    const LVecBase3 forward((LVecBase4(0, 1, 0, 0) * mat).get_xyz());
+    const LVecBase3 right(forward.cross(LVecBase3(0.0f, 0.0f, 1.0f)).normalized());
 
-    emitter.mDir = (forward + LVecBase3f(0.0, 0.0f, 0.4f)).normalized();
+    emitter.mDir = (forward + LVecBase3(0.0, 0.0f, 0.4f)).normalized();
     emitter.mRight = right;
-    emitter.mPos = cam.get_pos(rpcore::Globals::render) + forward*1.f + LVecBase3f(0.0f, 0.0f, 0.2f) + right*0.65f;
+    emitter.mPos = cam.get_pos(rpcore::Globals::render) + forward*1.f + LVecBase3(0.0f, 0.0f, 0.2f) + right*0.65f;
 
     // process emitters
     int activeCount = NvFlexGetActiveCount(rpflex_plugin.get_flex_solver());
@@ -136,8 +136,8 @@ void UpdateEmitters(rpflex::Plugin& rpflex_plugin, Emitter& emitter)
 
             if ((x*x + y*y) <= (emitterWidth / 2)*(emitterWidth / 2))
             {
-                LVecBase3f up = emitter.mDir.cross(emitter.mRight).normalized();
-                LVecBase3f offset = r*(emitter.mRight*x + up*y) + float(k)*emitter.mDir*r;
+                LVecBase3 up = emitter.mDir.cross(emitter.mRight).normalized();
+                LVecBase3 offset = r*(emitter.mRight*x + up*y) + float(k)*emitter.mDir*r;
 
                 if (activeCount < buffer.positions.size())
                 {

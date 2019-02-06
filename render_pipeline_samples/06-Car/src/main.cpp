@@ -63,8 +63,8 @@ public:
         // Init movement controller
         controller_ = std::make_unique<rpcore::MovementController>(this);
         controller_->set_initial_position(
-            LVecBase3f(-7.5f, -5.3f, 1.8f),
-            LVecBase3f(-5.9f, -4.0f, 1.6f));
+            LVecBase3(-7.5f, -5.3f, 1.8f),
+            LVecBase3(-5.9f, -4.0f, 1.6f));
         controller_->setup();
 
         accept("l", [&](const Event*) { tour(); });

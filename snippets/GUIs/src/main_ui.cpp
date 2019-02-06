@@ -77,8 +77,8 @@ MainUI::MainUI(rpcore::RenderPipeline& pipeline): pipeline_(pipeline)
     auto unchecked_img = rpcore::RPLoader::load_texture("/$$rp/data/gui/checkbox_default.png");
 
     auto checkbox_options = std::make_shared<rppanda::DirectCheckBox::Options>();
-    checkbox_options->pos = LVecBase3f(0.95f, 0.0f, -0.15f);
-    checkbox_options->scale = LVecBase3f(0.03f);
+    checkbox_options->pos = LVecBase3(0.95f, 0.0f, -0.15f);
+    checkbox_options->scale = LVecBase3(0.03f);
     checkbox_options->checked_image = std::make_shared<rppanda::ImageInput>(checked_img);
     checkbox_options->unchecked_image = std::make_shared<rppanda::ImageInput>(unchecked_img);
     checkbox_options->image ={ std::make_shared<rppanda::ImageInput>(unchecked_img) };
